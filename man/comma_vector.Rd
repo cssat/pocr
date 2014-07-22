@@ -1,0 +1,20 @@
+\name{comma_vector}
+\alias{comma_vector}
+\title{Takes a vector and returns a comma-space separated string for printing.}
+\usage{
+  comma_vector(x, and = TRUE, oxford = TRUE)
+}
+\arguments{
+  \item{x}{Vector to paste together}
+
+  \item{and}{Boolean, whether an "and" should be inserted
+  before the last element}
+
+  \item{oxford}{Boolean, whether to include an "Oxford
+  comma" (before the "and")}
+}
+\description{
+  Takes a vector and returns a comma-space separated string
+  for printing.
+}
+

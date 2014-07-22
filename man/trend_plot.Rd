@@ -1,0 +1,32 @@
+\name{trend_plot}
+\alias{trend_plot}
+\title{Plots revamped trend charts}
+\usage{
+  trend_plot(trend_data, type = c("ooh", "ia", "ihs"),
+    title = "", flow_alpha = 0.6, stockplot = TRUE,
+    flowplot = FALSE, title_size = 1.2)
+}
+\arguments{
+  \item{trend_data}{data frame with first 4 columns, in
+  order that are date, count, opened, and closed.}
+
+  \item{type}{Character, either "ooh", "ia", or "ihs". Used
+  for y-axis label.}
+
+  \item{title}{Character. Title to go at top.}
+
+  \item{flow_alpha}{set transparency for the background of
+  the activity graph.}
+
+  \item{stockplot}{boolean, default true}
+
+  \item{flowplot}{boolean, default false}
+
+  \item{title_size}{numeric, relative title size}
+}
+\description{
+  Produces (in one device) a bar chart of counts and a
+  scatterplot w/LOESS smooth of entries and exits with
+  absolute change beanpoles.
+}
+

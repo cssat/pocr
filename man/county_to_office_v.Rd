@@ -1,0 +1,14 @@
+\name{county_to_office_v}
+\alias{county_to_office_v}
+\title{Vectorized version of \code{county_to_office}.}
+\usage{
+  county_to_office_v(county)
+}
+\arguments{
+  \item{county}{string or numeric county_cd}
+}
+\description{
+  Takes a vector of counties (string or numeric) and gives
+  a list of the corresponding rows of ref_lookup_office
+}
+

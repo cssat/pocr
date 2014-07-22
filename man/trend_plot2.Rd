@@ -1,0 +1,22 @@
+\name{trend_plot2}
+\alias{trend_plot2}
+\title{Plots re-revamped trend charts}
+\usage{
+  trend_plot2(trend_data, type = c("ooh", "ia", "ihs"),
+    title = "", title_size = 1.2)
+}
+\arguments{
+  \item{trend_data}{data frame with first 4 columns, in
+  order that are date, count, opened, and closed.}
+
+  \item{type}{Character, either "ooh", "ia", or "ihs". Used
+  for y-axis label.}
+
+  \item{title}{Character. Title to go at top.}
+
+  \item{title_size}{numeric, relative title size}
+}
+\description{
+  Nice barchart of counts
+}
+

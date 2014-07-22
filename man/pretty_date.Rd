@@ -1,0 +1,22 @@
+\name{pretty_date}
+\alias{pretty_date}
+\title{Outputs a nice date for inline inclusion (wrapper for strftime)}
+\usage{
+  pretty_date(x, format = c("mdy", "dmy", "ymd"),
+    abbreviate = FALSE, ...)
+}
+\arguments{
+  \item{x}{vector of POSIX objects (or something that can
+  be coerced that way)}
+
+  \item{format}{character with "m", "d", and "y", in the
+  order you want them.}
+
+  \item{abbreviate}{boolean, whether to abbreviate the
+  day.}
+}
+\description{
+  Outputs a nice date for inline inclusion (wrapper for
+  strftime)
+}
+

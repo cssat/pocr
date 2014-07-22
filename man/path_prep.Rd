@@ -1,0 +1,15 @@
+\name{path_prep}
+\alias{path_prep}
+\title{Converts Windows filepath to R format}
+\usage{
+  path_prep(path = "clipboard")
+}
+\arguments{
+  \item{path}{Defaults to clipboard.}
+}
+\description{
+  Keep input in the clipboard (or paste it in). Returns a
+  valid R filepath string. Found on StackOverflow, original
+  author Tyler Rinker.
+}
+

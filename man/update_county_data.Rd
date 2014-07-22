@@ -1,0 +1,10 @@
+\name{update_county_data}
+\alias{update_county_data}
+\title{Function for updating county data from SQL Server}
+\usage{
+  update_county_data()
+}
+\description{
+  Function for updating county data from SQL Server
+}
+

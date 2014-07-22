@@ -1,0 +1,13 @@
+\name{theme_clean}
+\alias{theme_clean}
+\title{A blank ggplot theme, borrowed from somebody on github}
+\usage{
+  theme_clean(base_size = 12)
+}
+\arguments{
+  \item{base_size}{defaults to 12, should be fine mostly}
+}
+\description{
+  A blank ggplot theme, borrowed from somebody on github
+}
+
