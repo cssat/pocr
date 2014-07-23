@@ -1,42 +1,3 @@
-## Data documentation (for county and office data)
-## and related functions
-
-#' @name ref_lookup_county
-#' @title ref_lookup_county (from test_annie)
-#' @description Data frame with columns for the county_cd, the text county
-#' and the regional code cd_region. Taken from SQL Server table of the same name.
-#' I've ordered the entries so that row number corresponds to county_cd for the
-#' actual counties 1:39.
-#' @docType data
-NULL
-
-#' @name ref_lookup_office
-#' @title ref_lookup_office (from test_annie)
-#' @description Data frame with columns cd_office, tx_office, cd_office_county_grp,
-#' and tx_office_county_grp. Taken from SQL Server table of the same name.
-#' @docType data
-NULL
-
-#' @name ref_lookup_office
-#' @title ref_lookup_office (from test_annie)
-#' @description Data frame with columns cd_office, tx_office, cd_office_county_grp,
-#' and tx_office_county_grp. Taken from SQL Server table of the same name.
-#' @docType data
-NULL
-
-#' @name quickfacts
-#' @title quickfacts (from US Census Bureau)
-#' @description Data frame characteristics of each county and of the state. \code{qf_dict} has
-#' the column keys.
-#' @docType data
-NULL
-
-#' @name qf_dict
-#' @title Key to \code{quickfacts}
-#' @description Verbose descriptions of \code{quickfacts} columns.
-#' @docType data
-NULL
-
 #' Takes a county (string or numeric) and gives
 #' the corresponding rows of ref_lookup_office
 #' 
@@ -50,6 +11,8 @@ county_to_office <- function(county) {
                                              pattern = fixed(county)))), ]
 }
 
+
+
 #' Vectorized version of \code{county_to_office}.
 #'
 #' Takes a vector of counties (string or numeric) and gives a list of
@@ -58,6 +21,8 @@ county_to_office <- function(county) {
 #' @param county string or numeric county_cd
 #' @export
 county_to_office_v <- Vectorize(county_to_office, SIMPLIFY=FALSE)
+
+
 
 #' Function for updating county data from SQL Server
 update_county_data <- function() {
@@ -71,17 +36,38 @@ update_county_data <- function() {
     save(ref_lookup_office, file = "G:/CA data transfer files/R/Gregor/poc/data/ref_lookup_office.rda")
 }
 
-# #' Function to convert between county names and county codes
-# #' 
-# #' @param x county name or code
-# #' @export
-# county_code <- function(x) {
-#     if (is.numeric(x)) {
-#         return(ref_lookup_county$county[x])
-#     }
-#     ref_lookup_county$county_cd[which(tolower(x) == tolower(ref_lookup_county$county))]
-# }
-# 
-# 
-# (tolower(x) == tolower(ref_lookup_county$county)
-# merge(tolower(x), tolower(ref_lookup_county), by.y = county)
+
+#' ref_lookup_county (from test_annie)
+#' 
+#' Data frame with columns for the county_cd, the text county
+#' and the regional code cd_region. Taken from SQL Server table of the same name.
+#' I've ordered the entries so that row number corresponds to county_cd for the
+#' actual counties 1:39.
+#' 
+#' @format A data frame with three columns, county_cd, county, and region_cd
+#' @docType data
+#' @name ref_lookup_county
+
+
+
+#' @title ref_lookup_office (from test_annie)
+#' @description Data frame with columns cd_office, tx_office, cd_office_county_grp,
+#' and tx_office_county_grp. Taken from SQL Server table of the same name.
+#' @docType data
+#' @name ref_lookup_office
+
+
+
+#' @title quickfacts (from US Census Bureau)
+#' @description Data frame characteristics of each county and of the state. \code{qf_dict} has
+#' the column keys.
+#' @docType data
+#' @name quickfacts
+
+
+
+#' @name qf_dict
+#' @title Key to \code{quickfacts}
+#' @description Verbose descriptions of \code{quickfacts} columns.
+#' @docType data
+

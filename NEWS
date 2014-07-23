@@ -1,0 +1,11 @@
+## Version 0.9
+
+Removed some dependencies (brew and plyr), added dplyr. Removed the `n()` function so that it
+won't conflict with `dplyr::n`, and removed `su()` shortcut for summary because even I wasn't using it.
+
+Added some nice utility functions, such as `fac.to.num`, which is a shortcut for `as.numeric(as.character())`,
+a binary operator `%coalesce%` to mimic that function from SQL Server, `%btwn%`, and prehaps most useful,
+a `theme_poc()` for ggplots and the `layOut` function (stolen from the `wq` package) for arranging multiple gggplots.
+
+The old version of `stored_procedure` is still included. When this is updated to work with the updated
+stored procedures, I will bump the version up to 1.0.

@@ -1,31 +1,25 @@
 Package: pocr
 Type: Package
 Title: Utility functions for POC.
-Version: 0.6
+Version: 0.9
 Date: 2013-02-11
 Author: Gregor Passolt <gregorp@uw.edu>
 Maintainer: Gregor Passolt <gregorp@uw.edu>
-Description: So far, this package includes official POC colors
-    and portal colors, some basic data function shortcuts
-    and a clean ggplot theme.
+Description: So far, this package includes official POC colors and portal
+    colors, some basic data function shortcuts, a POC theme and a "clean" theme
+    for ggplots, and it loads a lot of useful packages.
 Depends:
-    R (>= 2.14.0),
-    ggplot2 (>= 0.9.2),
+    R (>= 3.0),
+    ggplot2 (>= 1.0.0),
     RODBC,
-    reshape2,
-    plyr,
     stringr,
     scales,
     lubridate,
     RColorBrewer,
     gridExtra,
-    brew
+    dplyr,
+    extrafont
+Imports:
+    grid
 License: GPL
 LazyData: true
-Collate:
-    'poc.R'
-    'utility_functions.R'
-    'county_office.R'
-    'path_prep.R'
-    'report_plotting.R'
-    'sql_calls.R'

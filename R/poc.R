@@ -6,4 +6,3 @@
 #' 
 #' @docType package
 #' @name pocr
-NULL

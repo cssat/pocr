@@ -1,5 +1,7 @@
 #' Produces strings for stored procedure calls
 #' 
+#' NEEDS UPDATING
+#' 
 #' Every argument defaults to "0" for all. (Except date which defaults to "2008-01-01".)
 #' Arguments will be coerced to character, so plain sequences are fine.
 #' 

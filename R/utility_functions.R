@@ -1,7 +1,3 @@
-#' Shorthand for \code{summary()}
-#' @export
-su <- summary
-
 #' Shorthand for \code{head()}
 #' @export
 h <- head
@@ -20,7 +16,7 @@ samp <- function(x, n) {
 
 #' @rdname samp
 #' @method samp data.frame
-#' @S3method samp data.frame
+#' @export
 samp.data.frame <- function(x, n = 10) {
     if (n > nrow(x)) {
 	    warning("samp: object smaller than sample size, whole object returned.")
@@ -31,7 +27,7 @@ samp.data.frame <- function(x, n = 10) {
 
 #' @rdname samp
 #' @method samp matrix
-#' @S3method samp matrix
+#' @export
 samp.matrix <- function(x, n = 10) {
     if (n > nrow(x)) {
 	    warning("samp: object smaller than sample size, whole object returned.")
@@ -42,7 +38,7 @@ samp.matrix <- function(x, n = 10) {
 
 #' @rdname samp
 #' @method samp default
-#' @S3method samp default
+#' @export
 samp.default <- function(x, n = 10) {
     if (n > length(x)) {
 	    warning("samp: object smaller than sample size, whole object returned.")
@@ -55,9 +51,9 @@ samp.default <- function(x, n = 10) {
 #' 
 #' @param base_size defaults to 12, should be fine mostly
 #' @export
-theme_clean <- function(base_size=12) {
+theme_clean <- function(base_size=12, ...) {
     require(grid) 
-    theme_grey(base_size) %+replace%
+    theme_grey(base_size, ...) %+replace%
         theme(
             axis.title = element_blank(),
             axis.text = element_blank(),
