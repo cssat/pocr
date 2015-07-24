@@ -71,3 +71,8 @@ update_county_data <- function() {
 #' @description Verbose descriptions of \code{quickfacts} columns.
 #' @docType data
 
+
+
+#' Stored Procedure Names
+#' @description sp_names returns the nams of all stored procedures.
+#' @docType data

@@ -168,13 +168,13 @@ trend_plot3 <- function(trend_data,
             "ia" = {
                 stock_ylab <- paste0("Total Cases First Day")
                 if (is.na(title)) title <- "Trends in Investigations & Assessments"
-                levels(trend_data$geo) <- paste(levels(trend_data$geo), "DCFS Office")
+                levels(trend_data$geo) <- paste(levels(trend_data$geo), "County")
             },
             
             "ihs" = {
                 stock_ylab <- paste0("Total Cases First Day") 
                 if (is.na(title)) title <- "Trends in In-Home Service"
-                levels(trend_data$geo) <- paste(levels(trend_data$geo), "DCFS Office")
+                levels(trend_data$geo) <- paste(levels(trend_data$geo), "County")
             }  
     )
     
