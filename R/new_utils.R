@@ -136,7 +136,7 @@ break_setter = function(n = 5) {
 #' is \code{TRUE} and the labels on the right side are lengthy.
 #' @export
 theme_poc <- function(
-    font = c("Arial", "PT Sans", "Frutiger LT Std 45 Light"),
+    font = c("Frutiger LT Std 45 Light", "Arial", "PT Sans"),
     slant = FALSE,
     gridlines = TRUE,
     expand.margin = FALSE,
