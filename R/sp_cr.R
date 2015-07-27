@@ -27,7 +27,6 @@
 #' @return A call for stored procedures
 
 sp_cr <- function(sp = c("ia_trends_counts", "ia_trends_rates", "ia_safety",
-                         "ihs_trends_counts", "ihs_trends_rates", "ihs_safety",
                          "ooh_pit_counts", "ooh_pit_rates", "ooh_flow_entries_counts",
                          "ooh_flow_entries_rates", "ooh_flow_exits", "ooh_reentry",
                          "ooh_outcomes", "ooh_outcomes_12m", "ooh_outcomes_24m",
@@ -66,18 +65,13 @@ sp_cr <- function(sp = c("ia_trends_counts", "ia_trends_rates", "ia_safety",
     CALL <- mget(names(formals()), sys.frame(sys.nframe()))
     callArgs <- unlist(lapply(CALL, FUN= paste0, collapse = ","))
     argList <- list(ia = c("age", "ethnicity", "county", "reporter", "access", "allegation", "finding"),
-                    ihs = c("age", "ethnicity", "county", "IHS", "reporter", "access", "allegation", "finding", "service", "budget"),
                     ooh = c("age", "ethnicity", "gender", "intial_placement", "longest_placement", "county",
                             "length_of_stay", "number_of_placements", "IHS", "reporter", "access", "allegation",
-                            "finding", "service", "budget", "dependency"),
+                            "finding", "dependency"),
                     population = c("county", "year")
     )
     if (str_detect(sp, "^ia")){
         sector <- "ia" 
-    }
-    
-    if (str_detect(sp, "^ihs") | str_detect(sp, "^pps")){
-        sector <- "ihs"
     }
     
     if (str_detect(sp, "^ooh")){
@@ -90,7 +84,7 @@ sp_cr <- function(sp = c("ia_trends_counts", "ia_trends_rates", "ia_safety",
     
     sqlCall <- argList[[sector]]
     
-    if (str_detect(sp, "^ia_trends") | str_detect(sp, "^ihs_trends") | str_detect(sp, "^ooh_pit") | str_detect(sp, "^ooh_flow") | str_detect(sp, "ooh_wb_fam")){
+    if (str_detect(sp, "^ia_trends") | str_detect(sp, "^ooh_pit") | str_detect(sp, "^ooh_flow") | str_detect(sp, "ooh_wb_fam")){
         sqlCall <- c("date", sqlCall)
     }
     
@@ -174,7 +168,6 @@ cr_clean <- function(df, select = NULL, date = T,
 #' sp_names returns the nams of all stored procedures.
 
 sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
-              "ihs_trends_counts", "ihs_trends_rates", "ihs_safety",
               "ooh_pit_counts", "ooh_pit_rates", "ooh_flow_entries_counts",
               "ooh_flow_entries_rates", "ooh_flow_exits", "ooh_reentry",
               "ooh_outcomes", "ooh_outcomes_12m", "ooh_outcomes_24m",
