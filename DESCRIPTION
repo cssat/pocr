@@ -6,7 +6,7 @@ Authors@R: c(person("Gregor", "Passolt", role = c("aut", "cre"),
 			 person("Erik", "Oien", role = "ctb",
 					email = "oieeri26@uw.edu"),
 			 person("Brian", "Waismeyer", role = "ctb",
-					email = "bwaismeyer@gmail.com"
+					email = "bwaismeyer@gmail.com")
 			)
 Title: Utility Functions for POC
 Description: 
