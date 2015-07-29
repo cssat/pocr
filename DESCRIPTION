@@ -1,25 +1,33 @@
 Package: pocr
-Type: Package
-Title: Utility functions for POC.
-Version: 0.9
-Date: 2013-02-11
-Author: Gregor Passolt <gregorp@uw.edu>
-Maintainer: Gregor Passolt <gregorp@uw.edu>
-Description: So far, this package includes official POC colors and portal
-    colors, some basic data function shortcuts, a POC theme and a "clean" theme
-    for ggplots, and it loads a lot of useful packages.
+Version: 1.0
+Date: 2015-7-29
+Authors@R: c(person("Gregor", "Passolt", role = c("aut", "cre"),
+					email = "gregorp@uw.edu"),
+			 person("Erik", "Oien", role = "ctb",
+					email = "oieeri26@uw.edu"),
+			 person("Brian", "Waismeyer", role = "ctb",
+					email = "bwaismeyer@gmail.com"
+			)
+Title: Utility Functions for POC
+Description: 
+	This package collects a variety of functions and variables constructed
+	for use by POC staff work with POC data. It includes official POC and
+	portal colors, POC themes, functions for efficiently querying POC databases,
+	and more.
 Depends:
     R (>= 3.0),
     ggplot2 (>= 1.0.0),
-    RODBC,
+	dplyr
+Imports:
+	RODBC,
     stringr,
     scales,
     lubridate,
     RColorBrewer,
     gridExtra,
-    dplyr,
-    extrafont
-Imports:
+    extrafont,
     grid
-License: GPL
 LazyData: true
+License: GPL
+URL: https://github.com/pocdata/pocr
+BugReports: https://github.com/pocdata/pocr/issues
