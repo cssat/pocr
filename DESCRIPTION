@@ -1,6 +1,7 @@
 Package: pocr
 Version: 1.0
 Date: 2015-7-29
+Title: Utility Functions for POC
 Authors@R: c(person("Gregor", "Passolt", role = c("aut", "cre"),
 					email = "gregorp@uw.edu"),
 			 person("Erik", "Oien", role = "ctb",
@@ -8,7 +9,6 @@ Authors@R: c(person("Gregor", "Passolt", role = c("aut", "cre"),
 			 person("Brian", "Waismeyer", role = "ctb",
 					email = "bwaismeyer@gmail.com")
 			)
-Title: Utility Functions for POC
 Description: 
 	This package collects a variety of functions and variables constructed
 	for use by POC staff work with POC data. It includes official POC and
