@@ -28,6 +28,10 @@ Updated R scripts:
 - cleaned script formatting to adhere to a more consistent global style
   (PEP 0008 for Python: https://www.python.org/dev/peps/pep-0008/), though
   code elements were left alone
+  
+ Updated R data:
+ - added ref_lookup_county_region.rda, along with appropriate documentation in
+   data_docs.R
 
 ## Version 0.9
 
