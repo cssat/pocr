@@ -10,7 +10,7 @@
 sp_names
 }
 \description{
-sp_names returns the nams of all stored procedures.
+sp_names returns the names of all stored procedures.
 }
 \keyword{datasets}
 

@@ -18,7 +18,7 @@
 #   deprecation due to rename process to direct people back to the original name
 
 # EXAMPLE OF DEPRECATION DUE TO RENAME:
-# #' Deprecated. Use \code{new_version}.
+# Deprecated. Use \code{new_version}.
 # oldVersion <- function(...) {
 #     warning("
 #             'oldVersion is deprecated as of pocr VX.X and will be removed in 
@@ -30,9 +30,9 @@
 # }
 
 # EXAMPLE OF DEPRECATION DUE TO REMOVAL:
-# #' @title Likely to be removed in future versions. Avoid dependencies.
-# #'
-# #' current_function_documentation
+# @title Likely to be removed in future versions. Avoid dependencies.
+# 
+# current_function_documentation
 # function_to_remove <- function(args) {
 #     warning("
 #             'function_to_remove' is no longer supported as of pocr VX.X and
@@ -127,7 +127,7 @@ Mode <- function(x) {
 # remove - maybe not necessary; should get made a data object if want to keep
 #' Stored Procedure Names (may be removed - avoid dependencies)
 #' 
-#' sp_names returns the nams of all stored procedures.
+#' sp_names returns the names of all stored procedures.
 sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
               "ooh_pit_counts", "ooh_pit_rates", "ooh_flow_entries_counts",
               "ooh_flow_entries_rates", "ooh_flow_exits", "ooh_reentry",
@@ -135,13 +135,6 @@ sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
               "ooh_outcomes_3m", "ooh_wb_familysettings", "ooh_wb_siblings",
               "ooh_wb_siblings_pvt", "ooh_wb_siblings_uncensored", "population_household",
               "population_person")
-
-# remove (documentation for sp_names)
-#' Stored Procedure Names
-#' @description sp_names returns the nams of all stored procedures.
-#' @docType data
-#' @name Stored Procedure Names
-NULL
 
 # remove: outdated cr_clean
 #' Likely to be removed in future versions. Avoid dependencies.
@@ -185,6 +178,7 @@ portal_clean <- function(df, select = NULL, date = T) {
 
 # remove - unused
 #' Likely to be removed in future versions. Avoid dependencies.
+#' 
 #' Sets working directory to \code{"S:/Data Portal"}
 #' @export
 resetwd <- function() {
