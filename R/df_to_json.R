@@ -4,9 +4,10 @@
 #' was built off of. It seems to be sort of "row oriented", whereas \code{rjson::toJSON}
 #' is "column oriented".
 #' 
-#' @param df Data frame to convert.
-#' @param file name of file to save to.
-#' @param varname name of variable to assign to the JSON object.
+#' @param df data.frame to convert
+#' @param file name of file to save to
+#' @param varname name of variable to assign to the JSON object
+#' 
 #' @export
 df_to_json <- function(df, file, varname = "foods") {
     sink(file)

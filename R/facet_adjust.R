@@ -6,6 +6,7 @@
 #' \code{"down"} for all in one line across the bottom
 #' @param newpage draw new (empty) page first?
 #' @param vp viewport to draw plot in
+#' 
 #' @export
 facet_adjust <- function(x, pos = c("up", "down"), 
                          newpage = is.null(vp), vp = NULL)

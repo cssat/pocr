@@ -5,6 +5,26 @@ Updated DESCRIPTION:
 - expanded authorship field to include contributors
 - moved non-critical dependencies to imports
 - added relevant URLs
+- updated the language to more clearly/accurately describe pocr's current scope
+
+Updated R scripts:
+- deprecations identified and moved to deprecations.R with appropriate
+  notes and warnings - unless noted below, these were NOT yet removed from
+  the package (though renames have their calls passed to the renamed function)
+- deprecation process exceptions:
+    -- trend_plot and context_plot were completely replaced with updated 
+       versions, no intermediate steps
+    -- trend_plot2, trend_plot3, and trend_plot_state were removed from the
+       package, no intermediate steps
+    -- stored_procedure was updated with sp_cr code, sp_cr was deprecated as a
+       rename
+- roxygen2 data documentation definitions collected and moved to data_docs.R
+- infix functions collected and moved to custom_operators.R
+- all other functions moved to individual R scripts named after the function
+  (e.g., stored_procedure() now lives in stored_procedure.R)
+- various fixes and updates to function descriptions
+- cleaned script formatting to adhere to a more consistent global style
+  (PEP 0008 for Python: https://www.python.org/dev/peps/pep-0008/)
 
 ## Version 0.9
 

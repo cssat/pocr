@@ -1,11 +1,13 @@
-#' Clean up colnames from Portal, allow option to 
-#' select columns and to convert to \code{Date} class.
+#' Clean up colnames from Portal, allow option to select columns and to 
+#' convert to \code{Date} class.
+#' 
 #' @param df data.frame frame stored procedure
 #' @param select optional character vector of columns to keep
 #' @param date boolean indicating whether any \code{datetime} columns
 #' @param date.type 1 is quarter and 2 is year
-#' @param qrt.type
-#' should be coverted to \code{Date} classes (default is \code{T}).
+#' @param qrt.type should be converted to \code{Date} classes (default is 
+#' \code{T}).
+#' 
 #' @export
 cr_clean <- function(df, select = NULL, date = T,
                      date.type = 1, qry.type = "all.unique") {

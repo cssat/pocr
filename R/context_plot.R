@@ -1,6 +1,7 @@
 #' Creates dotplot with focus highlighted
 #' 
-#' Input context_data needs to have column 1 groups and column 2 data
+#' Input context_data needs to have column 1 groups and column 2 data.
+#' 
 #' @param context_data data.frame where first columns is a factor for
 #' y-axis and second is numeric for x-axis
 #' @param focus character corresponding to factor level(s) to highlight
@@ -9,7 +10,8 @@
 #' @param state_label character to match to highlight state
 #' @param colors colors for the manual color scale
 #' @param title_size relative size of the title
-#' @param font Character, name of font to use.
+#' @param font character, name of font to use
+#' 
 #' @export
 context_plot <-
     function (context_data, focus = "none", xlab, title = "", state_label = "Washington", 
