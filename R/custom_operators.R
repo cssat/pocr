@@ -9,11 +9,15 @@
 
 ###############################################################################
 
+#' coalesce operator
+#' 
 #' Fills in NAs in the first argument from the second
 #' 
 #' @export
 `%coalesce%` <- function(a, b) ifelse(is.na(a), b, a)
 
+#' btwn operator
+#' 
 #' Tests (element-wise) if the first argument falls within
 #' the range of the second.
 #' 
@@ -24,6 +28,8 @@
 #' @export
 `%btwn%` <- function(a, b) a >= min(b) & a <= max(b)
 
+#' not in operator
+#' 
 #' 'Not in' - the negation of `%in%`. Returns a vector of length equal to the 
 #' left hand side indicating TRUE for the LHS elements that are *not* in the 
 #' RHS (and FALSE otherwise). Alternative to the ugly '! vec1 %in% vec2'.

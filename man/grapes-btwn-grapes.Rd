@@ -2,8 +2,7 @@
 % Please edit documentation in R/custom_operators.R
 \name{\%btwn\%}
 \alias{\%btwn\%}
-\title{Tests (element-wise) if the first argument falls within
-the range of the second.}
+\title{btwn operator}
 \usage{
 a \%btwn\% b
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/custom_operators.R
 \name{\%coalesce\%}
 \alias{\%coalesce\%}
-\title{Fills in NAs in the first argument from the second}
+\title{coalesce operator}
 \usage{
 a \%coalesce\% b
 }
