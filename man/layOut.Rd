@@ -2,11 +2,11 @@
 % Please edit documentation in R/deprecations.R
 \name{layOut}
 \alias{layOut}
-\title{deprecated layOut}
+\title{Deprecated. Use \code{lay_out}.}
 \usage{
 layOut(...)
 }
 \description{
-deprecated layOut
+Deprecated. Use \code{lay_out}.
 }
 

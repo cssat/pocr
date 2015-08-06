@@ -2,11 +2,11 @@
 % Please edit documentation in R/deprecations.R
 \name{sp_cr}
 \alias{sp_cr}
-\title{deprecated sp_cr}
+\title{Deprecated. Use \code{stored_procedure}.}
 \usage{
 sp_cr(...)
 }
 \description{
-deprecated sp_cr
+Deprecated. Use \code{stored_procedure}.
 }
 

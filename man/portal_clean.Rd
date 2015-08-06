@@ -2,8 +2,7 @@
 % Please edit documentation in R/deprecations.R
 \name{portal_clean}
 \alias{portal_clean}
-\title{Clean up colnames from Portal, allow option to
-select columns and to convert to \code{Date} class.}
+\title{Likely to be removed in future versions. Avoid dependencies.}
 \usage{
 portal_clean(df, select = NULL, date = T)
 }
@@ -18,5 +17,8 @@ should be coverted to \code{Date} classes (default is \code{T}).}
 \description{
 Clean up colnames from Portal, allow option to
 select columns and to convert to \code{Date} class.
+}
+\details{
+You probably actually want \code{cr_clean}.
 }
 

@@ -2,11 +2,11 @@
 % Please edit documentation in R/deprecations.R
 \name{fac.to.num}
 \alias{fac.to.num}
-\title{deprecated fac.to.num}
+\title{Deprecated. Use \code{factor_to_number}.}
 \usage{
 fac.to.num(...)
 }
 \description{
-deprecated fac.to.num
+Deprecated. Use \code{factor_to_number}.
 }
 

@@ -18,6 +18,7 @@
 #   deprecation due to rename process to direct people back to the original name
 
 # EXAMPLE OF DEPRECATION DUE TO RENAME:
+# #' Deprecated. Use \code{new_version}.
 # oldVersion <- function(...) {
 #     warning("
 #             'oldVersion is deprecated as of pocr VX.X and will be removed in 
@@ -29,6 +30,9 @@
 # }
 
 # EXAMPLE OF DEPRECATION DUE TO REMOVAL:
+# #' @title Likely to be removed in future versions. Avoid dependencies.
+# #'
+# #' current_function_documentation
 # function_to_remove <- function(args) {
 #     warning("
 #             'function_to_remove' is no longer supported as of pocr VX.X and
@@ -53,7 +57,7 @@
 # as a rename
 
 # read.sql renamed to read_sql
-#' deprecated read.sql
+#' Deprecated. Use \code{read_sql}.
 read.sql <- function(...) { 
     warning("
             'read.sql' is deprecated as of pocr V1.0 and will be removed in
@@ -65,7 +69,7 @@ read.sql <- function(...) {
 }
 
 # fac.to.num renamed to factor_to_number
-#' deprecated fac.to.num
+#' Deprecated. Use \code{factor_to_number}.
 fac.to.num <- function(...) {
     warning("
             'fact.to.num' is deprecated as of pocr V1.0 and will be removed in
@@ -77,7 +81,7 @@ fac.to.num <- function(...) {
 }
 
 # layOut renamed to lay_out
-#' deprecated layOut
+#' Deprecated. Use \code{lay_out}.
 layOut <- function(...) {
     warning("
             'layOut' is deprecated as of pocr V1.0 and will be removed in
@@ -89,7 +93,7 @@ layOut <- function(...) {
 }
 
 # sp_cr renamed as stored_procedure
-#' deprecated sp_cr
+#' Deprecated. Use \code{stored_procedure}.
 sp_cr <- function(...) {
     warning("
             'sp_cr' is deprecated as of pocr V1.0 and will be removed in
@@ -101,9 +105,9 @@ sp_cr <- function(...) {
 }
 
 # remove - unused
-#' Mode of a vector
+#' Likely to be removed in future versions. Avoid dependencies.
 #' 
-#' Found on Stackoverflow.
+#' Mode of a vector. Found on Stackoverflow.
 #' 
 #' @param x Vector for which you want to know the mode.
 #' 
@@ -121,7 +125,7 @@ Mode <- function(x) {
 }
 
 # remove - maybe not necessary; should get made a data object if want to keep
-#' Stored Procedure Names
+#' Stored Procedure Names (may be removed - avoid dependencies)
 #' 
 #' sp_names returns the nams of all stored procedures.
 sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
@@ -140,8 +144,13 @@ sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
 NULL
 
 # remove: outdated cr_clean
+#' Likely to be removed in future versions. Avoid dependencies.
+#'
 #' Clean up colnames from Portal, allow option to 
 #' select columns and to convert to \code{Date} class.
+#' 
+#' You probably actually want \code{cr_clean}.
+#' 
 #' @param df data.frame frame stored procedure
 #' @param select optional character vector of columns to keep
 #' @param date boolean indicating whether any \code{datetime} columns
@@ -175,6 +184,7 @@ portal_clean <- function(df, select = NULL, date = T) {
 }
 
 # remove - unused
+#' Likely to be removed in future versions. Avoid dependencies.
 #' Sets working directory to \code{"S:/Data Portal"}
 #' @export
 resetwd <- function() {

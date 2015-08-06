@@ -2,11 +2,15 @@
 % Please edit documentation in R/deprecations.R
 \name{read.sql}
 \alias{read.sql}
-\title{deprecated read.sql}
+\title{Likely to be removed in future versions. Avoid dependencies.
+#
+#current_function_documentation
+Deprecated. Use \code{read_sql}.}
 \usage{
 read.sql(...)
 }
 \description{
-deprecated read.sql
+#Deprecated. Use \code{new_version}.
+#
 }
 

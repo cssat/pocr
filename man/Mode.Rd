@@ -2,7 +2,7 @@
 % Please edit documentation in R/deprecations.R
 \name{Mode}
 \alias{Mode}
-\title{Mode of a vector}
+\title{Likely to be removed in future versions. Avoid dependencies.}
 \usage{
 Mode(x)
 }
@@ -10,6 +10,6 @@ Mode(x)
 \item{x}{Vector for which you want to know the mode.}
 }
 \description{
-Found on Stackoverflow.
+Mode of a vector. Found on Stackoverflow.
 }
 

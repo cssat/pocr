@@ -2,11 +2,13 @@
 % Please edit documentation in R/deprecations.R
 \name{resetwd}
 \alias{resetwd}
-\title{Sets working directory to \code{"S:/Data Portal"}}
+\title{Likely to be removed in future versions. Avoid dependencies.
+Sets working directory to \code{"S:/Data Portal"}}
 \usage{
 resetwd()
 }
 \description{
+Likely to be removed in future versions. Avoid dependencies.
 Sets working directory to \code{"S:/Data Portal"}
 }
 
