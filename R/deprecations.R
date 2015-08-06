@@ -53,6 +53,7 @@
 # as a rename
 
 # read.sql renamed to read_sql
+#' deprecated read.sql
 read.sql <- function(...) { 
     warning("
             'read.sql' is deprecated as of pocr V1.0 and will be removed in
@@ -64,6 +65,7 @@ read.sql <- function(...) {
 }
 
 # fac.to.num renamed to factor_to_number
+#' deprecated fac.to.num
 fac.to.num <- function(...) {
     warning("
             'fact.to.num' is deprecated as of pocr V1.0 and will be removed in
@@ -75,6 +77,7 @@ fac.to.num <- function(...) {
 }
 
 # layOut renamed to lay_out
+#' deprecated layOut
 layOut <- function(...) {
     warning("
             'layOut' is deprecated as of pocr V1.0 and will be removed in
@@ -86,6 +89,7 @@ layOut <- function(...) {
 }
 
 # sp_cr renamed as stored_procedure
+#' deprecated sp_cr
 sp_cr <- function(...) {
     warning("
             'sp_cr' is deprecated as of pocr V1.0 and will be removed in
@@ -102,6 +106,7 @@ sp_cr <- function(...) {
 #' Found on Stackoverflow.
 #' 
 #' @param x Vector for which you want to know the mode.
+#' 
 #' @export
 Mode <- function(x) {
     warning("
@@ -131,6 +136,7 @@ sp_names <- c("ia_trends_counts", "ia_trends_rates", "ia_safety",
 #' Stored Procedure Names
 #' @description sp_names returns the nams of all stored procedures.
 #' @docType data
+#' @name Stored Procedure Names
 NULL
 
 # remove: outdated cr_clean

@@ -9,6 +9,7 @@
 #' A blank ggplot theme, borrowed from somebody on github
 #' 
 #' @param base_size defaults to 12, should be fine mostly
+#' 
 #' @export
 theme_clean <- function(base_size=12, ...) {
     require(grid) 
@@ -37,6 +38,7 @@ theme_clean <- function(base_size=12, ...) {
 #' @param gridlines boolean for whether there should be any gridlines (TRUE)
 #' @param expand.margin boolean for whether the right margin needs padding. Useful if \code{slant}
 #' is \code{TRUE} and the labels on the right side are lengthy.
+#' 
 #' @export
 theme_poc <- function(
     font = c("Arial", "PT Sans", "Frutiger LT Std 45 Light"),
@@ -56,8 +58,11 @@ theme_poc <- function(
               strip.background = element_rect(fill = poc_colors[1]),
               strip.text.x = element_text(colour = "white"),
               strip.text.x = element_text(colour = "white"))
-    if (slant) poc.theme <- poc.theme + theme(axis.text.x = element_text(angle = -25, hjust = 0))
-    if (expand.margin) poc.theme <- poc.theme + theme(plot.margin = unit(c(1, 1, 1, 1) * 5, "mm"))
-    if (!gridlines) poc.theme <- poc.theme + theme(panel.grid = element_blank())
+    if (slant) poc.theme <- 
+        poc.theme + theme(axis.text.x = element_text(angle = -25, hjust = 0))
+    if (expand.margin) poc.theme <- 
+        poc.theme + theme(plot.margin = unit(c(1, 1, 1, 1) * 5, "mm"))
+    if (!gridlines) poc.theme <- 
+        poc.theme + theme(panel.grid = element_blank())
     return(poc.theme)
 }

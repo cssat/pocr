@@ -5,6 +5,7 @@
 #' Found on StackOverflow, original author Tyler Rinker.
 #' 
 #' @param path Defaults to clipboard.
+#' 
 #' @export
 path_prep <- function(path = "clipboard") {
     y <- if (path == "clipboard") {

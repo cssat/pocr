@@ -18,13 +18,16 @@ Updated R scripts:
        package, no intermediate steps
     -- stored_procedure was updated with sp_cr code, sp_cr was deprecated as a
        rename
+- deprecations included a switch to standardized function casing - all objects
+  are now lower case, camel back (e.g., layOut -> lay_out)
 - roxygen2 data documentation definitions collected and moved to data_docs.R
 - infix functions collected and moved to custom_operators.R
 - all other functions moved to individual R scripts named after the function
   (e.g., stored_procedure() now lives in stored_procedure.R)
 - various fixes and updates to function descriptions
 - cleaned script formatting to adhere to a more consistent global style
-  (PEP 0008 for Python: https://www.python.org/dev/peps/pep-0008/)
+  (PEP 0008 for Python: https://www.python.org/dev/peps/pep-0008/), though
+  code elements were left alone
 
 ## Version 0.9
 

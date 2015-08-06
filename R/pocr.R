@@ -8,5 +8,6 @@
 #' See especially \code{\link{stored_procedure}}.
 #' 
 #' @docType package
+#' 
 #' @name pocr
 NULL

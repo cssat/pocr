@@ -33,7 +33,8 @@ facet_adjust <- function(x, pos = c("up", "down"),
         idx <- (space - ncol - n + 1):(space - ncol)
         # copying x-axis of the last existing panel to the chosen panels 
         # in the row above
-        gtable$grobs[paste0("axis_b",idx)] <- list(gtable$grobs[[paste0("axis_b",panels)]])
+        gtable$grobs[paste0("axis_b",idx)] <- 
+            list(gtable$grobs[[paste0("axis_b",panels)]])
         if(pos == "down"){
             # if pos == down then shifting labels down to the same level as 
             # the x-axis of last panel

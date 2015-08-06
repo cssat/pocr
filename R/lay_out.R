@@ -1,13 +1,15 @@
 #' Arranging ggplots
 #' 
-#' Provides a \code{layout}-like interface for arranging ggplots of different sizes.
+#' Provides a \code{layout}-like interface for arranging ggplots of different 
+#' sizes.
 #' 
-#' @param ... Each argument should be of the form \code{list(plot, rows, columns)},
-#' where \code{plot} is a ggplot (or similar), and \code{rows} and \code{columns}
-#' are consecutive sequences indicating the row and column numbers for \code{plot}
-#' to span.
+#' @param ... Each argument should be of the form \code{list(plot, rows, 
+#' columns)}, where \code{plot} is a ggplot (or similar), and \code{rows} and 
+#' \code{columns} are consecutive sequences indicating the row and column 
+#' numbers for \code{plot} to span.
 #' 
-#' @author Alan D. Jassby and James E. Cloern (originally from the \code{wq} package).
+#' @author Alan D. Jassby and James E. Cloern (originally from the \code{wq} 
+#' package).
 #' 
 #' @examples
 #' \dontrun{
@@ -16,6 +18,7 @@
 #'        list(gg, 3, 1:2),
 #'        list(gg, 3, 3))
 #' }
+#' 
 #' @export
 lay_out <- function(...) {
     

@@ -1,10 +1,14 @@
 #' Sample of an object.
 #' 
 #' Shortcut for checking on data.
+#' 
 #' @rdname samp
+#' 
 #' @param x data.frame (or matrix) to sample from
 #' @param n number of rows to sample (default is 10)
+#' 
 #' @return n random rows of x
+#' 
 #' @export
 samp <- function(x, n) {
     UseMethod("samp")
