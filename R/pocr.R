@@ -10,8 +10,6 @@
 #' 
 #' See especially \code{\link{stored_procedure}}.
 #' 
-#' @import ggplot2
-#' @import dplyr
 #' @import RODBC
 #' @import stringr
 #' @import scales
