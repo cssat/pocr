@@ -12,7 +12,6 @@
 #' 
 #' @export
 theme_clean <- function(base_size=12, ...) {
-    require(grid) 
     theme_grey(base_size, ...) %+replace%
         theme(
             axis.title = element_blank(),

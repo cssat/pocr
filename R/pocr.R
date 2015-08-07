@@ -1,5 +1,8 @@
-#' POC Utility Functions
+#' @name pocr
 #' 
+#' @title POC Data and Analysis Package
+#' 
+#' @description
 #' This package collects a variety of functions and variables constructed
 #' for use by POC staff work with POC data. It includes official POC and
 #' portal colors, POC themes, functions for efficiently querying POC databases,
@@ -7,7 +10,16 @@
 #' 
 #' See especially \code{\link{stored_procedure}}.
 #' 
-#' @docType package
+#' @import ggplot2
+#' @import dplyr
+#' @import RODBC
+#' @import stringr
+#' @import scales
+#' @import lubridate
+#' @import RColorBrewer
+#' @import gridExtra
+#' @import extrafont
+#' @import grid
 #' 
-#' @name pocr
+#' @docType package
 NULL

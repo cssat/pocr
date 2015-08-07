@@ -47,6 +47,8 @@
 
 ###############################################################################
 
+# V1.1: update_county_data() removed, no intermediate steps
+
 # V1.0: trend_plot and context_plot were completely replaced with updated 
 # versions, no intermediate steps
 

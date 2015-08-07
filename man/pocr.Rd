@@ -4,14 +4,13 @@
 \name{pocr}
 \alias{pocr}
 \alias{pocr-package}
-\title{POC Utility Functions}
+\title{POC Data and Analysis Package}
 \description{
 This package collects a variety of functions and variables constructed
 for use by POC staff work with POC data. It includes official POC and
 portal colors, POC themes, functions for efficiently querying POC databases,
 and more.
-}
-\details{
+
 See especially \code{\link{stored_procedure}}.
 }
 

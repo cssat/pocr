@@ -1,3 +1,14 @@
+## Version 1.1
+Updated DESCRIPTION:
+- updated package title
+- updated creator/maintainer name and expanded contributors
+
+Updated R scripts:
+- updated package documentation with new title and explicit imports
+- added test function (sp_test) for evaluating whether stored_procedure
+  produces functional strings on the local machine
+- update_county_data() removed (no deprecation)
+
 ## Version 1.0
 Updated DESCRIPTION:
 - updated format/contents to match current best practice 
