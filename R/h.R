@@ -1,6 +1,6 @@
 #' Shorthand for \code{head()}
 #' 
-#' @inheritParams head
+#' @param x The object to apply head to. S3 methods available.
 #' 
 #' @export
 h <- head

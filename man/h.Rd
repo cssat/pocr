@@ -6,6 +6,9 @@
 \usage{
 h(x, ...)
 }
+\arguments{
+\item{x}{The object to apply head to. S3 methods available.}
+}
 \description{
 Shorthand for \code{head()}
 }
