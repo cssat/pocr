@@ -9,6 +9,11 @@ Updated R scripts:
   produces functional strings on the local machine
 - update_county_data() removed (no deprecation)
 
+Update R data:
+- seperated joined data files (all data now has a matching .rda; e.g., 
+  poc_colors has poc_colors.rda)
+- dropped sp_names data object as it has an internal version already
+
 ## Version 1.0
 Updated DESCRIPTION:
 - updated format/contents to match current best practice 
