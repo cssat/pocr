@@ -12,7 +12,8 @@ Updated R scripts:
 Update R data:
 - seperated joined data files (all data now has a matching .rda; e.g., 
   poc_colors has poc_colors.rda)
-- dropped sp_names data object as it has an internal version already
+- dropped sp_names data object as it has an internal version that is slated
+  for deprecation
 
 ## Version 1.0
 Updated DESCRIPTION:
