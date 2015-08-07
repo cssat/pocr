@@ -4,9 +4,19 @@
 \name{ref_lookup_office}
 \alias{ref_lookup_office}
 \title{ref_lookup_office (from test_annie)}
+\format{\preformatted{'data.frame':	46 obs. of  4 variables:
+ $ cd_office           : int  -99 710 711 712 713 714 715 716 717 721 ...
+ $ tx_office           : chr  "Missing/Other" "Newport" "Wenatchee" "Moses Lake" ...
+ $ cd_office_county_grp: int  28 24 4 3 5 11 29 33 16 2 ...
+ $ tx_office_county_grp: chr  "State Level Location" "Newport (Pend Oreille Cnty)" "Wenatchee (Chelan & Douglas Cntys)" "Moses Lake (Grant & Adams Cntys)" ...
+}}
+\usage{
+ref_lookup_office
+}
 \description{
 Data frame with columns cd_office, tx_office,
 cd_office_county_grp, and tx_office_county_grp. Taken from SQL Server table
 of the same name.
 }
+\keyword{datasets}
 

@@ -12,26 +12,26 @@
 #' @title poc_colors
 #' @description Vector of 4 hex colors from POC theme.
 #' @docType data
-NULL
+"poc_colors"
 
 #' @name portal_colors
 #' @title portal_colors
 #' @description Vector of 12 hex colors used in the portal
 #' @docType data
-NULL
+"portal_colors"
 
 #' @name qf_dict
 #' @title Key to \code{quickfacts}
 #' @description Verbose descriptions of \code{quickfacts} columns.
 #' @docType data
-NULL
+"qf_dict"
 
 #' @name quickfacts
 #' @title quickfacts (from US Census Bureau)
 #' @description Data frame characteristics of each county and of the state. 
 #' \code{qf_dict} has the column keys.
 #' @docType data
-NULL
+"quickfacts"
 
 #' @name ref_lookup_county
 #' @title ref_lookup_county (from test_annie)
@@ -40,7 +40,7 @@ NULL
 #' name. I've ordered the entries so that row number corresponds to county_cd 
 #' for the actual counties 1:39.
 #' @docType data
-NULL
+"ref_lookup_county"
 
 #' @name ref_lookup_county_region
 #' @title ref_lookup_county_region (from test_annie)
@@ -50,7 +50,7 @@ NULL
 #' for the actual counties 1:39. Additionally, has columns for region, the
 #' most useful of which are probably region_6_cd, region_6_tx, and small_fl.
 #' @docType data
-NULL
+"ref_lookup_county_region"
 
 #' @name ref_lookup_office
 #' @title ref_lookup_office (from test_annie)
@@ -58,4 +58,4 @@ NULL
 #' cd_office_county_grp, and tx_office_county_grp. Taken from SQL Server table 
 #' of the same name.
 #' @docType data
-NULL
+"ref_lookup_office"

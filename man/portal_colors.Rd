@@ -4,7 +4,13 @@
 \name{portal_colors}
 \alias{portal_colors}
 \title{portal_colors}
+\format{\preformatted{ chr [1:12] "#D9BB32" "#6DB33F" "#6E9CAE" "#B1662B" "#5B8067" "#444D3E" "#994D3E" "#10475B" "#7D6E86" "#D47079" "#262F1D" ...
+}}
+\usage{
+portal_colors
+}
 \description{
 Vector of 12 hex colors used in the portal
 }
+\keyword{datasets}
 

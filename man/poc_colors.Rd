@@ -4,7 +4,13 @@
 \name{poc_colors}
 \alias{poc_colors}
 \title{poc_colors}
+\format{\preformatted{ chr [1:4] "#3B6E8F" "#A2B69A" "#A3DCE6" "#A784B4"
+}}
+\usage{
+poc_colors
+}
 \description{
 Vector of 4 hex colors from POC theme.
 }
+\keyword{datasets}
 
