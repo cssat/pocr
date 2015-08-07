@@ -12,7 +12,7 @@ stored_procedure(sp = c("ia_trends_counts", "ia_trends_rates", "ia_safety",
   "ooh_wb_siblings_uncensored", "population_household", "population_person"),
   db = c("mysql", "sqlserver", "poc", "test_annie"), date = 0, age = 0,
   ethnicity = 0, county = 0, IHS = 0, reporter = 0, access = 0,
-  allegation = 0, finding = 0, gender = 0, intial_placement = 0,
+  allegation = 0, finding = 0, gender = 0, initial_placement = 0,
   longest_placement = 0, length_of_stay = 0, number_of_placements = 0,
   dependency = 0, year = 0)
 }
@@ -44,6 +44,8 @@ suffix such as "counts").}
 
 \item{gender}{1 for Female, 2 for Male (0 for all).}
 
+\item{initial_placement}{Initial placement setting, see details.}
+
 \item{longest_placement}{longest placement setting, see details.}
 
 \item{length_of_stay}{LOS code, 0: all, 1: > 7 days, 2: > 60 days,
@@ -55,8 +57,6 @@ suffix such as "counts").}
 
 \item{year}{Shouldn't matter to the database, but you can specify if you'd
 like}
-
-\item{initial_placement}{Initial placement setting, see details.}
 }
 \description{
 Every argument defaults to "0" for all. (Except date which defaults to

@@ -6,6 +6,9 @@
 \usage{
 read.sql(...)
 }
+\arguments{
+\item{...}{All input passed to new function.}
+}
 \description{
 Deprecated. Use \code{read_sql}.
 }

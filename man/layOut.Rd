@@ -6,6 +6,9 @@
 \usage{
 layOut(...)
 }
+\arguments{
+\item{...}{All input passed to new function.}
+}
 \description{
 Deprecated. Use \code{lay_out}.
 }

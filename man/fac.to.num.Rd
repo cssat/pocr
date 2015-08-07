@@ -6,6 +6,9 @@
 \usage{
 fac.to.num(...)
 }
+\arguments{
+\item{...}{All input passed to new function.}
+}
 \description{
 Deprecated. Use \code{factor_to_number}.
 }

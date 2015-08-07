@@ -9,6 +9,7 @@
 #' A blank ggplot theme, borrowed from somebody on github
 #' 
 #' @param base_size defaults to 12, should be fine mostly
+#' @param ... additional arguments based to theme_gray
 #' 
 #' @export
 theme_clean <- function(base_size=12, ...) {
@@ -37,6 +38,7 @@ theme_clean <- function(base_size=12, ...) {
 #' @param gridlines boolean for whether there should be any gridlines (TRUE)
 #' @param expand.margin boolean for whether the right margin needs padding. Useful if \code{slant}
 #' is \code{TRUE} and the labels on the right side are lengthy.
+#' @param ... additional arguments passed to theme_bw
 #' 
 #' @export
 theme_poc <- function(

@@ -5,7 +5,7 @@
 #' @param select optional character vector of columns to keep
 #' @param date boolean indicating whether any \code{datetime} columns
 #' @param date.type 1 is quarter and 2 is year
-#' @param qrt.type should be converted to \code{Date} classes (default is 
+#' @param qry.type should be converted to \code{Date} classes (default is 
 #' \code{T}).
 #' 
 #' @export

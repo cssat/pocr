@@ -12,6 +12,8 @@ pretty_date(x, format = c("mdy", "dmy", "ymd"), abbreviate = FALSE, ...)
 \item{format}{character with "m", "d", and "y", in the order you want them.}
 
 \item{abbreviate}{boolean, whether to abbreviate the day.}
+
+\item{...}{additional arguments passed to format}
 }
 \description{
 Outputs a nice date for inline inclusion (wrapper for strftime)

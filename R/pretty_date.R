@@ -3,6 +3,7 @@
 #' @param x vector of POSIX objects (or something that can be coerced that way)
 #' @param format  character with "m", "d", and "y", in the order you want them.
 #' @param abbreviate boolean, whether to abbreviate the day.
+#' @param ... additional arguments passed to format
 #' 
 #' @export
 pretty_date <- function(x,

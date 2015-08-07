@@ -16,6 +16,8 @@ theme_poc(font = c("Arial", "PT Sans", "Frutiger LT Std 45 Light"),
 
 \item{expand.margin}{boolean for whether the right margin needs padding. Useful if \code{slant}
 is \code{TRUE} and the labels on the right side are lengthy.}
+
+\item{...}{additional arguments passed to theme_bw}
 }
 \description{
 Based off of \code{theme_bw}, this frames the plot in POC blue,

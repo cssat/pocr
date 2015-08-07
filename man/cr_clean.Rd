@@ -17,7 +17,7 @@ cr_clean(df, select = NULL, date = T, date.type = 1,
 
 \item{date.type}{1 is quarter and 2 is year}
 
-\item{qrt.type}{should be converted to \code{Date} classes (default is
+\item{qry.type}{should be converted to \code{Date} classes (default is
 \code{T}).}
 }
 \description{

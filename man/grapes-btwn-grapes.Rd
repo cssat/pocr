@@ -6,6 +6,11 @@
 \usage{
 a \%btwn\% b
 }
+\arguments{
+\item{a}{Sequence to test against min/max of b.}
+
+\item{b}{Sequence for which min/max will be determined and tested against.}
+}
 \description{
 Tests (element-wise) if the first argument falls within
 the range of the second.

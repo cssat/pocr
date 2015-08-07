@@ -6,6 +6,11 @@
 \usage{
 x \%nin\% table
 }
+\arguments{
+\item{x}{Sequence to test against table.}
+
+\item{table}{Sequence x is tested against.}
+}
 \description{
 'Not in' - the negation of `%in%`. Returns a vector of length equal to the
 left hand side indicating TRUE for the LHS elements that are *not* in the

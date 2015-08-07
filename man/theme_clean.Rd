@@ -8,6 +8,8 @@ theme_clean(base_size = 12, ...)
 }
 \arguments{
 \item{base_size}{defaults to 12, should be fine mostly}
+
+\item{...}{additional arguments based to theme_gray}
 }
 \description{
 A blank ggplot theme, borrowed from somebody on github

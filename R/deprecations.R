@@ -60,6 +60,8 @@
 
 # read.sql renamed to read_sql
 #' Deprecated. Use \code{read_sql}.
+#' 
+#' @param ... All input passed to new function.
 read.sql <- function(...) { 
     warning("
             'read.sql' is deprecated as of pocr V1.0 and will be removed in
@@ -72,6 +74,8 @@ read.sql <- function(...) {
 
 # fac.to.num renamed to factor_to_number
 #' Deprecated. Use \code{factor_to_number}.
+#' 
+#' @param ... All input passed to new function.
 fac.to.num <- function(...) {
     warning("
             'fact.to.num' is deprecated as of pocr V1.0 and will be removed in
@@ -84,6 +88,8 @@ fac.to.num <- function(...) {
 
 # layOut renamed to lay_out
 #' Deprecated. Use \code{lay_out}.
+#' 
+#' @param ... All input passed to new function.
 layOut <- function(...) {
     warning("
             'layOut' is deprecated as of pocr V1.0 and will be removed in
@@ -96,6 +102,8 @@ layOut <- function(...) {
 
 # sp_cr renamed as stored_procedure
 #' Deprecated. Use \code{stored_procedure}.
+#' 
+#' @param ... All input passed to new function.
 sp_cr <- function(...) {
     warning("
             'sp_cr' is deprecated as of pocr V1.0 and will be removed in

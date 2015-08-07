@@ -6,6 +6,11 @@
 \usage{
 a \%coalesce\% b
 }
+\arguments{
+\item{a}{object with NAs to fill}
+
+\item{b}{object with NA replacement material}
+}
 \description{
 Fills in NAs in the first argument from the second
 }

@@ -6,6 +6,9 @@
 \usage{
 sp_cr(...)
 }
+\arguments{
+\item{...}{All input passed to new function.}
+}
 \description{
 Deprecated. Use \code{stored_procedure}.
 }
