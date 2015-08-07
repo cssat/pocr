@@ -8,8 +8,14 @@
 
 ###############################################################################
 
+#' @title poc_colors
+#' @description Vector of 4 hex colors from POC theme.
+#' @docType data
+"poc_colors"
+
 #' @title portal_colors
 #' @description Vector of 12 hex colors used in the portal
+#' @docType data
 "portal_colors"
 
 #' @title Key to \code{quickfacts}
