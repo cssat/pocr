@@ -8,6 +8,7 @@ Updated R scripts:
 - added test function (sp_test) for evaluating whether stored_procedure
   produces functional strings on the local machine
 - update_county_data() removed (no deprecation)
+- function params reviewed for devtools::check() compliance
 
 Update R data:
 - seperated joined data files (all data now has a matching .rda; e.g., 

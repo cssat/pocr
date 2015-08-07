@@ -7,7 +7,9 @@
 h(x, ...)
 }
 \arguments{
-\item{x}{The object to apply head to. S3 methods available.}
+\item{x}{the object to apply head to}
+
+\item{...}{additional arguments to be passed the head helper functions}
 }
 \description{
 Shorthand for \code{head()}

@@ -19,6 +19,8 @@
 
 # EXAMPLE OF DEPRECATION DUE TO RENAME:
 # Deprecated. Use \code{new_version}.
+#
+# @param ... All input passed to new function.
 # oldVersion <- function(...) {
 #     warning("
 #             'oldVersion is deprecated as of pocr VX.X and will be removed in 
