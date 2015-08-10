@@ -4,21 +4,18 @@
 #' @description
 #' \code{stored_procedure} is the workhorse of \code{pocr}. However, the strings
 #' it produces are only useful if the local machine is correctly configured to 
-#' connect to the POC SQL server, the database(s) involved are up to date, and 
-#' the stored procedures call by the strings are valid.
+#' connect to a POC SQL server, the database(s) involved are up to date, and 
+#' if the stored procedures called by the strings are valid.
 #' 
 #' \code{sp_test} creates the SQL call strings for all available stored 
 #' procedures and tests the results of attempting to use each one to retrieve
-#' data from the POC SQL server.
+#' data from a specified POC SQL server.
 #' 
 #' This function allows you to quickly check if the strings produced by 
 #' \code{stored_procedure} can be used to get valid results on the local 
 #' machine.
 #' 
-#' The function will attempt to capture any errors and direct the user to their
-#' likely cause(s).
-#' 
-#' This error detection is limited. The function will test if:
+#' More specifically, the function will let you determine if:
 #' \itemize{
 #'   \item The provided POC SQL server connection works for accessing the
 #'   needed database(s) and table(s).
@@ -28,9 +25,9 @@
 #' @param connection An RODBC connection or a character vector that can be
 #' passed to \code{odbcConnect} to create an RODBC connection appropriate for 
 #' your local machine and the server you want to test.
-#' @param target_server POC has two different repositories you may want to 
-#' test against, test-annie (uses MySQL) and poc (uses SQL server). You need
-#' to specify which to test against: 'test_annie' or 'mysql' (equivalent), 
+#' @param target_server POC has a few different servers you may want to 
+#' test against, test-annie (use MySQL) and poc (uses SQL server). You 
+#' need to specify which to test against: 'test_annie' or 'mysql' (equivalent), 
 #' 'poc' or 'sqlserver' (equivalent).
 #' 
 #' @return
@@ -52,6 +49,11 @@
 #' stored procedure call. This is useful for investigating stored procedures 
 #' that were problematic and for manual inspection of stored procedure results 
 #' in general.
+#' 
+#' @note 
+#' \code{sp_test} is configured to use its own print method. By default, 
+#' printing the results of \code(sp_test) will only return the summary object
+#' ($sp_summary). 
 #' 
 #' @export
 sp_test <- function(connection, target_server = "test_annie") {
