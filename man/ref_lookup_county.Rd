@@ -4,19 +4,10 @@
 \name{ref_lookup_county}
 \alias{ref_lookup_county}
 \title{ref_lookup_county (from test_annie)}
-\format{\preformatted{'data.frame':	40 obs. of  3 variables:
- $ county_cd: int  1 2 3 4 5 6 7 8 9 10 ...
- $ county   : chr  "Adams" "Asotin" "Benton" "Chelan" ...
- $ region_cd: int  1 1 1 1 3 3 1 3 1 1 ...
-}}
-\usage{
-ref_lookup_county
-}
 \description{
 Data frame with columns for the county_cd, the text county
 and the regional code cd_region. Taken from SQL Server table of the same
 name. I've ordered the entries so that row number corresponds to county_cd
 for the actual counties 1:39.
 }
-\keyword{datasets}
 

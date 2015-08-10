@@ -4,18 +4,6 @@
 \name{ref_lookup_county_region}
 \alias{ref_lookup_county_region}
 \title{ref_lookup_county_region (from test_annie)}
-\format{\preformatted{'data.frame':	40 obs. of  7 variables:
- $ county_cd    : int  1 2 3 4 5 6 7 8 9 10 ...
- $ county       : chr  "Adams" "Asotin" "Benton" "Chelan" ...
- $ region_cd    : int  1 1 1 1 3 3 1 3 1 1 ...
- $ old_region_cd: int  1 1 2 1 6 6 2 6 1 1 ...
- $ region_6_cd  : int  1 1 2 1 6 6 2 6 1 1 ...
- $ region_6_tx  : chr  "Region 1 North" "Region 1 North" "Region 1 South" "Region 1 North" ...
- $ small_fl     : int  1 0 0 0 0 0 1 0 0 1 ...
-}}
-\usage{
-ref_lookup_county_region
-}
 \description{
 Data frame with columns for the county_cd, the text county
 and the regional code cd_region. Taken from SQL Server table of the same
@@ -23,5 +11,4 @@ name. I've ordered the entries so that row number corresponds to county_cd
 for the actual counties 1:39. Additionally, has columns for region, the
 most useful of which are probably region_6_cd, region_6_tx, and small_fl.
 }
-\keyword{datasets}
 

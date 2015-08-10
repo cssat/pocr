@@ -4,16 +4,7 @@
 \name{qf_dict}
 \alias{qf_dict}
 \title{Key to \code{quickfacts}}
-\format{\preformatted{'data.frame':	18 obs. of  3 variables:
- $ Data_Item       : chr  "PST045212" "PST120212" "AGE135211" "AGE295211" ...
- $ Item_Description: chr  "Total population (2012)" "Percent change in population (2010 to 2012)" "Population under 5 years" "Population under 18 years" ...
- $ Unit            : chr  "ABS" "PCT" "PCT" "PCT" ...
-}}
-\usage{
-qf_dict
-}
 \description{
 Verbose descriptions of \code{quickfacts} columns.
 }
-\keyword{datasets}
 

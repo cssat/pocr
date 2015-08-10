@@ -38,19 +38,20 @@
 #' the function is running through. If the function completes without any
 #' connection or package errors, it returns a list with three pieces. 
 #' 
-#' The first piece is a character vector ($call_summary) summarizing the fate of 
+#' The first piece is a data frame ($sp_summary) summarizing the fate of 
 #' each stored procedure call to the target server. This provides a quick
-#' summary of whether stored procedures succeeded or had an identifiable
-#' issue.
+#' summary of whether each stored procedure returned a data frame and states
+#' the number of columns and rows in the return.
 #' 
-#' The second is a character vector ($call_strings) of the strings prepared
-#' by the stored_procedure function. This is useful for checking that valid
-#' strings were prepared and seeing exactly what was passed to the server.
+#' The second is a data frame ($sp_strings) of the stored procedure names and 
+#' the strings prepared for each by the stored_procedure function. This is 
+#' useful for checking that valid strings were prepared and for seeing exactly 
+#' what was passed to the server.
 #' 
-#' The third is a list ($call_details) of the data returned by each stored 
-#' procedure call. This is useful for investigating stored procedures that
-#' were problematic or for manual inspection of stored procedure results in
-#' general.
+#' The third is a named list ($sp_details) of the data returned by each 
+#' stored procedure call. This is useful for investigating stored procedures 
+#' that were problematic and for manual inspection of stored procedure results 
+#' in general.
 #' 
 #' @export
 sp_test <- function(connection, target_server = "test_annie") {
@@ -109,15 +110,17 @@ sp_test <- function(connection, target_server = "test_annie") {
     # 0s)
     message("Creating a vector with all basic stored procedure strings...")
     
-    call_strings <- unlist(lapply(sp_names, 
-                                  function(x) stored_procedure(x, 
-                                                               target_server)))
+    sp_strings <- unlist(lapply(sp_names, 
+                                function(x) pocr::stored_procedure(x, 
+                                                                   target_server)))
     message("Success. \n")
     
     # run each stored procedure call with the given RODBC connection and collect
     # the results
-    call_details <- lapply(call_strings, 
-                            function(x) sqlQuery(connection, x))
+    message("Attempting to run each stored procedure against target server...")
+    sp_details <- lapply(sp_strings, 
+                         function(x) sqlQuery(connection, x))
+    message("Success. \n")
     
     # if the connection was created by the function (because the user passed
     # a character string), we close the connection for tidy practice
@@ -127,14 +130,44 @@ sp_test <- function(connection, target_server = "test_annie") {
         message("Success. \n")
     }
     
-    # assess the call details to assess for success or identifiable errors
-    
-    
-    # gather and return the key test materials
-    message("Gathering test results...")
-    test_results <- list("call_strings" = call_strings, 
-                         "call_details" = call_details)
+    # assess the call details to assess if the returned items are data frames
+    # and try to count their rows and columns
+    message("Checking and summarizing stored procedure results...")
+    sp_returns_df <- lapply(sp_details, is.data.frame)
+    num_col <- lapply(sp_details, ncol)
+    num_row <- lapply(sp_details, nrow)
+    sp_summary <- data.frame(cbind(sp_names,
+                                   sp_returns_df,
+                                   num_col,
+                                   num_row))
     message("Success. \n")
     
+    # format the strings and details for easy navigation between the
+    # various test objects
+    sp_strings <- data.frame(cbind(sp_names,
+                                   sp_strings))
+    names(sp_details) <- sp_names
+    
+    # gather the key test materials
+    message("Gathering test results...")
+    test_results <- list("sp_summary" = sp_summary,
+                         "sp_strings" = sp_strings, 
+                         "sp_details" = sp_details)
+    message("Success. \n")
+    
+    # assign the results the sp_results class so they print nicely
+    class(test_results) <- "sp_results"
+    
     return(test_results)
+}
+
+#' Print method for sp_test.
+#' 
+#' Simple method to insure that the result turned by sp_test only prints out
+#' the concise summary by default. Not exported.
+#' 
+#' @param x Object to print (inherited from print).
+#' @param ... Additional arguments to pass to print.
+print.sp_results = function(x, ...) {
+    print(x$sp_summary)
 }

@@ -4,12 +4,37 @@
 \alias{sp_test}
 \title{Tests \code{stored_procedure} functionality on the local machine.}
 \usage{
-sp_test(connection)
+sp_test(connection, target_server = "test_annie")
 }
 \arguments{
 \item{connection}{An RODBC connection or a character vector that can be
 passed to \code{odbcConnect} to create an RODBC connection appropriate for
-your local machine.}
+your local machine and the server you want to test.}
+
+\item{target_server}{POC has two different repositories you may want to
+test against, test-annie (uses MySQL) and poc (uses SQL server). You need
+to specify which to test against: 'test_annie' or 'mysql' (equivalent),
+'poc' or 'sqlserver' (equivalent).}
+}
+\value{
+When run, the function sends messages to the console describing the phases
+the function is running through. If the function completes without any
+connection or package errors, it returns a list with three pieces.
+
+The first piece is a data frame ($sp_summary) summarizing the fate of
+each stored procedure call to the target server. This provides a quick
+summary of whether each stored procedure returned a data frame and states
+the number of columns and rows in the return.
+
+The second is a data frame ($sp_strings) of the stored procedure names and
+the strings prepared for each by the stored_procedure function. This is
+useful for checking that valid strings were prepared and for seeing exactly
+what was passed to the server.
+
+The third is a named list ($sp_details) of the data returned by each
+stored procedure call. This is useful for investigating stored procedures
+that were problematic and for manual inspection of stored procedure results
+in general.
 }
 \description{
 \code{stored_procedure} is the workhorse of \code{pocr}. However, the strings
