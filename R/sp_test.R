@@ -29,6 +29,8 @@
 #' test against, test-annie (use MySQL) and poc (uses SQL server). You 
 #' need to specify which to test against: 'test_annie' or 'mysql' (equivalent), 
 #' 'poc' or 'sqlserver' (equivalent).
+#' @param close_connection Boolean specifying if the provided or created
+#' connection should be closed by the sp_test function. Defaults to \code{TRUE}.
 #' 
 #' @return
 #' When run, the function sends messages to the console describing the phases
@@ -52,48 +54,29 @@
 #' 
 #' @note 
 #' \code{sp_test} is configured to use its own print method. By default, 
-#' printing the results of \code(sp_test) will only return the summary object
+#' printing the results of \code{sp_test} will only return the summary object
 #' ($sp_summary). 
 #' 
 #' @export
-sp_test <- function(connection, target_server = "test_annie") {
-    # test if user provided valid input for the 'connection' parameter
-    message("Testing if 'connection' input valid...")
-    
-    if(missing(connection)) {
-        stop("'connection' must be specified")
-    }
-    if(class(connection) != "RODBC" && class(connection) != "character") {
-        stop(paste0("'connection' must be an open RODBC connection or a ",
-                    "character vector naming a connection to use"))
-    }
-    message("Success. \n")
-    
+sp_test <- function(connection, target_server = "test_annie",
+                    close_connection = TRUE) {
     # test if user provided valid input for the 'target_server" parameter
-    message("Testing if 'target_server' input valid...")
+    message("Testing if 'target_server' input is valid...")
     if(target_server %in% eval(formals(pocr::stored_procedure)$db)) {
         message("Success. \n")
     } else {
         stop("'target_server' must name a valid POC server - see ?sp_test")
     }
     
-    # if a character vector has been provided, attempt to create the RODBC
-    # connection object
-    if(class(connection) == "character") {
-        message(sprintf(paste0("Creating RODBC connection from character ",
-                               "vector '%s'..."), connection))
-        
-        try(test_connection <- odbcConnect(connection), silent = TRUE)
-        
-        # assess if any connection was made from the character vector - if
-        # successful, replace 'connection' with the RODBC object
-        if(class(test_connection) != "RODBC") {
-            stop(sprintf(paste0("RODBC connectioned failed for the provided ",
-                                "character vector, '%s'"), connection))
-        } else {
-            connection <- test_connection
-            message("Success. \n")
-        }
+    # test if user provided valid input for the 'connection' parameter and
+    # make the connection if character vector provided
+    message("Testing if 'connection' input is valid...")
+    conn_result <- pocr::validate_RODBC_input(connection)
+    if(conn_result$test_result) {
+        validated_conn <- conn_result$connection
+        message(conn_result$test_message)
+    } else {
+        stop(conn_result$test_message)
     }
     
     # attempt to get the current collection of stored procedures from the 
@@ -121,15 +104,13 @@ sp_test <- function(connection, target_server = "test_annie") {
     # the results
     message("Attempting to run each stored procedure against target server...")
     sp_details <- lapply(sp_strings, 
-                         function(x) sqlQuery(connection, x))
+                         function(x) sqlQuery(validated_conn, x))
     message("Success. \n")
     
-    # if the connection was created by the function (because the user passed
-    # a character string), we close the connection for tidy practice
-    if(exists("test_connection")) {
-        message("Closing function-created RODBC connection...")
-        close(connection)
-        message("Success. \n")
+    # here is where we tidy up any open connections unless the user specifies
+    # explicitly otherwise
+    if(close_connection) {
+        odbcClose(validated_conn)
     }
     
     # assess the call details to assess if the returned items are data frames

@@ -1,3 +1,12 @@
+## Version 1.2
+Updated R scripts:
+- corrected data documentation formatting
+- refactored RODBC input validation in the sp_test function for use in
+  additional places
+- added new update_data_portal_apps() wrapper function and started populating
+  pocr with functions to support data portal applications (currently just
+  county dashboards supported)
+
 ## Version 1.1
 Updated DESCRIPTION:
 - updated package title

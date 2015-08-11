@@ -4,7 +4,7 @@
 \alias{sp_test}
 \title{Tests \code{stored_procedure} functionality on the local machine.}
 \usage{
-sp_test(connection, target_server = "test_annie")
+sp_test(connection, target_server = "test_annie", close_connection = TRUE)
 }
 \arguments{
 \item{connection}{An RODBC connection or a character vector that can be
@@ -15,6 +15,9 @@ your local machine and the server you want to test.}
 test against, test-annie (use MySQL) and poc (uses SQL server). You
 need to specify which to test against: 'test_annie' or 'mysql' (equivalent),
 'poc' or 'sqlserver' (equivalent).}
+
+\item{close_connection}{Boolean specifying if the provided or created
+connection should be closed by the sp_test function. Defaults to \code{TRUE}.}
 }
 \value{
 When run, the function sends messages to the console describing the phases
@@ -59,7 +62,7 @@ More specifically, the function will let you determine if:
 }
 \note{
 \code{sp_test} is configured to use its own print method. By default,
-printing the results of \code(sp_test) will only return the summary object
+printing the results of \code{sp_test} will only return the summary object
 ($sp_summary).
 }
 
