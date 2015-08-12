@@ -29,6 +29,7 @@ Imports:
     gridExtra,
     extrafont,
     grid
+    openxlsx
 LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr
