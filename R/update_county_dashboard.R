@@ -1,0 +1,49 @@
+#' Update the data for the County Dashboard application.
+#' 
+#' @description 
+#' This is a helper function that pulls together the data needed by the
+#' County Dashboard application (https://github.com/pocdata/county_dashboard),
+#' formats the data as needed, and then pushes the formatted data to the
+#' application GitHub repo.
+#' 
+#' Two collections of data are produced and pushed by the function:
+#' * data to support the trends over time (aka - the sparklines)
+#' * data to support summary descriptive statistics (aka - the fast facts)
+#' 
+#' These collections are then split into county and region variants, along with
+#' some crucial context and titling information for each variant. The final
+#' data results are:
+#' * data_region.json   # region sparklines/fast facts data
+#' * titles_region.json # region titling and sparklines/fast facts context
+#' * data_county.json   # county sparklines/fast facts data
+#' * titles_county.json # county titling and sparklines/fast facts context
+#' 
+#' Data sources:
+#' * annie  variety of stored procedure calls
+#' * POC    dbo.ref_lookup_county_region
+#' * POC    dbo.ref_lookup_census_population
+#' * POC    public_data.unemployment
+#' * POC    public_data.hs_graduation
+#' * POC    public_data.free_lunch_county
+#'
+#' @param annie_connection Active RODBC connection the annie MySQL server. No
+#' testing done to insure valid connection - should be handled external to this
+#' function.
+#' @param poc_connection Active RODBC connection the POC SQL server. No
+#' testing done to insure valid connection - should be handled external to this
+#' function.
+#'
+#' @return
+#' Function attempts to verify if the update succeeds but failure is not
+#' terminal to avoid interrupting the update collection.
+#'
+#' Returns a simple list. If all update steps seem succesful, first element
+#' is TRUE and second element is character string "Success."
+#'
+#' If any update steps seem to fail, first element is FALSE and second element
+#' is a character vector of detected issues.
+#'
+#' @export
+update_county_dashboard <- function(annie_connection, poc_connection) {
+    
+}

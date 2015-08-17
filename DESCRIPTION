@@ -28,7 +28,7 @@ Imports:
     RColorBrewer,
     gridExtra,
     extrafont,
-    grid
+    grid,
     openxlsx
 LazyData: true
 License: GPL
