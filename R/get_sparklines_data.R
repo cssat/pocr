@@ -1,19 +1,31 @@
-#' Helper function to get and clean County Dashboard trends data.
+#' Helper function to get and clean County Dashboard "sparklines" data.
 #' 
 #' @description 
-#' This function gets the data needed for the County Dashboard trends (aka -
-#' the sparklines) and handles cleaning and preparation of the data.
+#' This function gathers the base data needed for the County Dashboard trend 
+#' plots (aka - the sparklines) and handles initial cleaning and preparation
+#' of this data. 
+#' 
+#' Once finished, the sparklines data - along with the fast facts data
+#' gathered by \code{get_fast_facts_data()} - is handed off to 
+#' \code{finalize_dashboard_data()} to put it in the final format needed
+#' for app consumption.
 #' 
 #' @param annie_connection Active RODBC connection to one of the annie MySQL
 #' servers.
+#' @param year_start Optional. Can specify the start year as a character
+#' vector. If NA, the data sources will be assessed for a smallest minimum.
+#' @param year_end Optional. Can specify the end year as a character vector.
+#' If NA, the data sources will be assessed for a largest maximum.
 #' 
 #' @return
-#' Return a single data frame with the base sparklines data. However, further 
-#' work needs to be done with this data before it is ready for County
-#' Dashboard consumption. This is handled by \code{update_county_dashbaord()}.
+#' Returns a list with three data frames - county, region, and state - needed
+#' to support the different trend line views. These data frames need further
+#' processing prior to app consumption.
 #' 
 #' @export
-get_sparklines_data <- function(annie_connection) {
+get_sparklines_data <- function(annie_connection, 
+                                year_start = NA, 
+                                year_end = NA) {
     # first we need to get a variety of data from the annie MySQL server -
     # this is accomplished using pocr::stored_procedure()
     
@@ -26,7 +38,8 @@ get_sparklines_data <- function(annie_connection) {
                            stored_procedure(sp = sp_name,
                                             db = "mysql",
                                             county = c(0:39),
-                                            ...)
+                                            ...),
+                           stringsAsFactors = FALSE
         )
         # correct the variable names
         names(target) <- tolower(make.names(names(target)))
@@ -35,46 +48,51 @@ get_sparklines_data <- function(annie_connection) {
         return(target)
     }
     
-    # perform the needed stored procedure calls to get the base material
-    # need to build the county and region trends data
+    # fetch and clean the basic data that will need to be combined
+    # to make the county, region, and state data
     entry_counts <- query_wrapper(sp_name = "ooh_flow_entries_counts")
     entry_counts <- entry_counts %>% 
         filter(date_type == 2 & qry_type_poc1 == 2) %>%
         mutate(month = as.Date(cohort.period)) %>%
-        select(entry.cnt = number.of.entries, month, county_cd)
+        mutate(year = year(month)) %>%
+        select(entry.cnt = number.of.entries, year, county_cd)
     
     entry_rates <- query_wrapper(sp_name = "ooh_flow_entries_rates")
     entry_rates <- entry_rates %>% 
         filter(date_type == 2 & qry_type_poc1 == 2) %>%
         mutate(month = as.Date(cohort.period)) %>%
-        select(entry.rate = rate.of.entries, month, county_cd)
+        mutate(year = year(month)) %>%
+        select(entry.rate = rate.of.entries, year, county_cd)
     
     entry_0_to_4 <- query_wrapper(sp_name = "ooh_flow_entries_counts",
                                   age = 1)
     entry_0_to_4 <- entry_0_to_4 %>% 
         filter(date_type == 2 & qry_type_poc1 == 2) %>%
         mutate(month = as.Date(cohort.period)) %>%
-        select(entry.cnt.04 = number.of.entries, month, county_cd)
+        mutate(year = year(month)) %>%
+        select(entry.cnt.04 = number.of.entries, year, county_cd)
     
     entry_depend <- query_wrapper(sp_name = "ooh_flow_entries_counts",
                                   dependency = 2)
     entry_depend <- entry_depend %>% 
         filter(date_type == 2 & qry_type_poc1 == 2) %>%
         mutate(month = as.Date(cohort.period)) %>%
-        select(entry.cnt.dep = number.of.entries, month, county_cd)
+        mutate(year = year(month)) %>%
+        select(entry.cnt.dep = number.of.entries, year, county_cd)
     
     placement_kin <- query_wrapper("ooh_wb_familysettings")
     placement_kin <- placement_kin %>% 
         filter(qry_type_poc1_first_all == 2) %>%
         mutate(month = as.Date(date)) %>%
-        select(pit.kin = family.setting..kin.placement., month, county_cd) %>%
-        mutate(year = as.integer(lubridate::year(month)))
+        mutate(year = year(month)) %>%
+        select(pit.kin = family.setting..kin.placement., year, county_cd)
     
     placement_counts <- query_wrapper("ooh_pit_counts")
     placement_counts <- placement_counts %>% 
         filter(date_type == 1 & qry_type_first_all == 2) %>%
         mutate(month = as.Date(date)) %>%
-        select(pit.count = total.in.out.of.home.care.1st.day, month, county_cd)
+        mutate(year = year(month)) %>%
+        select(pit.count = total.in.out.of.home.care.1st.day, year, county_cd)
     
     placement_sibling <- query_wrapper("ooh_wb_siblings_uncensored")
     placement_sibling <- placement_sibling %>% 
@@ -87,17 +105,40 @@ get_sparklines_data <- function(annie_connection) {
                year,
                county_cd)
     
-    # build the base object
+    # determine the time span the aggregated data will cover - if not explicitly
+    # specified, this simply detects the largest min and smallest max from
+    # across the data sources
+    
+    # define the collection of data objects (supports detecting year mins/maxes)
+    data_collection <- list(entry_counts,
+                            entry_rates,
+                            entry_0_to_4,
+                            entry_depend,
+                            placement_kin,
+                            placement_counts,
+                            placement_sibling)
+    
+    # check if year_start defined
+    if(is.na(year_start)) {
+        # get the minimum year observed across all the data, use it as the start
+        year_mins <- sapply(data_collection, function(x) min(x$year))
+        year_start <- min(year_mins)
+    }
+    
+    # check if year end defined
+    if(is.na(year_end)) {
+        # get the maximum year observed across all the data, use it as the end
+        year_maxes <- sapply(data_collection, function(x) max(x$year))
+        year_end <- max(year_maxes)
+    }
+    
+    # build the base object with respect to the defined time range
     trends_base <- expand.grid(county_cd = 0:39,
-                               month = seq.Date(as.Date("2000-01-01"), 
-                                                as.Date("2014-01-01"),
-                                                by = "year"))
+                               year = seq(year_start, year_end))
     
     # join the collected data to this object (plus ref_lookup_county_region,
     # built-in pocr data)
     trends <- trends_base %>%
-        mutate(year = ifelse(lubridate::month(month) == 1, 
-                             as.integer(lubridate::year(month)), NA)) %>%
         left_join(entry_counts) %>%
         left_join(entry_rates) %>%
         left_join(entry_0_to_4) %>%
@@ -136,16 +177,16 @@ get_sparklines_data <- function(annie_connection) {
         ungroup() %>%
         filter(!is.na(year)) %>%
         mutate(agg.ent.dep = ifelse(year < 2003, NA, agg.ent.dep)) %>%
-        select(county, month, 
+        select(county, year, 
                agg.ent.rate, agg.ent.04, agg.ent.dep, agg.kin, agg.sibs)
     
-    names(trends_county)[3:7] <- paste0("trend_", 0:4)
+    names(trends_county) <- c("id", "time", paste0("trend_", 0:4))
     
     # clean the data for regions
     trends_region <- trends %>% 
         mutate(region_6_tx = as.character(region_6_tx)) %>%
         filter(county_cd > 0) %>%
-        group_by(region_6_tx, month) %>%
+        group_by(region_6_tx, year) %>%
         summarize(agg.ent.rate = weighted.mean(x = entry.rate, 
                                                w = entry.cnt, 
                                                na.rm = T),
@@ -159,9 +200,9 @@ get_sparklines_data <- function(annie_connection) {
                   agg.sibs     = pmin(weighted.mean(pit.sib.pct, 
                                                     w = n.sibs, 
                                                     na.rm = T), 1)) %>%
-        select(region_6_tx, month,
+        select(region_6_tx, year,
                agg.ent.rate, agg.ent.04, agg.ent.dep, agg.kin, agg.sibs) %>%
-        mutate(agg.ent.dep = ifelse(lubridate::year(month) < 2003, 
+        mutate(agg.ent.dep = ifelse(year < 2003, 
                                     NA, 
                                     agg.ent.dep))
     
@@ -169,7 +210,7 @@ get_sparklines_data <- function(annie_connection) {
     
     # clean the data for state
     trends_state <- trends %>% filter(county_cd == 0) %>%
-        group_by(month) %>%
+        group_by(year) %>%
         summarize(agg.ent.rate = weighted.mean(x = entry.rate, 
                                                w = entry.cnt, 
                                                na.rm = T),
@@ -184,14 +225,43 @@ get_sparklines_data <- function(annie_connection) {
                                                     w = n.sibs, 
                                                     na.rm = T), 1)) %>%
         mutate(region_6_tx = "Washington") %>%
-        select(region_6_tx, month,
+        select(region_6_tx, year,
                agg.ent.rate, agg.ent.04, agg.ent.dep, agg.kin, agg.sibs) %>%
-        mutate(agg.ent.dep = ifelse(lubridate::year(month) < 2003, 
+        mutate(agg.ent.dep = ifelse(year < 2003, 
                                     NA, 
                                     agg.ent.dep))
     
     names(trends_state) <- c("id", "time", paste0("trend_", 0:4))
     
-    # collect and return the cleaned county, region, and state data
+    # collect the county, region, and state data and make sure any non-values
+    # (e.g., NA, NaN, Inf, etc.) are treated as NA
+    cleaned_data <- list("county" = trends_county,
+                         "region" = trends_region,
+                         "state" = trends_state)
     
+    # quick helper function to clean a single df
+    replace_inf_nan <- function(df) {
+        # for each column...
+        for(i in 1:ncol(df)) {
+            # ID which rows in the column are Inf or NaN...
+            # (uses sapply due to limitations with is.infinite and data.frames)
+            replace_index <- sapply(df[, i], 
+                                    function(x) is.infinite(x) | is.na(x))
+            # and replace them with NA
+            df[, i][replace_index] <- NA
+        }
+        
+        return(df)
+    }
+    
+    # clean all the data frames with our Inf/NaN replacer
+    cleaned_data <- lapply(cleaned_data, 
+                           function(x) {
+                               x <- replace_inf_nan(x)
+                               return(x)
+                           }
+    )
+    
+    # return the cleaned data
+    return(cleaned_data)
 }
