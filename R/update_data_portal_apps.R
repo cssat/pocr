@@ -35,10 +35,10 @@
 #' NULL.
 #' @param annie_connection An active RODBC connection to the "test_annie" MySQL
 #' server or a character string that can be passed to 
-#' \code{RODBC:odbcConnect()} to create an active RODBC connection to that 
+#' \code{RODBC::odbcConnect()} to create an active RODBC connection to that 
 #' server.
 #' @param poc_connection An active RODBC connection to the "POC" SQL server
-#' or a character string that can be passed to \code{RODBC:odbcConnect()} to 
+#' or a character string that can be passed to \code{RODBC::odbcConnect()} to 
 #' create an active RODBC connection to that server.
 #' @param review_mode A boolean that allows you to inspect the data for a
 #' given update request. If TRUE, all data is returned in a structured list

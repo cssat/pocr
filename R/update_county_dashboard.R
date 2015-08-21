@@ -45,5 +45,10 @@
 #'
 #' @export
 update_county_dashboard <- function(annie_connection, poc_connection) {
+    # get the base data needed for the sparklines
+    spark_base <- get_sparklines_data(annie_connection)
+    
+    # get the base data needed for the fast facts
+    fact_base <- get_fast_facts(poc_connection)
     
 }

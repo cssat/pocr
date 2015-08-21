@@ -2,21 +2,33 @@
 % Please edit documentation in R/get_sparklines_data.R
 \name{get_sparklines_data}
 \alias{get_sparklines_data}
-\title{Helper function to get and clean County Dashboard trends data.}
+\title{Helper function to get and clean County Dashboard "sparklines" data.}
 \usage{
-get_sparklines_data(annie_connection)
+get_sparklines_data(annie_connection, year_start = NA, year_end = NA)
 }
 \arguments{
 \item{annie_connection}{Active RODBC connection to one of the annie MySQL
 servers.}
+
+\item{year_start}{Optional. Can specify the start year as a character
+vector. If NA, the data sources will be assessed for a smallest minimum.}
+
+\item{year_end}{Optional. Can specify the end year as a character vector.
+If NA, the data sources will be assessed for a largest maximum.}
 }
 \value{
-Return a single data frame with the base sparklines data. However, further
-work needs to be done with this data before it is ready for County
-Dashboard consumption. This is handled by \code{update_county_dashbaord()}.
+Returns a list with three data frames - county, region, and state - needed
+to support the different trend line views. These data frames need further
+processing prior to app consumption.
 }
 \description{
-This function gets the data needed for the County Dashboard trends (aka -
-the sparklines) and handles cleaning and preparation of the data.
+This function gathers the base data needed for the County Dashboard trend
+plots (aka - the sparklines) and handles initial cleaning and preparation
+of this data.
+
+Once finished, the sparklines data - along with the fast facts data
+gathered by \code{get_fast_facts_data()} - is handed off to
+\code{finalize_dashboard_data()} to put it in the final format needed
+for app consumption.
 }
 
