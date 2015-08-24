@@ -6,6 +6,7 @@ Updated R scripts:
 - added new update_data_portal_apps() wrapper function and started populating
   pocr with functions to support data portal applications (currently just
   county dashboards supported)
+- added a function to update OFM data
 
 ## Version 1.1
 Updated DESCRIPTION:

@@ -9,7 +9,9 @@ Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),
 			 person("Brian", "Waismeyer", role = "ctb",
 					email = "bwaismeyer@gmail.com"),
 			 person("Joe", "Mienko", role = "ctb",
-			        email = "mienkoja@uw.edu")
+			        email = "mienkoja@uw.edu"),
+                         person("Mark", "Bennett", role = "ctb",
+                                email = "mbennett718@gmail.com")
 			)
 Description: 
 	This package collects a variety of functions and variables constructed
@@ -29,7 +31,9 @@ Imports:
     gridExtra,
     extrafont,
     grid,
-    openxlsx
+    openxlsx,
+    readxl,
+    reshape2
 LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr

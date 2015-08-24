@@ -4,7 +4,7 @@
 \name{sp_names}
 \alias{sp_names}
 \title{Stored Procedure Names (may be removed - avoid dependencies)}
-\format{\preformatted{ chr [1:19] "ia_trends_counts" "ia_trends_rates" "ia_safety" "ooh_pit_counts" "ooh_pit_rates" "ooh_flow_entries_counts" ...
+\format{\preformatted{ chr [1:19] "ia_trends_counts" "ia_trends_rates" "ia_safety" ...
 }}
 \usage{
 sp_names
