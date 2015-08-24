@@ -49,7 +49,8 @@ get_sparklines_data <- function(annie_connection,
     }
     
     # fetch and clean the basic data that will need to be combined
-    # to make the county, region, and state data
+    # to make the county, region, and state data;
+    # data is from the first day of each year (e.g., 2000-01-01)
     entry_counts <- query_wrapper(sp_name = "ooh_flow_entries_counts")
     entry_counts <- entry_counts %>% 
         filter(date_type == 2 & qry_type_poc1 == 2) %>%
@@ -90,8 +91,10 @@ get_sparklines_data <- function(annie_connection,
     placement_counts <- query_wrapper("ooh_pit_counts")
     placement_counts <- placement_counts %>% 
         filter(date_type == 1 & qry_type_first_all == 2) %>%
-        mutate(month = as.Date(date)) %>%
-        mutate(year = year(month)) %>%
+        mutate(date = as.Date(date)) %>%
+        mutate(month = month(date)) %>%
+        mutate(year = year(date)) %>%
+        filter(month == 1) %>%
         select(pit.count = total.in.out.of.home.care.1st.day, year, county_cd)
     
     placement_sibling <- query_wrapper("ooh_wb_siblings_uncensored")

@@ -6,19 +6,24 @@
 #' formats the data as needed, and then pushes the formatted data to the
 #' application GitHub repo.
 #' 
-#' Two collections of data are produced and pushed by the function:
+#' Two collections of data are produced by \code{get_sparklines_data()} and
+#' \code{get_fast_facts_data()}:
 #' * data to support the trends over time (aka - the sparklines)
 #' * data to support summary descriptive statistics (aka - the fast facts)
 #' 
-#' These collections are then split into county and region variants, along with
-#' some crucial context and titling information for each variant. The final
-#' data results are:
-#' * data_region.json   # region sparklines/fast facts data
-#' * titles_region.json # region titling and sparklines/fast facts context
-#' * data_county.json   # county sparklines/fast facts data
-#' * titles_county.json # county titling and sparklines/fast facts context
+#' These collections are then split into county, region, and state variants, 
+#' along with some crucial context and titling information for each variant,
+#' by \code{format_dashboard_data()}.
+#'
+#' The final data results are:
+#' * data_county.json   # sparklines/fast facts data
+#' * titles_county.json # titling and sparklines/fast facts context
+#' * data_region.json   
+#' * titles_region.json 
+#' * data_state.json
+#' * titles_state.json
 #' 
-#' Data sources:
+#' Data sources used in the above process:
 #' * annie  variety of stored procedure calls
 #' * POC    dbo.ref_lookup_county_region
 #' * POC    dbo.ref_lookup_census_population

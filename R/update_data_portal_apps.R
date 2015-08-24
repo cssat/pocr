@@ -50,5 +50,28 @@ update_data_portal_apps <- function(target_apps = "all",
                                     annie_connection = "annie",
                                     poc_connection = "POC",
                                     review_mode = FALSE) {
+    # create/verify the MySQL connection (annie/test_annie)
+    message("Validating the MySQL (annie) connection...")
+    annie_test <- validate_RODBC_input(annie_connection)
     
+    if(annie_test$test_result) {
+        annie_connection <- annie_test$connection
+        message(annie_test$test_message)
+    } else {
+        stop(annie_connection$test_message)
+    }
+    
+    # create/verify that SQL Server connection (poc)
+    message("Validating the SQL Server (poc) connection...")
+    poc_test <- validate_RODBC_input(poc_connection)
+    
+    if(poc_test$test_result) {
+        poc_connection <- poc_test$connection
+        message(poc_test$test_message)
+    } else {
+        stop(poc_connection$test_message)
+    }
+    
+    return(list("poc" = poc_connection,
+                "annie" = annie_connection))
 }
