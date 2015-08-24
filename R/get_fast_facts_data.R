@@ -161,6 +161,14 @@ get_fast_facts <- function(poc_connection) {
     
     cleaned_data <- lapply(cleaned_data, make_numeric)
     
+    # also correct the variable names from "pop_0" to "population_0" etc.
+    cleaned_data <- lapply(cleaned_data,
+           function(x) {
+               names(x) <- c("id", paste0("population_", 0:4))
+               return(x)
+           }
+    )
+    
     # return the cleaned data
     return(cleaned_data)
 }

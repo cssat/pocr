@@ -42,8 +42,10 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     # arbitrarily extract from the "state" dataframe
     year_limits <- range(spark_base$state$time)
     
-    # define the names and titles that the context and content values will need
-    # to be distributed to
+    # define the groups and measures that the context and content values will 
+    # need to be distributed to; also define the value type we are expecting 
+    # (how the values should be treated by the D3 app itself, f = float, 
+    # p = percent, s = string)
     group <- c(rep("foster_care_trend", 5), 
                rep("population_fast_fact", 5))
     code_name <- c(paste0("trend_", 0:4), 
@@ -58,12 +60,95 @@ finish_dashboard_data <- function(spark_base, fact_base) {
                      "Unemployment",
                      "H.S. Grad Rate",
                      "Free/Reduced Lunch")
+    value_format <- c("f", "p", "p", "p", "p",
+                      "s", "p", "p", "p", "p")
     
     # gather the names and titles into a dataframe to make them easy to 
     # work with and clean up the building blocks
-    titles <- data.frame(group, code_name, pretty_name, 
+    titles <- data.frame(group, code_name, pretty_name, value_format,
                          stringsAsFactors = FALSE)
-    rm(group, code_name, pretty_name)
+    rm(group, code_name, pretty_name, value_format)
 
+    # for the context data, we need to add the following to our base "titles"
+    # object: global_min, global_max, current_min, current_max (global is 
+    # across all years for which a measure has data, current is for the latest 
+    # year for which a measure has data)
     
+    # for the content data, we need just global_min and global_max (here, 
+    # global is across all counties rather than all years)
+    
+    # we prepare a helper function to handle the key work of getting
+    # mins and maxes for each measure
+    get_min_max <- function(titles, spark_base, fact_base, geo_target) {
+        # define the variables we want to fill with mins and maxes ('current'
+        # only applies to sparklines measures - fast fact measures will
+        # be assigned NA for both current_min and current_max)
+        global_min <- c()
+        global_max <- c()
+        current_min <- c()
+        current_max <- c()
+        
+        # for each of the passed code names...
+        for(i in titles$code_name) {
+            # check if it is a sparkline name - if yes, use the spark_base
+            # data and flag to also get current_min/current_max
+            if(grepl("trend", i)) {
+                target_base <- spark_base[[geo_target]]
+                get_current <- TRUE
+            # otherwise it is a fast fact name - use the fact_base data
+            # and don't try to get a current_min/current_max
+            } else {
+                target_base <- fact_base[[geo_target]]
+                get_current <- FALSE
+            }
+            
+            # get the global_min and global_max for the target column (the 
+            # column with the same name as the current code_name)
+            match_index <- which(names(target_base) == i)
+            match_col <- target_base[, match_index]
+            min_max <- range(match_col, na.rm = TRUE)
+            
+            # update our global_min and global_max collections with the values
+            global_min <- c(global_min, min_max[1])
+            global_max <- c(global_max, min_max[2])
+            
+            # if a sparklines measure (i.e., starts with "trend"), we also
+            # want to get the current_min and current_max (i.e., the min and 
+            # max for the most recent year with data)
+            if(get_current) {
+                # get the subset of the target dataframe which has non-NA values
+                # for the target column
+                data_index <- which(!is.na(target[, i]))
+                target_base <- target_base[data_index, ]
+                
+                # get the latest year for the subset database (aka - the latest
+                # year for which we have data in the target column)
+                latest_year <- max(target_base$time)
+                
+                # subset again to get only data for the latest year with data
+                latest_index <- which(target_base$time == latest_year)
+                target_base <- target_base[latest_index, ]
+                
+                # get the range again for our target variable
+                match_col <- target_base[, match_index]
+                current_min_max <- range(match_col, na.rm = TRUE)
+            # a fast fact measure, we just pass NA for the current_min and 
+            # current_max
+            } else {
+                current_min_max <- c(NA, NA)
+            }
+            
+            # update our current_min and current_max collections
+            current_min <- c(current_min, current_min_max[1])
+            current_max <- c(current_max, current_min_max[2])
+        }
+        
+        # gather the results into a single dataframe and return it
+        globals <- data.frame(global_min, global_max, current_min, current_max)
+        
+        return(globals)
+    }
+    
+    # we identify the geographic regions we'll need to loop over to get our
+    # target data
 }
