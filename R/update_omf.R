@@ -6,23 +6,42 @@
 #' SQL server database. It then drops and recreates the tables with the cleaned 
 #' data.
 #' 
-#' HOW IT WORKS
 #' 
-#' We first download the data from the source. We then use a helper function
-#' to import the data as a list of dataframes, one for each xlsx file.
-#' We then filter out irrelevant rows and columns. Since some columns of
-#' the xlsx file represent values, we melt. Moreover, the values of the column
-#' take on values for two separate variables. Thus we mutate to split the 
-#' columns. Once the tidying of the data is done, we create another data frame 
-#' which initially takes on race-based totals. These totals are used to compute
-#' the calculated other count which is given by:
+#' After downloading the data from the source, the data is imported as a list of
+#' dataframes, one for each xlsx file. The columns of each dataframe are given
+#' names. We then filter out irrelevant columns, such as area_id and any gender
+#' total counts. Each data frame needs to be filtered in a unique way.
 #' 
-#' others = total - hispanic - black - white
+#'  -The total population counts dataframe (total) must include all counts, 
+#'  except the actuall totals. Raced based totals are kept, for the construction 
+#'  of the dataframe for others ethnic backgrounds.
+#'  
+#'  -The hispanic population count dataframe (hispanic) must include only the 
+#'  totals.
+#'  
+#'  -The non-hispanic population count dataframe (non_hispanic) must 
+#'  include only black and white counts.
+#'  
+#'  Construction of the other dataframe: The count for other ethnic background
+#'  (others) is necessary. To construct the dataframe, out all but the 
+#'  race-based totals from total are filtered. The counts are derived by 
+#'  observing that
+#'  
+#'  others count = total count - hispanic count - non_hipanic black 
+#'                 - non_hispanic white counts
 #' 
-#' We then combine all of the tables and then create rows for 2015. 2015 data
-#' will be replicated from the 2014 data.
+#' The dataframes are not tidy: column headers contain the variables race and
+#' gender. Hence, the dataframes are melted with colvars: county, age and 
+#' measurement_year (year). Then the new column is mutated into two seperate 
+#' columns: race and gender. An additional column is added for source_census.
 #' 
-#' Once we have 2014 data 
+#' All data frames are filtered row-wise to remove irrelevant age groups and
+#' totals.
+#' 
+#' Data is now tidy at this point, but data formating begins. The counts are 
+#' rounded and values are replaced by reference codes. Once formating is 
+#' finished, rows corresponding to 2015 are created by using data from 2014.
+#' 
 #'
 #' @param poc_connection Need to provide an active RODBC connection to the
 #' POC SQL server.
@@ -35,7 +54,8 @@
 #'
 #' @export
 update_ofm <- function(poc_connection, 
-                       start_year = 2000, end_year = 2014) {
+                       start_year = 2000,
+                       end_year = 2014) {
     # create year collection
     years <- as.character(start_year:end_year)
     
@@ -57,17 +77,20 @@ update_ofm <- function(poc_connection,
     )
     
     # get the raw data from the xlsx files - this requires reading
-    # multiple sheets from each file; import_xlsx returns a list of
-    # dataframes (each sheet becoming a dataframe)
-    ofm_collection <- lapply(ofm_file_names, 
-                             function(x) {
-                                 import_xlsx(x,
-                                             years,
-                                             col_sheets = TRUE,
-                                             col_names = FALSE,
-                                             # first rows are junk
-                                             skip = 4)
-                             }
+    # multiple sheets from each file; returns a list of dataframes 
+    ofm_collection <- lapply(ofm_file_names, function(x) {
+        returned_list <- vector("list" , length(years))
+        names(returned_list) <- years
+        for(i in 1:length(years)){
+            returned_list[[ i ]] <- as.data.frame(
+                read_excel( 
+                x, sheet = years[ i ], 
+                col_names = FALSE,
+                skip = 4))
+        returned_list[[ i ]]$sheetName = years[ i ]
+            }
+        return(returned_list)     
+        }
     )
     
     # clean out the downloaded files
@@ -75,7 +98,6 @@ update_ofm <- function(poc_connection,
     
     # we want to bind the dataframes in the list together
     ofm_collection <- lapply(ofm_collection, function(x) do.call(rbind, x))
-    
  
     #All of the df's have the same sort of columns. We use the symbols
     #below for column names. A_ID is Area_id. The column names that
@@ -93,11 +115,12 @@ update_ofm <- function(poc_connection,
                    "N_T" , "N_M" , "N_F" , "A_T" , "A_M" , "A_F",
                    "P_T" ,"P_M" , "P_F" ,"M_T" , "M_M" , "M_F","Year")
     
-    
     #set col names
     ofm_collection <- lapply(ofm_collection, function(x){
-        colnames(x) <-   col_names
-        return(x)}) 
+        colnames(x) <- col_names
+        return(x)
+        }
+    ) 
     
     #We need to manipulate the df's individually, since we need 
     #different things from each.
@@ -117,14 +140,13 @@ update_ofm <- function(poc_connection,
     #melt all of the dfs because race/gender are values
     # NOTE: age_group
     # MAY NEED TO BE CHANGED SO THAT IT MATCHES REFERENCE TABLES
-    ofm_collection <- lapply(ofm_collection, function(x){
-        
+    ofm_collection <- lapply(ofm_collection, function(x){  
         x <- melt(x, id = c("county", "age_group", "Year"), 
                   variable = "column",
                   value.name = "Estimated_Pop")
-        
         return(x)
-        })
+        }
+    )
     
     #mutate to split columns since race and gender share only one column
     #we also create a new column for source census
@@ -134,18 +156,17 @@ update_ofm <- function(poc_connection,
         x <- mutate(x, gender = substring(column,3),
                     race_group = substring(column,1,1),
                     source_census = Year)
-        
         return(x)
-        }) 
+        }
+    ) 
     
     #filter out rows that are irrelevant
-    ofm_collection <- lapply(ofm_collection,   function(x){
-        
+    ofm_collection <- lapply(ofm_collection, function(x){
         x <- filter(x, county != "Washington State", 
                     age_group %in% c("0-4", "5-9", "10-14", "15", "16", "17"))
-        
         return(x)
-    })
+        }
+    )
     
     #begin creating the other df (the reason we needed totals previously).
     #We take the rows that are counts of race totals from the total df.
@@ -157,13 +178,15 @@ update_ofm <- function(poc_connection,
                                   mutate(race_group="OEB")%>%
                                   select(-column)
     
-    #We need to refilter each table separately 
+    #We need to refilter and format each table separately 
     #No longer need totals
     ofm_collection[[1]] <- filter(ofm_collection[[1]], race_group!="T")%>%
                                   select(-column)
+    
     #Change the race from total to hispanic
     ofm_collection[[2]] <- mutate(ofm_collection[[2]], race_group="H")%>%
                                   select(-column)
+    
     #We need to differentiate between non-hisp 
     #black/white and totals df black/white
     ofm_collection[[3]] <- filter(ofm_collection[[3]],
@@ -174,40 +197,37 @@ update_ofm <- function(poc_connection,
 
     #round populations as is done in the the excel files
     ofm_collection <- lapply(ofm_collection, function(x){
-        
         x$Estimated_Pop <-as.integer(round(x$Estimated_Pop))
-        
         return(x)
-        })
+        }
+    )
     
     #join on county, race, age, sex
     ofm_collection <- lapply(ofm_collection, function(x){
-        
         x <- inner_join(x,ref_lookup_county, by="county")%>%
-             inner_join(ref_lookup_race, by="race_group")%>%
-             inner_join(ref_lookup_age, x, by="age_group")%>%
-             inner_join(ref_lookup_gender, x, by="gender")%>%
-             select(-county, -region_cd, -race_group, 
-                    -race, -age_group, -gender)
-        
+                inner_join(ref_lookup_race, by="race_group")%>%
+                    inner_join(ref_lookup_age, x, by="age_group")%>%
+                        inner_join(ref_lookup_gender, x, by="gender")%>%
+                            select(-county, -region_cd, -race_group, 
+                                   -race, -age_group, -gender)
         return(x)
-        })
- 
-    
+        }
+    )
+   
     #age groups are ready to be boiled down to 4
     ofm_collection <- lapply(ofm_collection, function(x){
-        
         x <- ungroup(group_by(x, county_cd, age_grouping_cd, Year,
                               pk_gndr, cd_race, source_census)%>%
                          summarize(Estimated_Pop = sum(Estimated_Pop)))
-    })
+        }
+    )
     
     #arrange dfs 
     ofm_collection <- lapply(ofm_collection, function(x){
-        
         x <- x[c("source_census", "county_cd", "pk_gndr", "cd_race", 
                  "age_grouping_cd", "Year", "Estimated_Pop")]
-    })
+        }
+    )
     
     #we need these to compute the calculated other count
     #12 is nonhispanic black and 11 is nonhispanic white
@@ -229,7 +249,7 @@ update_ofm <- function(poc_connection,
                                     by = c("source_census", "county_cd", 
                                            "pk_gndr", "age_grouping_cd", 
                                            "Year"))%>%
-                           left_join(tempW, 
+                            left_join(tempW, 
                                     by = c("source_census", "county_cd",
                                            "pk_gndr", "age_grouping_cd",
                                            "Year"))%>%
@@ -239,7 +259,7 @@ update_ofm <- function(poc_connection,
                                           "Year"))
     
     #Create a new column that has the calulated other count
-    #count = total-black-white-hispanic
+    #count = total - black - white - hispanic
     ofm_collection[[4]] <- mutate(ofm_collection[[4]], 
                                   Pop = Estimated_Pop
                                   -popH
@@ -255,10 +275,7 @@ update_ofm <- function(poc_connection,
                                   source_census, county_cd,
                                   pk_gndr, cd_race, 
                                   age_grouping_cd, Year, Estimated_Pop)
-    
-    #clear up space by remioving temp files
-    rm(tempH, tempW, tempB)
-    
+
     #Begin creating the actuall output
     ofm_collection[[5]] <- rbind(ofm_collection[[1]], ofm_collection[[2]],
                                  ofm_collection[[3]], ofm_collection[[4]])
@@ -274,26 +291,14 @@ update_ofm <- function(poc_connection,
     temp_2014$Year <- 2015
     ofm_collection[[5]] <- rbind(ofm_collection[[5]], temp_2014)
     
+    #clear up space by removing temp files
+    rm(tempH, tempW, tempB, temp_2014)
+    
     #give formal names
     colnames(ofm_collection[[5]]) <-c("source_census", "county_cd",
                                       "pk_gndr", "cd_race", "age_grouping_cd",
                                       "measurement_year", "pop_cnt")
     
-    
+    #the end result
     return(ofm_collection[[5]])
-}
-import_xlsx <- function( fileName , sheetNames = c( "" ), col_sheets = TRUE,
-                         ... ){
-    
-    returnedDatalist <- vector("list" , length( sheetNames ))
-    
-    names( returnedDatalist ) <- sheetNames
-    
-    for(i in 1 : length( sheetNames ) ){
-        returnedDatalist[[ i ]] <- as.data.frame( 
-            read_excel( fileName , sheet = sheetNames[ i ], 
-                        ... ) )
-        if(col_sheets == TRUE) returnedDatalist[[ i ]]$sheetName = sheetNames[i]
-    }
-    return( returnedDatalist )
 }
