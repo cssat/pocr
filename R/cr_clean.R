@@ -20,6 +20,7 @@ cr_clean <- function(df, select = NULL, date = T,
     names(df) <- str_replace_all(names(df), pattern="\\)", replacement = "")
     
     qry.row.keep <- rep(TRUE, nrow(df))
+    date.row.keep <- rep(TRUE, nrow(df))
     
     if (any(str_detect(names(df), "qry\\.type"))) {
         qry.type.col <- names(df)[str_detect(names(df), "qry\\.type")]
