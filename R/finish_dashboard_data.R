@@ -36,12 +36,14 @@
 #' 
 #' @export
 finish_dashboard_data <- function(spark_base, fact_base) {
-    # year_limits: extract the earliest and latest year from spark_base
+    # OUTPUT PART 1 OF 3: year_limits
+    # extract the earliest and latest year from spark_base
     # to determine the start/end of the sparklines time axis;
     # the year range is the same for county, region, and state so we just
     # arbitrarily extract from the "state" dataframe
     year_limits <- range(spark_base$state$time)
     
+    # OUTPUT PART 2 OF 3: context_collection
     # define the groups and measures that the context and content values will 
     # need to be distributed to; also define the value type we are expecting 
     # (how the values should be treated by the D3 app itself, f = float, 
@@ -68,13 +70,16 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     titles <- data.frame(group, code_name, pretty_name, value_format,
                          stringsAsFactors = FALSE)
     rm(group, code_name, pretty_name, value_format)
+    
+    # also make a code_name ~ pretty_name reference table for later use
+    code_ref <- select(titles, code_name, pretty_name)
 
-    # for the context data, we need to add the following to our base "titles"
+    # for the sparklines, we need to add the following to our base "titles"
     # object: global_min, global_max, current_min, current_max (global is 
     # across all years for which a measure has data, current is for the latest 
     # year for which a measure has data)
     
-    # for the content data, we need just global_min and global_max (here, 
+    # for the fast facts, we need just global_min and global_max (here, 
     # global is across all counties rather than all years)
     
     # we prepare a helper function to handle the key work of getting
@@ -118,7 +123,7 @@ finish_dashboard_data <- function(spark_base, fact_base) {
             if(get_current) {
                 # get the subset of the target dataframe which has non-NA values
                 # for the target column
-                data_index <- which(!is.na(target[, i]))
+                data_index <- which(!is.na(target_base[, i]))
                 target_base <- target_base[data_index, ]
                 
                 # get the latest year for the subset database (aka - the latest
@@ -144,11 +149,119 @@ finish_dashboard_data <- function(spark_base, fact_base) {
         }
         
         # gather the results into a single dataframe and return it
-        globals <- data.frame(global_min, global_max, current_min, current_max)
+        collection <- data.frame(global_min, global_max, 
+                                 current_min, current_max)
         
-        return(globals)
+        return(collection)
     }
     
     # we identify the geographic regions we'll need to loop over to get our
     # target data
+    geo_targets <- c("county", "region", "state")
+        
+    # we loop over these with our helper function to get min/max values for each
+    geo_values <- lapply(geo_targets, 
+                         function(x) {
+                             get_min_max(titles, spark_base, fact_base, x)
+                         }
+    )
+    names(geo_values) <- geo_targets
+    
+    # finally, we join each of these to our "titles" object to produce the
+    # geography-specific "title" objects we'll pass to the application
+    context_collection <- lapply(geo_values, function(x) cbind(titles, x))
+    
+    # OUTPUT PART 3 OF 3: content_collection
+    # for the sparklines, we need to collect the data values for each year
+    # for each measure for each unique location (e.g., every county needs
+    # it's own set of values for all sparkline measures)
+    
+    # for the fast facts, we need to collect the data values for each unique
+    # location (the fact_base data does not have data over time)
+    
+    # in both cases, these values are already calculated and associated with
+    # the unique locations - we just need to shape and merge their dataframes
+    # to get them in the proper groupings
+    
+    # first we adjust both the sparklines and fast facts data to be "long"
+    # format with our target columns
+    # id -> location (specify place the values are associated with)
+    # group -> new variable to specify whether this is sparkline or fast fact
+    # foster_care_trend_id (0-4) or population_fast_fact_id (0-4) -> code_name
+    # pretty_name -> new variable to associate pretty name with code name
+    # time -> already exists for sparklines but needs to be added as NA to facts
+    # value
+    
+    # sparklines adjustments (long; change location to id; add group column;
+    # get pretty_name; correct column order)
+    spark_long <- lapply(spark_base,
+                         function(x) gather(x, code_name, value, -id, -time))
+    spark_long <- lapply(spark_long,
+                         function(x) mutate(x, 
+                                            location = id,
+                                            group = "foster_care_trend"))
+    spark_long <- lapply(spark_long,
+                         function(x) {
+                             x$code_name <- as.character(x$code_name)
+                             return(x)
+                         }
+    )
+    spark_long <- lapply(spark_long,
+                         function(x) left_join(x, code_ref, by = "code_name"))
+    spark_long <- lapply(spark_long,
+                        function(x) x <- x[, c("location", 
+                                               "group", 
+                                               "time", 
+                                               "code_name",
+                                               "pretty_name",
+                                               "value")])
+    
+    # fast facts adjustments (same as above but also add time column)
+    fact_long <- lapply(fact_base,
+                        function(x) gather(x, code_name, value, -id))
+    fact_long <- lapply(fact_long,
+                         function(x) {
+                             x$code_name <- as.character(x$code_name)
+                             return(x)
+                         }
+    )
+    fact_long <- lapply(fact_long,
+                        function(x) mutate(x,
+                                           location = id,
+                                           group = "population_fast_fact", 
+                                           time = NA))
+    fact_long <- lapply(fact_long,
+                         function(x) left_join(x, code_ref, by = "code_name"))
+    fact_long <- lapply(fact_long,
+                         function(x) x <- x[, c("location", 
+                                                "group", 
+                                                "time", 
+                                                "code_name",
+                                                "pretty_name",
+                                                "value")])
+    
+    # now we put spark_long and fact_long together
+    merged_long <- list("county" = rbind(spark_long$county,
+                                         fact_long$county),
+                        "region" = rbind(spark_long$region,
+                                         fact_long$region),
+                        "state" = rbind(spark_long$state,
+                                        fact_long$state))
+    
+    # finally, we prepare the data object to pass out of the function, 
+    # reorganizing our collections by region
+    county <- list("context" <- titles_set$county,
+                   "data" <- merged_long$county)
+    region <- list("context" <- titles_set$region,
+                   "data" <- merged_long$region)
+    state <- list("context" <- titles_set$state,
+                  "data" <- merged_long$state)
+    
+    # and then gathering these with the year_limits
+    final_collection <- list("year_limits" = year_limits,
+                             "county" = county,
+                             "region" = region,
+                             "state" = state)
+    
+    return(final_collection)    
 }

@@ -56,4 +56,9 @@ update_county_dashboard <- function(annie_connection, poc_connection) {
     # get the base data needed for the fast facts
     fact_base <- get_fast_facts(poc_connection)
     
+    # shape the data into the dataframe structures needed by the application
+    clean_data <- finish_dashboard_data(spark_base, fact_base)
+    
+    
+    
 }

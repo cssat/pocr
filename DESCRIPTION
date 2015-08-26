@@ -33,7 +33,8 @@ Imports:
     grid,
     openxlsx,
     readxl,
-    reshape2
+    reshape2,
+    tidyr
 LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr

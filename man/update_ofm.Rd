@@ -24,22 +24,40 @@ Imports, cleans, and organizes the data needed for the OFM tables in the POC
 SQL server database. It then drops and recreates the tables with the cleaned
 data.
 
-HOW IT WORKS
 
-We first download the data from the source. We then use a helper function
-to import the data as a list of dataframes, one for each xlsx file.
-We then filter out irrelevant rows and columns. Since some columns of
-the xlsx file represent values, we melt. Moreover, the values of the column
-take on values for two separate variables. Thus we mutate to split the
-columns. Once the tidying of the data is done, we create another data frame
-which initially takes on race-based totals. These totals are used to compute
-the calculated other count which is given by:
+After downloading the data from the source, the data is imported as a list of
+dataframes, one for each xlsx file. The columns of each dataframe are given
+names. We then filter out irrelevant columns, such as area_id and any gender
+total counts. Each data frame needs to be filtered in a unique way.
 
-others = total - hispanic - black - white
+ -The total population counts dataframe (total) must include all counts,
+ except the actuall totals. Raced based totals are kept, for the construction
+ of the dataframe for others ethnic backgrounds.
 
-We then combine all of the tables and then create rows for 2015. 2015 data
-will be replicated from the 2014 data.
+ -The hispanic population count dataframe (hispanic) must include only the
+ totals.
 
-Once we have 2014 data
+ -The non-hispanic population count dataframe (non_hispanic) must
+ include only black and white counts.
+
+ Construction of the other dataframe: The count for other ethnic background
+ (others) is necessary. To construct the dataframe, out all but the
+ race-based totals from total are filtered. The counts are derived by
+ observing that
+
+ others count = total count - hispanic count - non_hipanic black
+                - non_hispanic white counts
+
+The dataframes are not tidy: column headers contain the variables race and
+gender. Hence, the dataframes are melted with colvars: county, age and
+measurement_year (year). Then the new column is mutated into two seperate
+columns: race and gender. An additional column is added for source_census.
+
+All data frames are filtered row-wise to remove irrelevant age groups and
+totals.
+
+Data is now tidy at this point, but data formating begins. The counts are
+rounded and values are replaced by reference codes. Once formating is
+finished, rows corresponding to 2015 are created by using data from 2014.
 }
 
