@@ -59,6 +59,6 @@ update_county_dashboard <- function(annie_connection, poc_connection) {
     # shape the data into the dataframe structures needed by the application
     clean_data <- finish_dashboard_data(spark_base, fact_base)
     
-    
+    browser()
     
 }

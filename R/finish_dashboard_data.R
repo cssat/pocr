@@ -250,11 +250,11 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     
     # finally, we prepare the data object to pass out of the function, 
     # reorganizing our collections by region
-    county <- list("context" <- titles_set$county,
+    county <- list("context" <- context_collection$county,
                    "data" <- merged_long$county)
-    region <- list("context" <- titles_set$region,
+    region <- list("context" <- context_collection$region,
                    "data" <- merged_long$region)
-    state <- list("context" <- titles_set$state,
+    state <- list("context" <- context_collection$state,
                   "data" <- merged_long$state)
     
     # and then gathering these with the year_limits
