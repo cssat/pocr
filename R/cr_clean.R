@@ -21,6 +21,7 @@ cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "al
                                  replacement = "")
     names(df) <- str_replace_all(names(df), pattern = "\\)", 
                                  replacement = "")
+    
     qry.row.keep <- rep(TRUE, nrow(df))
     
     if (any(str_detect(names(df), "qry\\.type"))) {
@@ -40,21 +41,25 @@ cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "al
         }
     }
     
-    
-    if ("date.type" %in% names(df)) {
-        date.type.col <- names(df)[str_detect(names(df), "date\\.type")]
-        if (date.type == 0) {
-            date.row.keep <- df[, date.type.col] == 0
+    if (date == T) {
+        if ("date.type" %in% names(df)) {
+            date.type.col <- names(df)[str_detect(names(df), "date\\.type")]
+            if (date.type == 0) {
+                date.row.keep <- df[, date.type.col] == 0
+            }
+            if (date.type == 1) {
+                date.row.keep <- df[, date.type.col] == 1
+            }
+            if (date.type == 2) {
+                date.row.keep <- df[, date.type.col] == 2
+            }
         }
-        if (date.type == 1) {
-            date.row.keep <- df[, date.type.col] == 1
-        }
-        if (date.type == 2) {
-            date.row.keep <- df[, date.type.col] == 2
-        }
+        df <- df[qry.row.keep & date.row.keep, ]
+    }
+    else {
+        df <- df[qry.row.keep,]
     }
     
-    df <- df[qry.row.keep & date.row.keep, ]
     uniques <- sapply(df, function(x) length(unique(x)))
     uniques <- names(uniques)[uniques > 1]
     if (!is.null(select)) {
