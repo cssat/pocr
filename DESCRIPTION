@@ -1,6 +1,6 @@
 Package: pocr
-Version: 1.1
-Date: 2015-8-7
+Version: 1.2
+Date: 2015-8-27
 Title: POC Data and Analysis Package
 Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),
 					email = "gregorp@uw.edu"),
@@ -19,7 +19,7 @@ Description:
 	portal colors, POC themes, functions for efficiently querying POC 
 	databases, and more.
 Depends:
-    R (>= 3.0),
+    R (>= 3.2.1),
     ggplot2 (>= 1.0.0),
 	dplyr
 Imports:

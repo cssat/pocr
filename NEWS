@@ -1,12 +1,13 @@
 ## Version 1.2
 Updated R scripts:
 - corrected data documentation formatting
-- refactored RODBC input validation in the sp_test function for use in
-  additional places
-- added new update_data_portal_apps() wrapper function and started populating
+- refactored RODBC input validation in the sp_test function so that it is
+  now a standalone function: validate_RODBC_input()
+- added new get_portal_app_data() wrapper function and started populating
   pocr with functions to support data portal applications (currently just
   county dashboards supported)
-- added a function to update OFM data
+- corrected cr_clean() so that it is now functional (Erik)
+- added a function to update OFM data (Mark)
 
 ## Version 1.1
 Updated DESCRIPTION:
