@@ -43,7 +43,7 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     # to determine the start/end of the sparklines time axis;
     # the year range is the same for county, region, and state so we just
     # arbitrarily extract from the "state" dataframe
-    year_limits <- range(spark_base$state$time)
+    year_limits <- range(spark_base$state$date)
     
     # OUTPUT PART 2 OF 3: context_collection
     # define the groups and measures that the context and content values will 
@@ -72,9 +72,6 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     titles <- data.frame(group, code_name, pretty_name, value_format,
                          stringsAsFactors = FALSE)
     rm(group, code_name, pretty_name, value_format)
-    
-    # also make a code_name ~ pretty_name reference table for later use
-    code_ref <- select(titles, code_name, pretty_name)
 
     # for the sparklines, we need to add the following to our base "titles"
     # object: global_min, global_max, current_min, current_max (global is 
@@ -130,10 +127,10 @@ finish_dashboard_data <- function(spark_base, fact_base) {
                 
                 # get the latest year for the subset database (aka - the latest
                 # year for which we have data in the target column)
-                latest_year <- max(target_base$time)
+                latest_year <- max(target_base$date)
                 
                 # subset again to get only data for the latest year with data
-                latest_index <- which(target_base$time == latest_year)
+                latest_index <- which(target_base$date == latest_year)
                 target_base <- target_base[latest_index, ]
                 
                 # get the range again for our target variable
@@ -195,12 +192,12 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     # value
     
     # sparklines adjustments (long; change location to id; add group column;
-    # get pretty_name; correct column order)
+    # add code version of geo name; correct column order)
     spark_long <- lapply(spark_base,
-                         function(x) gather(x, code_name, value, -id, -time))
+                         function(x) gather(x, code_name, value, -id, -date))
     spark_long <- lapply(spark_long,
                          function(x) mutate(x, 
-                                            location = id,
+                                            pretty_location = id,
                                             group = "foster_care_trend"))
     spark_long <- lapply(spark_long,
                          function(x) {
@@ -209,16 +206,21 @@ finish_dashboard_data <- function(spark_base, fact_base) {
                          }
     )
     spark_long <- lapply(spark_long,
-                         function(x) left_join(x, code_ref, by = "code_name"))
+                         function(x) {
+                             x$code_location <- gsub(" ", "_", 
+                                                     x$pretty_location)
+                             return(x)
+                         }
+    )
     spark_long <- lapply(spark_long,
-                        function(x) x <- x[, c("location", 
+                        function(x) x <- x[, c("code_location",
+                                               "pretty_location", 
                                                "group", 
-                                               "time", 
+                                               "date", 
                                                "code_name",
-                                               "pretty_name",
                                                "value")])
     
-    # fast facts adjustments (same as above but also add time column)
+    # fast facts adjustments (same as above but also add date column)
     fact_long <- lapply(fact_base,
                         function(x) gather(x, code_name, value, -id))
     fact_long <- lapply(fact_long,
@@ -229,17 +231,22 @@ finish_dashboard_data <- function(spark_base, fact_base) {
     )
     fact_long <- lapply(fact_long,
                         function(x) mutate(x,
-                                           location = id,
+                                           pretty_location = id,
                                            group = "population_fast_fact", 
-                                           time = NA))
+                                           date = NA))
     fact_long <- lapply(fact_long,
-                         function(x) left_join(x, code_ref, by = "code_name"))
+                        function(x) {
+                            x$code_location <- gsub(" ", "_", 
+                                                    x$pretty_location)
+                            return(x)
+                        }
+    )
     fact_long <- lapply(fact_long,
-                         function(x) x <- x[, c("location", 
+                         function(x) x <- x[, c("code_location",
+                                                "pretty_location", 
                                                 "group", 
-                                                "time", 
+                                                "date", 
                                                 "code_name",
-                                                "pretty_name",
                                                 "value")])
     
     # now we put spark_long and fact_long together

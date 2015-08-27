@@ -1,0 +1,11 @@
+"","group","code_name","pretty_name","value_format","global_min","global_max","current_min","current_max"
+"1","foster_care_trend","trend_0","Entries per 1,000","f",3.66,5.36,4.04,4.04
+"2","foster_care_trend","trend_1","Entries Age 0-4","p",0.328530969092476,0.4994427638911,0.483770287141074,0.483770287141074
+"3","foster_care_trend","trend_2","Entries with Immediate Dependency","p",0.341385794879213,0.655376063922182,0.453027465667915,0.453027465667915
+"4","foster_care_trend","trend_3","Placements in Kin Care","p",0.3022,0.4098,0.4098,0.4098
+"5","foster_care_trend","trend_4","Siblings All or Some Together","p",0.6737,0.7622,0.7622,0.7622
+"6","population_fast_fact","population_0","Population < 18","s",1569345,1569345,NA,NA
+"7","population_fast_fact","population_1","% Children < 5","p",0.2791884512328,0.2791884512328,NA,NA
+"8","population_fast_fact","population_2","Unemployment","p",0.0833963589905343,0.0833963589905343,NA,NA
+"9","population_fast_fact","population_3","H.S. Grad Rate","p",0.798800857598724,0.798800857598724,NA,NA
+"10","population_fast_fact","population_4","Free/Reduced Lunch","p",0.456715081184693,0.456715081184693,NA,NA

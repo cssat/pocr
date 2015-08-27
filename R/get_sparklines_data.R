@@ -185,7 +185,7 @@ get_sparklines_data <- function(annie_connection,
         select(county, year, 
                agg.ent.rate, agg.ent.04, agg.ent.dep, agg.kin, agg.sibs)
     
-    names(trends_county) <- c("id", "time", paste0("trend_", 0:4))
+    names(trends_county) <- c("id", "date", paste0("trend_", 0:4))
     
     # clean the data for regions
     trends_region <- trends %>% 
@@ -211,7 +211,7 @@ get_sparklines_data <- function(annie_connection,
                                     NA, 
                                     agg.ent.dep))
     
-    names(trends_region) <- c("id", "time", paste0("trend_", 0:4))
+    names(trends_region) <- c("id", "date", paste0("trend_", 0:4))
     
     # clean the data for state
     trends_state <- trends %>% filter(county_cd == 0) %>%
@@ -236,7 +236,7 @@ get_sparklines_data <- function(annie_connection,
                                     NA, 
                                     agg.ent.dep))
     
-    names(trends_state) <- c("id", "time", paste0("trend_", 0:4))
+    names(trends_state) <- c("id", "date", paste0("trend_", 0:4))
     
     # collect the county, region, and state data and make sure any non-values
     # (e.g., NA, NaN, Inf, etc.) are treated as NA
