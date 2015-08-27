@@ -16,13 +16,13 @@
 #' current working directory (".").
 #' 
 #' @return 
-#' The function will return a list with two items.
+#' The function will return a list with three items.
 #' 
 #' \code{x$result} will be a boolean. \code{TRUE} on success and \code{FALSE} on
 #' failure.
 #' 
-#' \code{x$details} will be a character string explaining what occurred Probably
-#' only interesting on failure.
+#' \code{x$details} will be a character string explaining what occurred. 
+#' Probably only interesting on failure.
 #' 
 #' \code{x$full_path} will be a character string giving the path of the created
 #' folder. Useful for automation where you need to know what folder was

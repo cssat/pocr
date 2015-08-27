@@ -141,15 +141,17 @@ get_sparklines_data <- function(annie_connection,
     
     # join the collected data to this object (plus ref_lookup_county_region,
     # built-in pocr data)
+    joins <- c("county_cd", "year")
+    
     trends <- trends_base %>%
-        left_join(entry_counts) %>%
-        left_join(entry_rates) %>%
-        left_join(entry_0_to_4) %>%
-        left_join(entry_depend) %>%
-        left_join(placement_kin) %>%
-        left_join(placement_counts) %>%
-        left_join(placement_sibling) %>%
-        left_join(ref_lookup_county_region) %>% 
+        left_join(entry_counts, by = joins) %>%
+        left_join(entry_rates, by = joins) %>%
+        left_join(entry_0_to_4, by = joins) %>%
+        left_join(entry_depend, by = joins) %>%
+        left_join(placement_kin, by = joins) %>%
+        left_join(placement_counts, by = joins) %>%
+        left_join(placement_sibling, by = joins) %>%
+        left_join(ref_lookup_county_region, by = "county_cd") %>% 
         select(-old_region_cd) %>%
         mutate(entry.pct.04 = entry.cnt.04 / entry.cnt,
                entry.pct.dep = entry.cnt.dep / entry.cnt,
