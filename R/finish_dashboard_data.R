@@ -34,6 +34,8 @@
 #' * \code{x$region} - list with a dataframe for "context" and one for "data"
 #' * \code{x$state}  - list with a dataframe for "context" and one for "data"
 #' 
+#' @importFrom tidyr gather
+#' 
 #' @export
 finish_dashboard_data <- function(spark_base, fact_base) {
     # OUTPUT PART 1 OF 3: year_limits
