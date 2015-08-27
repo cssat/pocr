@@ -59,6 +59,29 @@ update_county_dashboard <- function(annie_connection, poc_connection) {
     # shape the data into the dataframe structures needed by the application
     clean_data <- finish_dashboard_data(spark_base, fact_base)
     
-    browser()
+    # check if there is a local folder for this project already
+    folder_check <- file.exists("pocr")
+    
+    # if there is a folder, we create a unique temp folder to work with
+    target_folder <- "temp"
+    count_var <- 1
+    while(file.exists(target_folder)) {
+        if(count_var > 15) {
+            stop("Update county dashboard cannot create a unique temp folder.")
+        }
+        target_folder <- paste0(target_folder, count_var)
+    }
+    dir.create(target_folder)
+    
+    # change the working directory to the temp folder
+    setwd(target_folder)
+    
+    # clone the repo to the temp folder
+    system("git clone https://github.com/pocdata/county_dashboard")
+    system("bwaismeyer")
+    system("78NEZZq3$7%S$f8")
+    
+    # remove the current data files
+    list.files("county_dashboard/")
     
 }
