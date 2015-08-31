@@ -10,8 +10,8 @@ Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),
 					email = "bwaismeyer@gmail.com"),
 			 person("Joe", "Mienko", role = "ctb",
 			        email = "mienkoja@uw.edu"),
-                         person("Mark", "Bennett", role = "ctb",
-                                email = "mbennett718@gmail.com")
+             person("Mark", "Bennett", role = "ctb",
+                    email = "mbennett718@gmail.com")
 			)
 Description: 
 	This package collects a variety of functions and variables constructed
@@ -39,8 +39,5 @@ LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
-<<<<<<< HEAD
 Suggests: knitr
 VignetteBuilder: knitr
-=======
->>>>>>> eb7898d8b147d74b6c45dc36745181d78eceb017
