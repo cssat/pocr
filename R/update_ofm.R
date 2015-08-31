@@ -46,22 +46,34 @@
 #' Once formating is finished, rows corresponding to 2015 are created by using
 #' data from 2014.
 #' 
+#' NOTE: Once 2015 data is available the code requires some upkeep.
+#' 
 #'
 #' @param poc_connection Need to provide an active RODBC connection to the
-#' POC SQL server.
+#' POC SQL server. NOTE: It is assumed that the object passed in is meaningful.
 #' @param start_year Optional parameter where the user can specify the start
 #' year.
 #' @param end_year Optional parameter where the user can specify the end
-#' year.
+#' year. NOTE: It is assumed that the end year given is meaningful. 
 #' @return
 #' The function updates the POC SQL database and returns TRUE on success.
 #'
 #' @export
-update_ofm <- function(poc_connection, 
+update_ofm <- function(poc_connection = NULL, 
                        start_year = 2000,
                        end_year = 2014) {
     
-    #TEST FOR CORRECT INPUT:
+    #test here for 
+    if(poc_connection == NULL){
+        stop("An active RODBC connection must be specified")
+    }
+    if(start_year < 2000 | end_year < 2000){
+        stop("Any year specified must be 2000 or greater")
+    }
+    if(start_year > end_year ){
+        stop("Start year cannot be greater than end year")
+    }
+    
     
     # create year collection
     years <- as.character(start_year:end_year)

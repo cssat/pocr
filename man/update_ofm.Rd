@@ -4,17 +4,17 @@
 \alias{update_ofm}
 \title{Update the OFM tables in the POC SQL Server database.}
 \usage{
-update_ofm(poc_connection, start_year = 2000, end_year = 2014)
+update_ofm(poc_connection = NULL, start_year = 2000, end_year = 2014)
 }
 \arguments{
 \item{poc_connection}{Need to provide an active RODBC connection to the
-POC SQL server.}
+POC SQL server. NOTE: It is assumed that the object passed in is meaningful.}
 
 \item{start_year}{Optional parameter where the user can specify the start
 year.}
 
 \item{end_year}{Optional parameter where the user can specify the end
-year.}
+year. NOTE: It is assumed that the end year given is meaningful.}
 }
 \value{
 The function updates the POC SQL database and returns TRUE on success.
@@ -63,5 +63,7 @@ age group.
 
 Once formating is finished, rows corresponding to 2015 are created by using
 data from 2014.
+
+NOTE: Once 2015 data is available the code requires some upkeep.
 }
 

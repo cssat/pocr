@@ -18,8 +18,8 @@ Description:
 	for use by POC staff work with POC data. It includes official POC and 
 	portal colors, POC themes, functions for efficiently querying POC 
 	databases, and more.
-Depends: 
-    R (>= 3.2.1),
+Depends:
+    R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
 	dplyr
 Imports: 
@@ -39,5 +39,8 @@ LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
+<<<<<<< HEAD
 Suggests: knitr
 VignetteBuilder: knitr
+=======
+>>>>>>> eb7898d8b147d74b6c45dc36745181d78eceb017
