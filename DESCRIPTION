@@ -19,7 +19,7 @@ Description:
 	portal colors, POC themes, functions for efficiently querying POC 
 	databases, and more.
 Depends:
-    R (>= 3.2.1),
+    R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
 	dplyr
 Imports:
