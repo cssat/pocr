@@ -18,11 +18,11 @@ Description:
 	for use by POC staff work with POC data. It includes official POC and 
 	portal colors, POC themes, functions for efficiently querying POC 
 	databases, and more.
-Depends:
+Depends: 
     R (>= 3.2.1),
     ggplot2 (>= 1.0.0),
 	dplyr
-Imports:
+Imports: 
 	RODBC,
     stringr,
     scales,
@@ -39,3 +39,5 @@ LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
+Suggests: knitr
+VignetteBuilder: knitr

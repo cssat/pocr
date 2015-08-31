@@ -1,0 +1,131 @@
+---
+title: "get_portal_app_data: Supporting new portal applications"
+author: "Brian Waismeyer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{get_portal_app_data: Supporting new portal applications}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`get_portal_app_data()` was designed to support the process of updating Data 
+Portal applications that are dependent on R-produced data files. It is a
+wrapper function that calls the application-specific wrappers needed to produce 
+data ready for application consumption.
+
+This vignette describes the technical and formatting requirements a new
+application wrapper needs to meet for integration into the 
+`get_portal_app_data()` function. It also explains how to update the 
+`get_portal_app_data()` code to correctly call the new application wrapper.
+
+## A Concise Review of `get_portal_app_data` Scope
+`get_portal_app_data()` is the top-level wrapper that brings together
+any function collections designed to retrieve and format data for Data Portal
+applications. 
+
+To be clear, `get_portal_app_data()` does not handle any data retrieval or
+formatting at all. Its job is simply to:
+
+* evaluate what supported applications the user wants to retrieve data for 
+* validate that the user has provided correct server connections or names for
+  server connections
+* create a directory for the application-specific wrappers to work in
+* call the application-specific wrappers needed to retrieve the desired data
+* provide high-level feedback to the user regarding where the function is in
+  the data retrieval process
+
+When called, the wrapper will create a folder called "app_data" in the local
+working directory. It will then adjust the working directory to that directory
+so that each of the application-specific wrappers produce their output in
+the "app_data" folder.
+
+The following sections will describe how to design application-specific
+wrappers to work correctly with the `get_portal_app_data()` wrapper and how
+to tweak the larger wrapper to accommodate new application-specific wrappers.
+
+## Technical Requirements for Application-Specific Wrappers
+Application-specific wrappers should be built and tested separately from
+the `get_portal_app_data()` wrapper. They should only be integrated when you
+are confident that are completely functional on their own.
+
+Application-specific wrapper should adhere to the following requirements:
+
+1. **naming**: Wrappers should start with "get" and be a concise but readable
+    reference to their target. For instance, the County Dashboard wrapper
+    is `get_county_dashboard_data()`.
+    
+2. **inputs**: The only variables that will be available in the 
+    `get_portal_app_data()` environment are annie and POC RODBC server
+    connections. Your wrapper function should not require any other objects
+    to be passed to it.
+    
+3. **modularity**: Application-specific wrappers should be able to be called 
+    independently of the larger wrapper and should be documented such that they 
+    can be understood alone or in the context of the larger wrapper. 
+    
+    Application-specific wrappers can share code so long as the shared code
+    is part of the `pocr` namespace (i.e., is an exported function, such as
+    `safe_folder()`).
+    
+4. **dependencies**: Application-specific wrappers can add whatever package
+    dependencies they need to `pocr`. Simply update the `DESCRIPTION` file
+    and insure the dependencies load correctly when the package is built.
+    
+5. **outputs**: Application-specific wrappers should have two effects.
+    
+    First, they will create a folder in the current working directory with the 
+    same name as the repo for the targeted application and they will populate 
+    the folder with the data needed for application consumption.
+    
+    Second, they will return (on successful completion) a character string
+    with a success message. If errors are detected during function execution,
+    the wrapper should return early with a character string describing
+    the failure.
+    
+    `get_portal_app_data()` will inform the user when an application-specific
+    wrapper has been called and will print the character string to let the
+    user know what happened during that call.
+    
+6. **error-handling**: As much as possible, you should design your
+    application-specific wrappers to complete - not `stop()` - and return a 
+    descriptive character string. This will help prevent unnecessary 
+    interruptions to `get_portal_app_data()` - users can observe what functions 
+    succeeded/failed in one pass and approach failed functions one-by-one.
+
+## Adjusting `get_portal_app_data()` for New Application-Specific Wrappers
+Once you have a new application-specific wrapper prepared, you will need
+to add it to the larger wrapper so that it is called correctly.
+
+You only need to adjust a single section of the code, the definition for the
+`app_wraps` list.
+
+The list needs to be updated with name of the target application repo (as the
+sublist name) and with a character string version of the appropriate call
+to the application-specific wrapper.
+
+```{r, eval=FALSE}
+# old list
+apps_wraps <- list(
+    "county_dashboard" = list(
+        "call" = paste0("get_county_dashboard_data(",
+                        "annie_connection, poc_connection)")
+    )
+)
+
+# updated list
+apps_wraps <- list(
+    "county_dashboard" = list(
+        "call" = paste0("get_county_dashboard_data(",
+                        "annie_connection, poc_connection)")
+    ),
+    "repo_name" = list(
+        "call" = paste0("string_version_of_the_function_call")
+    )
+)
+```
+
+## Final Note
+Please make sure you rebuild `pocr` and test the `get_portal_app_data()`
+wrapper to make sure that it functions correctly **before** pushing your
+updates!
