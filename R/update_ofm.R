@@ -59,7 +59,7 @@
 #' The function updates the POC SQL database and returns TRUE on success.
 #'
 #' @export
-update_ofm <- function(poc_connection==NULL, 
+update_ofm <- function(poc_connection = NULL, 
                        start_year = 2000,
                        end_year = 2014) {
     
