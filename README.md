@@ -1,8 +1,8 @@
 `pocr`
 ====
 
-This is an R package constructed by the POC data portal team for internal
-use. To learn more, you should install and review package DESCRIPTION
+This is an R package constructed by the POC Data Portal team for internal
+use. To learn more, you should install the package and review the DESCRIPTION
 and index.
 
 You can install `pocr` as follows, though you may need to install 
