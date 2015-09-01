@@ -9,7 +9,7 @@
 #' \code{T}).
 #' 
 #' @export
-cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "all.unique") 
+cr_clean <- function (df, select = NULL, date = TRUE, date.type = 1, qry.type = "all.unique") 
 {
     names(df) <- str_replace_all(names(df), pattern = "&", replacement = "and")
     names(df) <- make.names(names(df), allow_ = F)
@@ -41,23 +41,20 @@ cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "al
         }
     }
     
-    if (date == TRUE) {
-        if ("date.type" %in% names(df)) {
-            date.type.col <- names(df)[str_detect(names(df), "date\\.type")]
-            if (date.type == 0) {
-                date.row.keep <- df[, date.type.col] == 0
-            }
-            if (date.type == 1) {
-                date.row.keep <- df[, date.type.col] == 1
-            }
-            if (date.type == 2) {
-                date.row.keep <- df[, date.type.col] == 2
-            }
-            df <- df[qry.row.keep & date.row.keep, ]
+    if (date & "date.type" %in% names(df)) {
+        date.type.col <- names(df)[str_detect(names(df), "date\\.type")]
+        if (date.type == 0) {
+            date.row.keep <- df[, date.type.col] == 0
         }
-    }
-    else {
-        df <- df[qry.row.keep,]
+        if (date.type == 1) {
+            date.row.keep <- df[, date.type.col] == 1
+        }
+        if (date.type == 2) {
+            date.row.keep <- df[, date.type.col] == 2
+        }
+        df <- df[qry.row.keep & date.row.keep, ]
+    } else {
+        df <- df[qry.row.keep, ]
     }
     
     uniques <- sapply(df, function(x) length(unique(x)))
