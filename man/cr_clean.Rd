@@ -5,7 +5,7 @@
 \title{Clean up colnames from Portal, allow option to select columns and to
 convert to \code{Date} class.}
 \usage{
-cr_clean(df, select = NULL, date = T, date.type = 1,
+cr_clean(df, select = NULL, date = TRUE, date.type = 1,
   qry.type = "all.unique")
 }
 \arguments{

@@ -26,17 +26,14 @@ trend_plot <-
             if (is.na(title)) title <- "Trends in Investigations & Assessments"
             levels(trend_data$geo) <- paste(levels(trend_data$geo), 
                                             "DCFS Office")
-        }, ihs = {
-            stock_ylab <- paste0("Total Cases First Day")
-            if (is.na(title)) title <- "Trends in In-Home Service"
-            levels(trend_data$geo) <- paste(levels(trend_data$geo), 
-                                            "DCFS Office")
         })
-        trend_data <- ddply(trend_data, .variables = "geo", mutate, 
-                            text_pos = ifelse(count > 0, 
-                                              count - 0.05 * max(count), 
-                                              0.05 * max(count)), 
-                            gtzero = factor(count > 0, levels = c(TRUE, FALSE)))
+        
+        trend_data = trend_data %>% group_by(geo) %>%
+            mutate(text_pos = ifelse(count > 0, 
+                                     count - 0.05 * max(count), 
+                                     0.05 * max(count)),
+                   gtzero = factor(count > 0, levels = c(TRUE, FALSE)))
+        
         tp <- ggplot(trend_data, aes(x = date, y = count)) + 
             facet_wrap(~geo, ncol = 1, scales = "free") + 
             geom_bar(stat = "identity", fill = poc_colors[1], color = NA) + 
@@ -45,11 +42,12 @@ trend_plot <-
                           color = gtzero), 
                       size = 2.5, family = font) + 
             scale_colour_manual(values = c("white", "black")) + 
-            theme_bw() + scale_y_continuous(labels = comma_format()) + 
+            theme_bw() +
+            scale_y_continuous(labels = scales::comma_format()) + 
             labs(x = "", y = stock_ylab, title = title) + 
             theme(text = element_text(family = font), 
                   axis.title.y = element_text(vjust = .5), 
-                  plot.margin = unit(c(1, 1, 1, 1), "lines"), 
+                  plot.margin = grid::unit(c(1, 1, 1, 1), "lines"), 
                   plot.title = element_text(size = rel(title_size), 
                                             vjust = 1, hjust = 0), 
                   strip.background = element_rect(fill = poc_colors[3], 
@@ -57,7 +55,8 @@ trend_plot <-
                   legend.position = "none")
         if (length(levels(trend_data$geo)) == 1) {
             tp <- tp + 
-                scale_y_continuous(limits = c(0, 1.1 * max(trend_data$count)))
+                scale_y_continuous(limits = c(0, 1.1 * max(trend_data$count)),
+                                   labels = scales::comma_format())
         }
         print(tp)
     }

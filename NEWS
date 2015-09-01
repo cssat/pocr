@@ -8,6 +8,13 @@ Updated R scripts:
   county dashboards supported)
 - corrected cr_clean() so that it is now functional (Erik)
 - added a function to update OFM data (Mark)
+- tidied up import behavior across scripts
+
+Updated R vignettes:
+- added vignette folder and updated DESCRIPTION to support vignettes
+- added vignette for expanding the get_portal_app_data function
+- added vignette explaining the process for updating portal apps and how
+  get_portal_app_data is used in that process
 
 ## Version 1.1
 Updated DESCRIPTION:

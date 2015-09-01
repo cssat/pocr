@@ -18,6 +18,11 @@
 #' @import gridExtra
 #' @import extrafont
 #' @import grid
+#' @import ggplot2
+#' @import dplyr
+#' @import tidyr
+#' @import reshape2
+#' @import readxl
 #' 
 #' @docType package
 NULL
