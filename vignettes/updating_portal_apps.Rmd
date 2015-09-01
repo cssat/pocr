@@ -1,0 +1,201 @@
+---
+title: "Updating Data for Portal Apps"
+author: "Brian Waismeyer"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Updating Data for Portal Apps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Data Portal brings together a large family of applications that allow users
+to explore and visualize POC managed data.
+
+The Data Portal team requires that all applications have their data source and
+generation process documented and - ideally - automated. With rare exceptions
+(e.g., the COS application), all applications should receive data ready for
+consumption either directly from a POC SQL database or from an R supported
+update process.
+
+`pocr` has a number of functions that support updating application data for
+those applications that are dependent on R data processing. These functions
+are tied together by `get_portal_app_data()` - a wrapper that calls the R 
+processes needed to retrieve and format data for R-dependent Data Portal
+applications.
+
+This vignette will walk the user through the process of updating R-dependent
+Data Portal applications, including using the supporting `pocr` functions.
+
+## Install Supporting Tools
+Prior to starting the update process, you need to prepare the following tools.
+
+1. [GitHub account](https://github.com/)
+    
+    First things first, you need a GitHub account, you need to be part of
+    [pocdata](https://github.com/pocdata), and you need permissions to 
+    view/access any apps you intend to update. Membership in the "Data Portal"
+    team should get you the permissions.
+    
+2. [Git](https://git-scm.com/downloads)
+    
+    Now you need a way to receive files from and pass files to GitHub. Install
+    Git (specifically we want Git Bash) using all the default settings.
+    
+3. [R](https://cran.r-project.org/)
+    
+    This is an R vignette, so I'm guessing you already did this. But just in
+    case you don't have R... you need it to use the `pocr` package.
+    
+4. [RStudio](https://www.rstudio.com/products/RStudio/#Desktop)
+    
+    Not required, but makes working with R much more pleasant. You want the 
+    free desktop version.
+
+5. `devtools`
+    
+    `devtools` is an R package that supports building packages. We need it
+    to install and build the `pocr` package.
+    
+    Open RStudio or an R console and install `devtools` from the R command
+    line.
+    
+    ```{r, eval = FALSE}
+    library("devtools")
+    ```
+    
+6. ['pocr'](https://github.com/pocdata/pocr)
+    
+    `pocr` is the POC R package with the data retrieval/formatting functions,
+    along with a variety of other useful functions for POC data work.
+    
+    Open RStudio or an R console and install `pocr` from the R command line.
+    ```{r, eval = FALSE}
+    devtools::install_github("pocdata/pocr")
+    ```
+
+7. Connections to the POC SQL server and the annie MySQL server
+    
+    Talk to Gregor or your senior colleagues for how to set these up. Record
+    the names you give the odbc connections. I suggest using "POC" for the POC
+    SQL server and "annie" for the annie MySQL server.
+
+Once you've installed the above materials, you will need to 
+[set up Git](https://help.github.com/articles/set-up-git/#setting-up-git) with
+your credentials.
+
+Depending on your permissions and platform, you may also need to configure
+your R library path. This process varies by operating system. Pester a
+fellow Data Portal team member and/or Google to setup your path.
+
+## Clone the Repos You Want to Update
+Git allows us to create local, linked copies (aka - "clones") of the 
+repositories on GitHub. We can makes changes to these copies - such as
+changing the data files - and then "push" our changes to the GitHub
+repository.
+
+Once you have your update tools installed and configured, you will want
+to create clones of all the repos you want to update.
+
+For a list of applications - and their repo names - that are currently
+supported by `pocr`, please see the Data Portal
+[application portfolio](https://docs.google.com/spreadsheets/d/1qrLbi2bCfnYeVRNlf89QYhMr1piQ0eDFGVRSZQz1ksM/edit?usp=sharing).
+
+I recommend that you create all your clones in a common location (e.g.,
+`C:/Projects/`) so that they are easy to locate and work with
+
+To clone a repo:
+
+* open Git Bash
+* `cd` to your target directory (e.g., `cd C:/Projects`)
+* type and enter `git clone repo-url` (e.g., 
+    `git clone https://github.com/pocdata/pocr`)
+* inspect the contents of the target folder with File Explore or `ls` and 
+    you should see a copy of the targe repo (e.g., `C:/Projects/pocr/`)
+
+## Verify that Upstream Data Dependencies are Up-to-Date
+**TBD**
+
+You can ignore this step for now. We are still resolving where in the process
+this should occur and what this check should entail.
+
+## Run `get_portal_app_data()` to Retrieve/Format Current Data
+At this point, you need to generate new data files for the applications you
+are aiming to update.
+
+Open an R console or RStudio, load `pocr`, and execute `get_portal_app_data()`.
+
+```{r, eval = FALSE}
+library(pocr)
+
+get_portal_app_data()
+```    
+
+You may need to adjust the arguments to `get_portal_app_data()` to match
+the names you gave to the POC and annie odbc connections and/or to match
+the specific applications you want to update.
+
+By default:
+
+* all (R dependent) applicatiosn will have data retrieved for them
+* poc_connection = "POC"
+* annie_connection = "annie"
+
+Observe the update process - `get_portal_app_data()` will report what apps
+it is trying to retrieve/format data for and will report if each appears to
+succeed.
+
+If you observe any errors, you will need to inspect the errors to try and
+determine the cause of the issue. This may require that you look up the 
+helper function associated with a given application (e.g., 
+`get_county_dashboard_data()` is the function called by `get_portal_app_data()` 
+to update the County Dashboard app).
+
+## Manually Inspect the Data for Obvious Errors
+`get_portal_app_data()` will create a folder called `app_data` (or a numbered
+variant, such as `app_data1`) each time it is run. This folder will have
+a subfolder for each target app repo (e.g., `app_data/county_dashboard`).
+
+* Check that the `app_data` folder has been created and subfolders have been
+    made for all targeted apps.
+* Then open the subfolders and check that they have files in them and that 
+    the files are in the correct format for the target application. Peek inside
+    your copy of the target app repo if you are unsure what format is correct.
+* Open at least a few of the data files and make sure they have content and
+    that this content seems apprpriate for the target app. Again, you may
+    want to compare against the target app files directly.
+
+## Copy the New Datafiles to Your Copy of the Target App Repo
+For each app you want to update, you need to replace the data files in
+your local copy of the repo with the new data files.
+
+As an example, updating `county_dashboard` places a bundle of .csv files
+in `app_data/county_dashboard`. To update your local copy of the County
+Dashboard repo, you would:
+
+* navigate the your local repo data directory 
+    (e.g., `C:/Projects/county_dashboard/data`)
+* delete the current data files
+* replace these with the new data files from `app_data/county_dashboard`
+
+## Update the Target App Repo on GitHub
+Once you have updated your local copies of the target app repos, you will
+need to push your changes to GitHub.
+
+* open Git Bash
+* navigate to the directory of your local copy (e.g., 
+`cd C:/Projects/county_dashboard`)
+* tell Git to track all your changes to the repo (`git add -A`)
+* tell Git to "commit" the changes for a push and provide a concise update
+    message (`git commit -m "8-15-2015 data update"`)
+* tell Git to "push" the changes to GitHub (`git push`)
+* you may be prompted for your GitHub credentials - provide them and then
+    watch to make sure the push completes
+
+Complete the above process for all the apps you have generated new data for
+and VOILA you're just about done!
+
+## Inform the Site Manager What Apps Have Updated Data
+Contact the Data Portal site manager (Erika Deal: edeal@uw.edu) and let her
+know which apps have updated data. She will complete the process to move the
+data to the live apps.

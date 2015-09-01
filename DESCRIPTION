@@ -10,8 +10,8 @@ Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),
 					email = "bwaismeyer@gmail.com"),
 			 person("Joe", "Mienko", role = "ctb",
 			        email = "mienkoja@uw.edu"),
-                         person("Mark", "Bennett", role = "ctb",
-                                email = "mbennett718@gmail.com")
+             person("Mark", "Bennett", role = "ctb",
+                    email = "mbennett718@gmail.com")
 			)
 Description: 
 	This package collects a variety of functions and variables constructed
@@ -22,7 +22,7 @@ Depends:
     R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
 	dplyr
-Imports:
+Imports: 
 	RODBC,
     stringr,
     scales,
@@ -39,3 +39,5 @@ LazyData: true
 License: GPL
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
+Suggests: knitr
+VignetteBuilder: knitr
