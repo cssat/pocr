@@ -41,7 +41,7 @@ cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "al
         }
     }
     
-    if (date == T) {
+    if (date == TRUE) {
         if ("date.type" %in% names(df)) {
             date.type.col <- names(df)[str_detect(names(df), "date\\.type")]
             if (date.type == 0) {
@@ -53,8 +53,8 @@ cr_clean <- function (df, select = NULL, date = T, date.type = 1, qry.type = "al
             if (date.type == 2) {
                 date.row.keep <- df[, date.type.col] == 2
             }
+            df <- df[qry.row.keep & date.row.keep, ]
         }
-        df <- df[qry.row.keep & date.row.keep, ]
     }
     else {
         df <- df[qry.row.keep,]
