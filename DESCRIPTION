@@ -31,7 +31,6 @@ Imports:
     gridExtra,
     extrafont,
     grid,
-    openxlsx,
     readxl,
     reshape2,
     tidyr
