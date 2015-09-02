@@ -61,7 +61,7 @@ Prior to starting the update process, you need to prepare the following tools.
     line.
     
     ```{r, eval = FALSE}
-    library("devtools")
+    install.packages("devtools", depends = TRUE)
     ```
     
 6. ['pocr'](https://github.com/pocdata/pocr)
