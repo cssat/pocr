@@ -85,7 +85,7 @@ list_invest_raceeth <- list(title = 'Who experiences inveistigations?', meta = '
 list_reporters <- list(title = 'Who reported these cases?', meta = '', type = 'donut', data = reporters)
 list_reason <- list(title = 'Why are households invesitgated?', meta = 'number of reports', type = 'donut', data = filt_invest_reason)
 
-list_ia <- toJSON(list(highlights = list_invest, ia_dash = c(list_invest_raceeth, list_reporters, list_reason)), pretty = TRUE)
+list_ia <- list(highlights = list_invest, ia_dash = c(list_invest_raceeth, list_reporters, list_reason))
 
 # DASHBOARD 2 TAB
 # count of children in out of home care
@@ -149,9 +149,12 @@ ooh_county <- filter(clean_ooh_county, date == max(date)) %>%
 
 list_hl_ooh <- list(title = 'Children in Out-of-Home Care', type = 'highlight', data = count, meta = '')
 
-list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = '', data = filt_ooh_raceeth, meta = '')
-# list_ <- list(title = 'How old are children in care', type = '', data = '', meta = '')
-list_ooh_county <- list(title = "How do Washington's counties compare?", type = '', data = ooh_county, meta = 'rate of children in care per 1,000')
+list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = 'table', data = filt_ooh_raceeth, meta = '')
+list_ooh_age <- list(title = 'How old are children in care', type = 'donut', data = ooh_age, meta = '')
+list_ooh_county <- list(title = "How do Washington's counties compare?", type = 'bar', data = ooh_county, meta = 'rate of children in care per 1,000')
+
+
+list_ooh <- list(highlights = list_hl_ooh, ooh_dash = c(list_ooh_raceeth, list_ooh_age, list_ooh_county))
 
 # DASHBOARD 3 TAB
 # outcomes
@@ -192,29 +195,32 @@ recent_data$discharge <- str_replace(recent_data$discharge, 'Out-of-Home ', '')
 six_months <- filter(recent_data, months.since.entering.out.of.home.care == 6) %>%
     select(discharge, percent)
 
-six_months$percent <- paste0(six_months$percent, '%')
+six_months$percent <- paste0(round(six_months$percent, 1), '%')
 
 # 1 YEAR
 
 one_year <- filter(recent_data, months.since.entering.out.of.home.care == 12) %>%
     select(discharge, percent)
 
-one_year$percent <- paste0(one_year$percent, '%')
+one_year$percent <- paste0(round(one_year$percent, 1), '%')
 
 # 2 YEARS
 
 two_years <- filter(recent_data, months.since.entering.out.of.home.care == 24) %>%
     select(discharge, percent)
 
-two_years$percent <- paste0(two_years$percent, '%')
+two_years$percent <- paste0(round(two_years$percent, 1), '%')
 
 # highlights
 
-list(title = 'How long do children stay in Care?', type = '', data = outcomes, meta = '')
+list_hl_los <- list(title = 'How long do children stay in Care?', type = '', data = outcomes, meta = '')
 
 list_6_months <- list(title = '6 Months', type = '', data = six_months, meta = '')
 list_1_year <- list(title = '1 Year', type = '', data = one_year, meta = '')
 list_2_year <- list(title = '2 Years', type = '', data = two_years, meta = '') 
+
+
+list_los <- list(highlights = list_hl_los, los_dash = c(list_6_months, list_1_year, list_2_year))
 
 # OUTCOMES
 # percent of children achieving permanency
@@ -241,49 +247,42 @@ query_perm_hl <- sqlQuery(annie, sp_perm_hl)
 clean_perm_hl <- cr_clean(query_perm_hl, date = F, select = 'age_grouping_cd')
 
 # AGE GROUPS
+# Current Age groups are 
+# Infancy (less than 1)
 
-# Age 0 - 4
+infancy <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 1, months.since.entering.out.of.home.care == 36) %>%
+    select(percent)
 
-filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 4) %>% 
-    select()    
+infancy$percent <- paste0(round(infancy$percent), '%')
+
+# Pre-School Age (3-4)
+
+pre_school <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 4, months.since.entering.out.of.home.care == 36) %>%
+    select(percent)
+
+pre_school$percent <- paste0(round(pre_school$percent), '%')
 
 # Age 5 - 9
 
 age_5_9 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 5) %>% 
     select(discharge, percent)   
 
-age_5_9$percent <- paste0(age_5_9$percent, '%')
-
-# Age 10 - 14
-
-age_10_14 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 6) %>% 
-    select(discharge, percent)   
-
-age_10_14$percent <- paste0(age_10_14$percent, '%')
-
-# Age 15 -17
-
-age_15_17 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 7) %>% 
-    select(discharge, percent)  
-
-age_15_17$percent <- paste0(age_15_17$percent, '%')
+age_5_9$percent <- paste0(round(age_5_9$percent), '%')
 
 # ALL
 
 all_ages <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 0) %>% 
     select(discharge, percent)  
 
-all_ages$percent <- paste0(all_ages$percent, '%')
+all_ages$percent <- paste0(round(all_ages$percent), '%')
 
 # putting data together
 
 list(title = 'Outcomes within 3 Years', type = '', data = perm, meta = '') 
 
-list(title = 'Age 0-4 at removal', type = 'bar', data = , meta = '')
-list(title = 'Age 5-9', type = 'bar', data = age_5_9, meta = '')
-list(title = 'Age 10 - 14', type = 'bar', data = age_10_14, meta = '')
-list(title = 'Age 15 - 17', type = 'bar', data = age_15_17, meta = '')
-
+list(title = 'Infancy (less than 1)', type = 'bar', data = infancy, meta = '')
+list(title = 'Pre-School (3-4)', type = 'bar', data = pre_school, meta = '')
+list(title = 'Pre to Early Adolescence (10-14)', type = 'bar', data = age_5_9, meta = '')
 list(title = 'All Ages', type = '', data = all_ages, meta = '')
 
 # close connection
@@ -291,11 +290,9 @@ odbcCloseAll()
 
 # putting the data together
 
-library(jsonlite)
 
-prettify(toJSON(rbind(investigations, count, outcomes, perm)))
 
-banner = rbind(investigations, count, outcomes, perm)
-ia_race = data.frame(`Race/Ethnicity` = c("Native", "White"), `Rate per 1,000` = c(237, 57), check.names = F)
-prettify(toJSON(list(banner = banner, ia_race = ia_race)))
+
+
+
 
