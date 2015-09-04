@@ -16,7 +16,7 @@ query_investigations <- sqlQuery(annie, sp_investigations)
 clean_investigations <- cr_clean(query_investigations, date.type = 2)
 
 investigations <- filter(clean_investigations, date == max(date)) %>%
-    select(- closed.investigations.and.assessments)
+    select(-closed.investigations.and.assessments)
 
 investigations_dat <- format(investigations$opened.investigations.and.assessments, big.mark = ',')
 investigations_label <- "investigations into reported child abuse or neglect"
@@ -79,11 +79,11 @@ invest_reason <- list(graphtype = 'bar', data = filt_invest_reason)
     
 # putting together for json
 
-list_invest <- list(title = 'Investigations into reported child abuse and neglect', meta = 'This includes CPS investigations as well as other assessments and services such as FAR and CFWS.', type = 'highlight', data = investigations)
+list_invest <- list(title = 'Investigations into reported child abuse and neglect', type = 'highlight', meta = 'This includes CPS investigations as well as other assessments and services such as FAR and CFWS.', data = investigations)
 
-list_invest_raceeth <- list(title = 'Who experiences inveistigations?', meta = '', type = 'table', data = filt_invest_raceeth)
-list_reporters <- list(title = 'Who reported these cases?', meta = '', type = 'donut', data = reporters)
-list_reason <- list(title = 'Why are households invesitgated?', meta = 'number of reports', type = 'donut', data = filt_invest_reason)
+list_invest_raceeth <- list(title = 'Who experiences inveistigations?', type = 'table', meta = '', data = filt_invest_raceeth)
+list_reporters <- list(title = 'Who reported these cases?', type = 'donut', meta = '', data = reporters)
+list_reason <- list(title = 'Why are households invesitgated?', type = 'donut', meta = 'number of reports', data = filt_invest_reason)
 
 list_ia <- list(highlights = list_invest, ia_dash = c(list_invest_raceeth, list_reporters, list_reason))
 
@@ -136,7 +136,6 @@ clean_ooh_county_count <- cr_clean(query_ooh_county_count, select = 'county_cd',
 high_cnt_county <- filter(clean_ooh_county_count, date == max(date)) %>% arrange(-total.in.out.of.home.care.1st.day) %>% slice(1:4) %>% select(county.cd)
 
 sp_ooh_county <- stored_procedure('ooh_pit_rates', county = high_cnt_county[, 1])
-stored_procedure('ooh_pit_rates', county = c(test))
 query_ooh_county <- sqlQuery(annie, sp_ooh_county)
 clean_ooh_county <- cr_clean(query_ooh_county, select = 'county_cd', date.type = 2)
 
@@ -147,12 +146,11 @@ ooh_county <- filter(clean_ooh_county, date == max(date)) %>%
 
 # putting the data together
 
-list_hl_ooh <- list(title = 'Children in Out-of-Home Care', type = 'highlight', data = count, meta = '')
+list_hl_ooh <- list(title = 'Children in Out-of-Home Care', type = 'highlight', meta = '', data = count)
 
-list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = 'table', data = filt_ooh_raceeth, meta = '')
-list_ooh_age <- list(title = 'How old are children in care', type = 'donut', data = ooh_age, meta = '')
-list_ooh_county <- list(title = "How do Washington's counties compare?", type = 'bar', data = ooh_county, meta = 'rate of children in care per 1,000')
-
+list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = 'table', meta = '', data = filt_ooh_raceeth)
+list_ooh_age <- list(title = 'How old are children in care', type = 'donut', meta = '', data = ooh_age)
+list_ooh_county <- list(title = "How do Washington's counties compare?", type = 'bar', meta = 'rate of children in care per 1,000', data = ooh_county)
 
 list_ooh <- list(highlights = list_hl_ooh, ooh_dash = c(list_ooh_raceeth, list_ooh_age, list_ooh_county))
 
@@ -213,12 +211,11 @@ two_years$percent <- paste0(round(two_years$percent, 1), '%')
 
 # highlights
 
-list_hl_los <- list(title = 'How long do children stay in Care?', type = '', data = outcomes, meta = '')
+list_hl_los <- list(title = 'How long do children stay in Care?', type = '', meta = '', data = outcomes)
 
-list_6_months <- list(title = '6 Months', type = '', data = six_months, meta = '')
-list_1_year <- list(title = '1 Year', type = '', data = one_year, meta = '')
-list_2_year <- list(title = '2 Years', type = '', data = two_years, meta = '') 
-
+list_6_months <- list(title = '6 Months', type = '', meta = '', data = six_months)
+list_1_year <- list(title = '1 Year', type = '', meta = '', data = one_year)
+list_2_year <- list(title = '2 Years', type = '', meta = '', data = two_years) 
 
 list_los <- list(highlights = list_hl_los, los_dash = c(list_6_months, list_1_year, list_2_year))
 
@@ -251,14 +248,14 @@ clean_perm_hl <- cr_clean(query_perm_hl, date = F, select = 'age_grouping_cd')
 # Infancy (less than 1)
 
 infancy <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 1, months.since.entering.out.of.home.care == 36) %>%
-    select(percent)
+    select(discharge, percent) 
 
 infancy$percent <- paste0(round(infancy$percent), '%')
 
 # Pre-School Age (3-4)
 
 pre_school <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 4, months.since.entering.out.of.home.care == 36) %>%
-    select(percent)
+    select(discharge, percent)  
 
 pre_school$percent <- paste0(round(pre_school$percent), '%')
 
@@ -278,20 +275,22 @@ all_ages$percent <- paste0(round(all_ages$percent), '%')
 
 # putting data together
 
-list(title = 'Outcomes within 3 Years', type = '', data = perm, meta = '') 
+list_hl_outcomes <- list(title = 'Outcomes within 3 Years', type = '', meta = '', data = perm) 
 
-list(title = 'Infancy (less than 1)', type = 'bar', data = infancy, meta = '')
-list(title = 'Pre-School (3-4)', type = 'bar', data = pre_school, meta = '')
-list(title = 'Pre to Early Adolescence (10-14)', type = 'bar', data = age_5_9, meta = '')
-list(title = 'All Ages', type = '', data = all_ages, meta = '')
+list_infancy <- list(title = 'Infancy (less than 1)', type = 'bar', meta = '', data = infancy)
+list_pre_school <- list(title = 'Pre-School (3-4)', type = 'bar', meta = '', data = pre_school)
+list_age_10_14 <- list(title = 'Pre to Early Adolescence (10-14)', type = 'bar', meta = '', data = age_5_9)
+list_age_all <- list(title = 'All Ages', type = 'bar', meta = '', data = all_ages)
+
+list_outcomes <- list(highlights = list_hl_outcomes, outcomes_dash = c(list_infancy, list_pre_school, list_age_10_14, list_age_all))
 
 # close connection
 odbcCloseAll()
 
 # putting the data together
 
-
-
+dashboard_json <- toJSON(list(investigations = list_ia, ooh = list_ooh, los = list_los, outcomes = list_outcomes), auto_unbox = TRUE, pretty = TRUE)
+dashboard_json
 
 
 
