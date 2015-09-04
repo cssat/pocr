@@ -2,6 +2,7 @@
 
 library(RODBC)
 library(stringr)
+library(jsonlite)
 library(pocr)
 
 annie <- odbcConnect("annie")
@@ -23,6 +24,8 @@ investigations_label <- "investigations into reported child abuse or neglect"
 investigations <- data.frame(investigations_dat, investigations_label)
 names(investigations) <- name
 
+# investigations <- list(highlight = 'investigations', data = investigations)
+
 # INVESTIGATIONS DATA
 # RACE/ETHNICITY
 
@@ -31,6 +34,8 @@ query_invest_raceeth <- sqlQuery(annie, sp_invest_raceeth)
 clean_invest_raceeth <- cr_clean(query_invest_raceeth, select = 'ethnicity_cd', date.type = 2)
 
 filt_invest_raceeth <- filter(clean_invest_raceeth, date == max(date)) %>% select(race.ethnicity, opened.investigations.and.assessments)
+
+names(filt_invest_raceeth) <- c('Race/Ethnicity', 'Rate per 1,000')
 
 # REPORTERS
 
@@ -52,6 +57,9 @@ percent <- 100 - sum(filt_invest_report$percent)
 other_rep <- data.frame(reporter.desc, percent)
 
 reporters <- rbind(filt_invest_report, other_rep)
+names(reporters) <- c('reporter_desc', 'percent')
+
+# reporters <- list(graphtype = "donut", data = reporters)
 
 # example
 # prettify(toJSON(list(graphtype = "donut", data = reporters)))
@@ -66,6 +74,18 @@ filt_invest_reason <- filter(clean_invest_reason, date == max(date)) %>%
     mutate(reports = opened.investigations.and.assessments) %>%
     select(allegation, reports) %>%
     arrange(allegation)
+
+invest_reason <- list(graphtype = 'bar', data = filt_invest_reason)
+    
+# putting together for json
+
+list_invest <- list(title = 'Investigations into reported child abuse and neglect', meta = 'This includes CPS investigations as well as other assessments and services such as FAR and CFWS.', type = 'highlight', data = investigations)
+
+list_invest_raceeth <- list(title = 'Who experiences inveistigations?', meta = '', type = 'table', data = filt_invest_raceeth)
+list_reporters <- list(title = 'Who reported these cases?', meta = '', type = 'donut', data = reporters)
+list_reason <- list(title = 'Why are households invesitgated?', meta = 'number of reports', type = 'donut', data = filt_invest_reason)
+
+list_ia <- toJSON(list(highlights = list_invest, ia_dash = c(list_invest_raceeth, list_reporters, list_reason)), pretty = TRUE)
 
 # DASHBOARD 2 TAB
 # count of children in out of home care
@@ -89,7 +109,8 @@ sp_ooh_raceeth <- stored_procedure('ooh_pit_rates', ethnicity = c(1, 3, 5, 8, 9)
 query_ooh_raceeth <- sqlQuery(annie, sp_ooh_raceeth)
 clean_ooh_raceeth <- cr_clean(query_ooh_raceeth, select = 'ethnicity_cd', date.type = 2)
 
-filt_ooh_raceeth <- filter(clean_ooh_raceeth, date == max(date)) %>% select(race.ethnicity, total.in.out.of.home.care.1st.day)
+filt_ooh_raceeth <- filter(clean_ooh_raceeth, date == max(date)) %>% select(race.ethnicity, total.in.out.of.home.care.1st.day) 
+names(filt_ooh_raceeth) <- c('Race/Ethnicity', 'Rate')
 
 # AGE IN CARE
 
@@ -120,9 +141,17 @@ query_ooh_county <- sqlQuery(annie, sp_ooh_county)
 clean_ooh_county <- cr_clean(query_ooh_county, select = 'county_cd', date.type = 2)
 
 ooh_county <- filter(clean_ooh_county, date == max(date)) %>% 
-    mutate(rate = total.in.out.of.home.care.1st.day) %>% 
-    arrange(-rate) %>%
-    select(county, rate)
+    mutate(Rate = total.in.out.of.home.care.1st.day, County = county) %>%
+    arrange(-Rate) %>%
+    select(County, Rate)
+
+# putting the data together
+
+list_hl_ooh <- list(title = 'Children in Out-of-Home Care', type = 'highlight', data = count, meta = '')
+
+list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = '', data = filt_ooh_raceeth, meta = '')
+# list_ <- list(title = 'How old are children in care', type = '', data = '', meta = '')
+list_ooh_county <- list(title = "How do Washington's counties compare?", type = '', data = ooh_county, meta = 'rate of children in care per 1,000')
 
 # DASHBOARD 3 TAB
 # outcomes
@@ -179,6 +208,15 @@ two_years <- filter(recent_data, months.since.entering.out.of.home.care == 24) %
 
 two_years$percent <- paste0(two_years$percent, '%')
 
+# highlights
+
+list(title = 'How long do children stay in Care?', type = '', data = outcomes, meta = '')
+
+list_6_months <- list(title = '6 Months', type = '', data = six_months, meta = '')
+list_1_year <- list(title = '1 Year', type = '', data = one_year, meta = '')
+list_2_year <- list(title = '2 Years', type = '', data = two_years, meta = '') 
+
+# OUTCOMES
 # percent of children achieving permanency
 
 sp_perm <- stored_procedure('ooh_outcomes')
@@ -196,6 +234,59 @@ perm_label <- paste('children who reunify with their parents within', length_sta
 perm <- data.frame(perm_dat, perm_label)
 names(perm) <- name
 
+# HIGHLIGHTS
+
+sp_perm_hl <- stored_procedure('ooh_outcomes', age = c(0:8))
+query_perm_hl <- sqlQuery(annie, sp_perm_hl)
+clean_perm_hl <- cr_clean(query_perm_hl, date = F, select = 'age_grouping_cd')
+
+# AGE GROUPS
+
+# Age 0 - 4
+
+filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 4) %>% 
+    select()    
+
+# Age 5 - 9
+
+age_5_9 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 5) %>% 
+    select(discharge, percent)   
+
+age_5_9$percent <- paste0(age_5_9$percent, '%')
+
+# Age 10 - 14
+
+age_10_14 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 6) %>% 
+    select(discharge, percent)   
+
+age_10_14$percent <- paste0(age_10_14$percent, '%')
+
+# Age 15 -17
+
+age_15_17 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 7) %>% 
+    select(discharge, percent)  
+
+age_15_17$percent <- paste0(age_15_17$percent, '%')
+
+# ALL
+
+all_ages <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 0) %>% 
+    select(discharge, percent)  
+
+all_ages$percent <- paste0(all_ages$percent, '%')
+
+# putting data together
+
+list(title = 'Outcomes within 3 Years', type = '', data = perm, meta = '') 
+
+list(title = 'Age 0-4 at removal', type = 'bar', data = , meta = '')
+list(title = 'Age 5-9', type = 'bar', data = age_5_9, meta = '')
+list(title = 'Age 10 - 14', type = 'bar', data = age_10_14, meta = '')
+list(title = 'Age 15 - 17', type = 'bar', data = age_15_17, meta = '')
+
+list(title = 'All Ages', type = '', data = all_ages, meta = '')
+
+# close connection
 odbcCloseAll()
 
 # putting the data together
