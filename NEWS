@@ -8,6 +8,7 @@ Updated R scripts:
   county dashboards supported)
 - corrected cr_clean() so that it is now functional (Erik)
 - added a function to update OFM data (Mark)
+- tidied up import behavior across scripts
 
 Updated R vignettes:
 - added vignette folder and updated DESCRIPTION to support vignettes
