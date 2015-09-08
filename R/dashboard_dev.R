@@ -5,19 +5,15 @@ library(stringr)
 library(jsonlite)
 library(pocr)
 
-dashboard_json <- function() {
-    annie <- odbcConnect("annie")
-    # names for overview data
-#     name <- c('data', 'label')
-    # highlight names 
+dashboard_json <- function(connection = "annie") {
+    con <- odbcConnect(connection)
     name <- c('label', 'data')
-    
     
     # DASHBOARD 1 TAB
     # opened iunvestigations comes from most recent count of invesitations and assessments
     
     sp_investigations <- stored_procedure('ia_trends_counts')
-    query_investigations <- sqlQuery(annie, sp_investigations)
+    query_investigations <- sqlQuery(con, sp_investigations)
     clean_investigations <- cr_clean(query_investigations, date.type = 2)
     
     investigations <- filter(clean_investigations, date == max(date)) %>%
@@ -33,7 +29,7 @@ dashboard_json <- function() {
     # RACE/ETHNICITY
     
     sp_invest_raceeth <- stored_procedure('ia_trends_rates', ethnicity = c(1, 3, 5, 8, 9))
-    query_invest_raceeth <- sqlQuery(annie, sp_invest_raceeth)
+    query_invest_raceeth <- sqlQuery(con, sp_invest_raceeth)
     clean_invest_raceeth <- cr_clean(query_invest_raceeth, select = 'ethnicity_cd', date.type = 2)
     
     filt_invest_raceeth <- filter(clean_invest_raceeth, date == max(date)) %>% select(race.ethnicity, opened.investigations.and.assessments)
@@ -44,7 +40,7 @@ dashboard_json <- function() {
     # REPORTERS
     
     sp_invest_report <- stored_procedure('ia_trends_counts', reporter = c(1:14))
-    query_invest_report <- sqlQuery(annie, sp_invest_report)
+    query_invest_report <- sqlQuery(con, sp_invest_report)
     clean_invest_report <- cr_clean(query_invest_report , select = 'cd_reporter_type', date.type = 2)
     
     filt_invest_report <- filter(clean_invest_report, date == max(date)) %>%
@@ -62,12 +58,11 @@ dashboard_json <- function() {
     
     reporters <- rbind(filt_invest_report, other_rep)
     names(reporters) <- name
-#     names(reporters) <- c('reporter_desc', 'percent')
     
     # REASONS
     
     sp_invest_reason <- stored_procedure('ia_trends_counts', allegation = c(1:3))
-    query_invest_reason <- sqlQuery(annie, sp_invest_reason)
+    query_invest_reason <- sqlQuery(con, sp_invest_reason)
     clean_invest_reason <- cr_clean(query_invest_reason, select = 'cd_allegation', date.type = 2)
     
     filt_invest_reason <- filter(clean_invest_reason, date == max(date)) %>%
@@ -94,7 +89,7 @@ dashboard_json <- function() {
     # count of children in out of home care
     
     sp_count_ooh <- stored_procedure('ooh_pit_counts')
-    query_count_ooh <- sqlQuery(annie, sp_count_ooh)
+    query_count_ooh <- sqlQuery(con, sp_count_ooh)
     clean_count_ooh <- cr_clean(query_count_ooh)
     
     count_ooh <- filter(clean_count_ooh, date == max(date))
@@ -109,20 +104,19 @@ dashboard_json <- function() {
     # RACE/ETHNICITY
     
     sp_ooh_raceeth <- stored_procedure('ooh_pit_rates', ethnicity = c(1, 3, 5, 8, 9))
-    query_ooh_raceeth <- sqlQuery(annie, sp_ooh_raceeth)
+    query_ooh_raceeth <- sqlQuery(con, sp_ooh_raceeth)
     clean_ooh_raceeth <- cr_clean(query_ooh_raceeth, select = 'ethnicity_cd', date.type = 2)
     
     filt_ooh_raceeth <- filter(clean_ooh_raceeth, date == max(date)) %>% select(race.ethnicity, total.in.out.of.home.care.1st.day) 
     
     filt_ooh_raceeth$total.in.out.of.home.care.1st.day <- round(filt_ooh_raceeth$total.in.out.of.home.care.1st.day, 1)
     
-#     names(filt_ooh_raceeth) <- c('Race/Ethnicity', 'Rate')
     names(filt_ooh_raceeth) <- name
     
     # AGE IN CARE
     
     sp_ooh_age <- stored_procedure('ooh_pit_count', age = c(1:4))
-    query_ooh_age <- sqlQuery(annie, sp_ooh_age)
+    query_ooh_age <- sqlQuery(con, sp_ooh_age)
     clean_ooh_age <- cr_clean(query_ooh_age , select = 'age_grouping_cd', date.type = 2)
     
     ooh_age <- filter(clean_ooh_age, date == max(date)) %>%
@@ -138,13 +132,13 @@ dashboard_json <- function() {
     
     # getting the 4 counties with the most kids in ooh
     sp_ooh_county_count <- stored_procedure('ooh_pit_count', county = c(1:34))
-    query_ooh_county_count <- sqlQuery(annie, sp_ooh_county_count)
+    query_ooh_county_count <- sqlQuery(con, sp_ooh_county_count)
     clean_ooh_county_count <- cr_clean(query_ooh_county_count, select = 'county_cd', date.type = 2)
     
     high_cnt_county <- filter(clean_ooh_county_count, date == max(date)) %>% arrange(-total.in.out.of.home.care.1st.day) %>% slice(1:4) %>% select(county.cd)
     
     sp_ooh_county <- stored_procedure('ooh_pit_rates', county = high_cnt_county[, 1])
-    query_ooh_county <- sqlQuery(annie, sp_ooh_county)
+    query_ooh_county <- sqlQuery(con, sp_ooh_county)
     clean_ooh_county <- cr_clean(query_ooh_county, select = 'county_cd', date.type = 2)
     
     ooh_county <- filter(clean_ooh_county, date == max(date)) %>% 
@@ -171,7 +165,7 @@ dashboard_json <- function() {
     # outcomes
     
     sp_outcomes <- stored_procedure('ooh_outcomes')
-    query_outcomes <- sqlQuery(annie, sp_outcomes)
+    query_outcomes <- sqlQuery(con, sp_outcomes)
     clean_outcomes <- cr_clean(query_outcomes, date = F)
     
     outcomes_date <- filter(clean_outcomes, percent < 50, cd.discharge.type == 0) %>% 
@@ -244,7 +238,7 @@ dashboard_json <- function() {
     # percent of children achieving permanency
     
     sp_perm <- stored_procedure('ooh_outcomes')
-    query_perm <- sqlQuery(annie, sp_perm)
+    query_perm <- sqlQuery(con, sp_perm)
     clean_perm <- cr_clean(query_perm, date = F)
     
     length_stay <- 36
@@ -261,7 +255,7 @@ dashboard_json <- function() {
     ### HIGHLIGHTS
     
     sp_perm_hl <- stored_procedure('ooh_outcomes', age = c(0:8))
-    query_perm_hl <- sqlQuery(annie, sp_perm_hl)
+    query_perm_hl <- sqlQuery(con, sp_perm_hl)
     clean_perm_hl <- cr_clean(query_perm_hl, date = F, select = 'age_grouping_cd')
     
     # AGE GROUPS
