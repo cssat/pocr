@@ -1,12 +1,25 @@
-
+#' Update the data for website dashboards.
+#' 
+#' @description This is a function to update the data for the website dashboards that 
+#' should be run after each data load.
+#' 
+#' @param annie_connection A character string for ODBC connection defaulted to \code{"annie"}
+#' 
+#' @return The function returns a json object. 
+#' 
+#' @import RODBC
+#' @import stringr
+#' @import jsonlite
+#' 
+#' @export
 
 library(RODBC)
 library(stringr)
 library(jsonlite)
 library(pocr)
 
-dashboard_json <- function(connection = "annie") {
-    con <- odbcConnect(connection)
+get_site_dashboard_data <- function(annie_connection = "annie") {
+    con <- odbcConnect(annie_connection)
     name <- c('label', 'data')
     
     # DASHBOARD 1 TAB
@@ -317,4 +330,4 @@ dashboard_json <- function(connection = "annie") {
     return(dashboard_json)
 }
 
-dashboard_json()
+get_site_dashboard_data()

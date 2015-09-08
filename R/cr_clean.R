@@ -5,8 +5,8 @@
 #' @param select optional character vector of columns to keep
 #' @param date boolean indicating whether any \code{datetime} columns
 #' @param date.type 1 is quarter and 2 is year
-#' @param qry.type should be converted to \code{Date} classes (default is 
-#' \code{T}).
+#' @param qry.type argument to select either unique, all or first (default is 
+#' \code{"all.unique"}).
 #' 
 #' @export
 cr_clean <- function (df, select = NULL, date = TRUE, date.type = 1, qry.type = "all.unique") 
