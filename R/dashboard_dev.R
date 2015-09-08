@@ -25,8 +25,6 @@ dashboard_json <- function() {
     investigations <- data.frame(investigations_dat, investigations_label)
     names(investigations) <- name
     
-    # investigations <- list(highlight = 'investigations', data = investigations)
-    
     # INVESTIGATIONS DATA
     # RACE/ETHNICITY
     
@@ -36,6 +34,7 @@ dashboard_json <- function() {
     
     filt_invest_raceeth <- filter(clean_invest_raceeth, date == max(date)) %>% select(race.ethnicity, opened.investigations.and.assessments)
     
+    filt_invest_raceeth$opened.investigations.and.assessments <- round(filt_invest_raceeth$opened.investigations.and.assessments, 1)
     names(filt_invest_raceeth) <- c('Race/Ethnicity', 'Rate per 1,000')
     
     # REPORTERS
@@ -60,11 +59,6 @@ dashboard_json <- function() {
     reporters <- rbind(filt_invest_report, other_rep)
     names(reporters) <- c('reporter_desc', 'percent')
     
-    # reporters <- list(graphtype = "donut", data = reporters)
-    
-    # example
-    # prettify(toJSON(list(graphtype = "donut", data = reporters)))
-    
     # REASONS
     
     sp_invest_reason <- stored_procedure('ia_trends_counts', allegation = c(1:3))
@@ -80,7 +74,7 @@ dashboard_json <- function() {
     
     # putting together for json
     
-    list_invest <- list(title = 'Investigations into reported child abuse and neglect', type = 'highlights', meta = 'This includes CPS investigations as well as other assessments and services such as FAR and CFWS.', highlight = investigations)
+    list_invest <- list(title = 'Investigations into reported child abuse and neglect', meta = 'This includes CPS investigations as well as other assessments and services such as FAR and CFWS.', highlights = investigations)
     
     list_invest_raceeth <- list(title = 'Who experiences inveistigations?', type = 'table', meta = '', data = filt_invest_raceeth)
     list_reporters <- list(title = 'Who reported these cases?', type = 'donut', meta = '', data = reporters)
@@ -89,7 +83,7 @@ dashboard_json <- function() {
     
     list_ia <- list(dash1 = c(list_invest, list_dashboard))
     
-    # DASHBOARD 2 TAB
+    ### DASHBOARD 2 TAB
     # count of children in out of home care
     
     sp_count_ooh <- stored_procedure('ooh_pit_counts')
@@ -112,6 +106,9 @@ dashboard_json <- function() {
     clean_ooh_raceeth <- cr_clean(query_ooh_raceeth, select = 'ethnicity_cd', date.type = 2)
     
     filt_ooh_raceeth <- filter(clean_ooh_raceeth, date == max(date)) %>% select(race.ethnicity, total.in.out.of.home.care.1st.day) 
+    
+    filt_ooh_raceeth$total.in.out.of.home.care.1st.day <- round(filt_ooh_raceeth$total.in.out.of.home.care.1st.day, 1)
+    
     names(filt_ooh_raceeth) <- c('Race/Ethnicity', 'Rate')
     
     # AGE IN CARE
@@ -126,8 +123,7 @@ dashboard_json <- function() {
         summarize(percent = round((total.in.out.of.home.care.1st.day/count) * 100))
     
     ooh_age$age.grouping <- str_trim(str_replace_all(str_replace_all(ooh_age$age.grouping, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
-    ooh_age$percent <- paste0(ooh_age$percent, '%')
-    
+
     # COUNTY HIGHLIGHTS
     
     # getting the 4 counties with the most kids in ooh
@@ -146,9 +142,11 @@ dashboard_json <- function() {
         arrange(-Rate) %>%
         select(County, Rate)
     
+    ooh_county$Rate <- round(ooh_county$Rate, 1)
+    
     # putting the data together
     
-    list_hl_ooh <- list(title = 'Children in Out-of-Home Care', type = 'highlights', meta = '', highlight = count)
+    list_hl_ooh <- list(title = 'Children in Out-of-Home Care', meta = '', highlights = count)
     
     list_ooh_raceeth <- list(title = 'Who is in out-of-home care?', type = 'table', meta = '', data = filt_ooh_raceeth)
     list_ooh_age <- list(title = 'How old are children in care', type = 'donut', meta = '', data = ooh_age)
@@ -157,7 +155,7 @@ dashboard_json <- function() {
 
     list_ooh <- list(dash2 = c(list_hl_ooh, list_dashboard))
     
-    # DASHBOARD 3 TAB
+    ### DASHBOARD 3 TAB
     # outcomes
     
     sp_outcomes <- stored_procedure('ooh_outcomes')
@@ -182,7 +180,7 @@ dashboard_json <- function() {
     outcomes <- data.frame(outcomes_dat, outcomes_label)
     names(outcomes) <- name
     
-    # Highlights
+    ### Highlights
     
     recent_date <- filter(clean_outcomes, months.since.entering.out.of.home.care == 24, cd.discharge.type == 0) %>% 
         filter(cohort.period == max(cohort.period)) %>%
@@ -214,7 +212,7 @@ dashboard_json <- function() {
     
     # highlights
     
-    list_hl_los <- list(title = 'How long do children stay in Care?', type = 'stat', meta = '', hihglights = outcomes)
+    list_hl_los <- list(title = 'How long do children stay in Care?', meta = '', hihglights = outcomes)
     
     list_6_months <- list(title = '6 Months', type = 'stat', meta = '', data = six_months)
     list_1_year <- list(title = '1 Year', type = 'stat', meta = '', data = one_year)
@@ -224,7 +222,7 @@ dashboard_json <- function() {
     
     list_los <- list(dash3 = c(list_hl_los, list_dashboard))
     
-    # OUTCOMES
+    ### OUTCOMES
     # percent of children achieving permanency
     
     sp_perm <- stored_procedure('ooh_outcomes')
@@ -242,7 +240,7 @@ dashboard_json <- function() {
     perm <- data.frame(perm_dat, perm_label)
     names(perm) <- name
     
-    # HIGHLIGHTS
+    ### HIGHLIGHTS
     
     sp_perm_hl <- stored_procedure('ooh_outcomes', age = c(0:8))
     query_perm_hl <- sqlQuery(annie, sp_perm_hl)
@@ -280,7 +278,7 @@ dashboard_json <- function() {
     
     # putting data together
     
-    list_hl_outcomes <- list(title = 'Outcomes within 3 Years', type = '', meta = '', highlights = perm) 
+    list_hl_outcomes <- list(title = 'Outcomes within 3 Years', meta = '', highlights = perm) 
     
     list_infancy <- list(title = 'Infancy (less than 1)', type = 'bar', meta = '', data = infancy)
     list_pre_school <- list(title = 'Pre-School (3-4)', type = 'bar', meta = '', data = pre_school)
@@ -295,7 +293,6 @@ dashboard_json <- function() {
     
     # putting the data together
     
-#     dashboard_json <- toJSON(list(investigations = list_ia, ooh = list_ooh, los = list_los, outcomes = list_outcomes), auto_unbox = TRUE, pretty = TRUE)
     dashboard_json <- toJSON(list(list_ia, list_ooh, list_los, list_outcomes), auto_unbox = TRUE, pretty = TRUE)
     return(dashboard_json)
 }
