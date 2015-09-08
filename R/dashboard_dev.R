@@ -7,7 +7,11 @@ library(pocr)
 
 dashboard_json <- function() {
     annie <- odbcConnect("annie")
-    name <- c('data', 'label')
+    # names for overview data
+#     name <- c('data', 'label')
+    # highlight names 
+    name <- c('label', 'data')
+    
     
     # DASHBOARD 1 TAB
     # opened iunvestigations comes from most recent count of invesitations and assessments
@@ -22,7 +26,7 @@ dashboard_json <- function() {
     investigations_dat <- format(investigations$opened.investigations.and.assessments, big.mark = ',')
     investigations_label <- "investigations into reported child abuse or neglect"
     
-    investigations <- data.frame(investigations_dat, investigations_label)
+    investigations <- data.frame(investigations_label, investigations_dat)
     names(investigations) <- name
     
     # INVESTIGATIONS DATA
@@ -35,7 +39,7 @@ dashboard_json <- function() {
     filt_invest_raceeth <- filter(clean_invest_raceeth, date == max(date)) %>% select(race.ethnicity, opened.investigations.and.assessments)
     
     filt_invest_raceeth$opened.investigations.and.assessments <- round(filt_invest_raceeth$opened.investigations.and.assessments, 1)
-    names(filt_invest_raceeth) <- c('Race/Ethnicity', 'Rate per 1,000')
+    names(filt_invest_raceeth) <- name
     
     # REPORTERS
     
@@ -57,7 +61,8 @@ dashboard_json <- function() {
     other_rep <- data.frame(reporter.desc, percent)
     
     reporters <- rbind(filt_invest_report, other_rep)
-    names(reporters) <- c('reporter_desc', 'percent')
+    names(reporters) <- name
+#     names(reporters) <- c('reporter_desc', 'percent')
     
     # REASONS
     
@@ -70,6 +75,8 @@ dashboard_json <- function() {
         select(allegation, reports) %>%
         arrange(allegation)
     
+    names(filt_invest_reason) <- name
+
     invest_reason <- list(graphtype = 'bar', data = filt_invest_reason)
     
     # putting together for json
@@ -95,7 +102,7 @@ dashboard_json <- function() {
     count_data <- format(count_ooh$total.in.out.of.home.care.1st.day, big.mark = ',')
     count_label <- paste('children in out-of-home care on', as.character(pretty_date(count_ooh$date)))
     
-    count <- data.frame(count_data, count_label)
+    count <- data.frame(count_label, count_data)
     names(count) <- name
     
     # OOH
@@ -109,7 +116,8 @@ dashboard_json <- function() {
     
     filt_ooh_raceeth$total.in.out.of.home.care.1st.day <- round(filt_ooh_raceeth$total.in.out.of.home.care.1st.day, 1)
     
-    names(filt_ooh_raceeth) <- c('Race/Ethnicity', 'Rate')
+#     names(filt_ooh_raceeth) <- c('Race/Ethnicity', 'Rate')
+    names(filt_ooh_raceeth) <- name
     
     # AGE IN CARE
     
@@ -123,6 +131,8 @@ dashboard_json <- function() {
         summarize(percent = round((total.in.out.of.home.care.1st.day/count) * 100))
     
     ooh_age$age.grouping <- str_trim(str_replace_all(str_replace_all(ooh_age$age.grouping, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
+
+    names(ooh_age) <- name
 
     # COUNTY HIGHLIGHTS
     
@@ -144,6 +154,8 @@ dashboard_json <- function() {
     
     ooh_county$Rate <- round(ooh_county$Rate, 1)
     
+    names(ooh_county) <- name
+
     # putting the data together
     
     list_hl_ooh <- list(title = 'Children in Out-of-Home Care', meta = '', highlights = count)
@@ -177,7 +189,7 @@ dashboard_json <- function() {
     
     outcomes_label <- "median length of stay in out-of-home care"
     
-    outcomes <- data.frame(outcomes_dat, outcomes_label)
+    outcomes <- data.frame(outcomes_label, outcomes_dat)
     names(outcomes) <- name
     
     ### Highlights
@@ -195,6 +207,8 @@ dashboard_json <- function() {
         select(discharge, percent)
     
     six_months$percent <- paste0(round(six_months$percent, 1), '%')
+
+    names(six_months) <- name
     
     # 1 YEAR
     
@@ -203,22 +217,26 @@ dashboard_json <- function() {
     
     one_year$percent <- paste0(round(one_year$percent, 1), '%')
     
+    names(one_year) <- name
+
     # 2 YEARS
     
     two_years <- filter(recent_data, months.since.entering.out.of.home.care == 24) %>%
         select(discharge, percent)
     
     two_years$percent <- paste0(round(two_years$percent, 1), '%')
+
+    names(two_years) <- name
     
     # highlights
     
-    list_hl_los <- list(title = 'How long do children stay in Care?', meta = '', hihglights = outcomes)
+    list_hl_los <- list(title = 'How long do children stay in Care?', meta = '', highlights = outcomes)
     
     list_6_months <- list(title = '6 Months', type = 'stat', meta = '', data = six_months)
     list_1_year <- list(title = '1 Year', type = 'stat', meta = '', data = one_year)
     list_2_year <- list(title = '2 Years', type = 'stat', meta = '', data = two_years) 
     
-    list_dashboard <- list(dashboard = list(`6 Months` = list_6_months, `1 Year` = list_1_year, `2 Years` = list_2_year))
+    list_dashboard <- list(dashboard = list('6-Months' = list_6_months, '1-Year' = list_1_year, '2-Years' = list_2_year))
     
     list_los <- list(dash3 = c(list_hl_los, list_dashboard))
     
@@ -237,7 +255,7 @@ dashboard_json <- function() {
     perm_dat <- paste0(round(three_year_reun$percent), '%')
     perm_label <- paste('children who reunify with their parents within', length_stay/12, 'years')
     
-    perm <- data.frame(perm_dat, perm_label)
+    perm <- data.frame(perm_label, perm_dat)
     names(perm) <- name
     
     ### HIGHLIGHTS
@@ -255,6 +273,8 @@ dashboard_json <- function() {
     
     infancy$percent <- paste0(round(infancy$percent), '%')
     
+    names(infancy) <- name
+
     # Pre-School Age (3-4)
     
     pre_school <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 4, months.since.entering.out.of.home.care == 36) %>%
@@ -262,6 +282,8 @@ dashboard_json <- function() {
     
     pre_school$percent <- paste0(round(pre_school$percent), '%')
     
+    names(pre_school) <- name
+
     # Age 5 - 9
     
     age_5_9 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 5) %>% 
@@ -269,6 +291,8 @@ dashboard_json <- function() {
     
     age_5_9$percent <- paste0(round(age_5_9$percent), '%')
     
+    names(age_5_9) <- name
+
     # ALL
     
     all_ages <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 0) %>% 
@@ -276,6 +300,8 @@ dashboard_json <- function() {
     
     all_ages$percent <- paste0(round(all_ages$percent), '%')
     
+    names(all_ages) <- name
+
     # putting data together
     
     list_hl_outcomes <- list(title = 'Outcomes within 3 Years', meta = '', highlights = perm) 
@@ -284,7 +310,7 @@ dashboard_json <- function() {
     list_pre_school <- list(title = 'Pre-School (3-4)', type = 'bar', meta = '', data = pre_school)
     list_age_10_14 <- list(title = 'Pre to Early Adolescence (10-14)', type = 'bar', meta = '', data = age_5_9)
     list_age_all <- list(title = 'All Ages', type = 'bar', meta = '', data = all_ages)
-    list_dashboard <- list(dashboard = list(Infants = list_infancy, `Pre-School` = list_pre_school, `10 to 14` = list_age_10_14, `All Ages` = list_age_all))
+    list_dashboard <- list(dashboard = list(Infants = list_infancy, `Pre-School` = list_pre_school, `10-to-14` = list_age_10_14, `All-Ages` = list_age_all))
     
     list_outcomes <- list(dash4 = c(list_hl_outcomes, list_dashboard))    
     
