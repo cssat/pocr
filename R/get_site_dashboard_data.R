@@ -13,13 +13,8 @@
 #' 
 #' @export
 
-library(RODBC)
-library(stringr)
-library(jsonlite)
-library(pocr)
-
-get_site_dashboard_data <- function(annie_connection = "annie") {
-    con <- odbcConnect(annie_connection)
+get_site_dashboard_data <- function(annie_connection = annie_connection) { 
+    con <- annie_connection
     name <- c('label', 'data')
     
     # DASHBOARD 1 TAB
@@ -84,7 +79,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
         arrange(allegation)
     
     names(filt_invest_reason) <- name
-
+    
     invest_reason <- list(graphtype = 'bar', data = filt_invest_reason)
     
     # putting together for json
@@ -138,9 +133,9 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
         summarize(percent = round((total.in.out.of.home.care.1st.day/count) * 100))
     
     ooh_age$age.grouping <- str_trim(str_replace_all(str_replace_all(ooh_age$age.grouping, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
-
+    
     names(ooh_age) <- name
-
+    
     # COUNTY HIGHLIGHTS
     
     # getting the 4 counties with the most kids in ooh
@@ -162,7 +157,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     ooh_county$Rate <- round(ooh_county$Rate, 1)
     
     names(ooh_county) <- name
-
+    
     # putting the data together
     
     list_hl_ooh <- list(title = 'Children in Out-of-Home Care', meta = '', highlights = count)
@@ -171,7 +166,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     list_ooh_age <- list(title = 'How old are children in care', type = 'donut', meta = '', data = ooh_age)
     list_ooh_county <- list(title = "How do Washington's counties compare?", type = 'bar', meta = 'rate of children in care per 1,000', data = ooh_county)
     list_dashboard = list(dashboard = list(raceeth = list_ooh_raceeth, age = list_ooh_age, county = list_ooh_county))
-
+    
     list_ooh <- list(dash2 = c(list_hl_ooh, list_dashboard))
     
     ### DASHBOARD 3 TAB
@@ -214,7 +209,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
         select(discharge, percent)
     
     six_months$percent <- paste0(round(six_months$percent, 1), '%')
-
+    
     names(six_months) <- name
     
     # 1 YEAR
@@ -225,14 +220,14 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     one_year$percent <- paste0(round(one_year$percent, 1), '%')
     
     names(one_year) <- name
-
+    
     # 2 YEARS
     
     two_years <- filter(recent_data, months.since.entering.out.of.home.care == 24) %>%
         select(discharge, percent)
     
     two_years$percent <- paste0(round(two_years$percent, 1), '%')
-
+    
     names(two_years) <- name
     
     # highlights
@@ -281,7 +276,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     infancy$percent <- paste0(round(infancy$percent), '%')
     
     names(infancy) <- name
-
+    
     # Pre-School Age (3-4)
     
     pre_school <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, age.grouping.cd == 4, months.since.entering.out.of.home.care == 36) %>%
@@ -290,7 +285,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     pre_school$percent <- paste0(round(pre_school$percent), '%')
     
     names(pre_school) <- name
-
+    
     # Age 5 - 9
     
     age_5_9 <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 5) %>% 
@@ -299,7 +294,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     age_5_9$percent <- paste0(round(age_5_9$percent), '%')
     
     names(age_5_9) <- name
-
+    
     # ALL
     
     all_ages <- filter(clean_perm_hl, cohort.period == three_year_reun$cohort.period, months.since.entering.out.of.home.care == length_stay, age.grouping.cd == 0) %>% 
@@ -308,7 +303,7 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     all_ages$percent <- paste0(round(all_ages$percent), '%')
     
     names(all_ages) <- name
-
+    
     # putting data together
     
     list_hl_outcomes <- list(title = 'Outcomes within 3 Years', meta = '', highlights = perm) 
@@ -326,8 +321,18 @@ get_site_dashboard_data <- function(annie_connection = "annie") {
     
     # putting the data together
     
+    folder_check <- safe_folder(target_name = "site_dashboard")
+    
+    # if creating the folder failed, we flag the update as a failure and 
+    # end the function early
+    if(!folder_check$result) {
+        return(paste0("safe_folder() failed with the following: ",
+                      folder_check$details))
+    }
+    
     dashboard_json <- toJSON(list(list_ia, list_ooh, list_los, list_outcomes), auto_unbox = TRUE, pretty = TRUE)
-    return(dashboard_json)
+    write(dashboard_json, 'site_dashboard.json')
+    
 }
 
-get_site_dashboard_data()
+
