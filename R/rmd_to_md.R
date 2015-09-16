@@ -10,12 +10,14 @@
 #' @param base_path character path to directory.
 #' Defaults to the working directory.
 #' Must have a subdirectory called \code{RMarkdown}).
+#' @param validate boolean indicating whether or not to
+#' validate the json.
 #' 
 #' @return No value returned.
 #'
 #' @import knitr stringr
 #' @export
-rmd_to_md = function(base_path = getwd()) {
+rmd_to_md = function(base_path = getwd(), validate = TRUE) {
     rmd_path = paste(base_path, "RMarkdown/", sep = "/")
     # Get RMarkdown files to knit
     rmd_files <- list.files(pattern = '*\\.Rmd$',
@@ -25,6 +27,18 @@ rmd_to_md = function(base_path = getwd()) {
     if (length(rmd_files) == 0) {
         warning("No RMarkdown files found.")
         invisible()
+    }
+    
+    # validate RMarkdown files 
+    if (validate) {
+        rmd_content = lapply(paste0(rmd_path, rmd_files), readLines)
+        valid = sapply(rmd_content, validate_config)
+        if (all(valid)) {
+            message("All Rmd json valid.")
+        } else {
+            invalids = rmd_files[!valid]
+            stop("The following Rmd files have invalid json:\n", paste("    ", invalids, collapse = "\n"))
+        }
     }
     
     # Create markdown names
@@ -38,5 +52,18 @@ rmd_to_md = function(base_path = getwd()) {
     
     # Remove blank lines from the top
     sapply(md_files, remove_leading_blank_lines)
+    
+    # validate markdown files 
+    if (validate) {
+        md_content = lapply(paste(base_path, md_files, sep = "/"), readLines)
+        valid = sapply(md_content, validate_config)
+        if (all(valid)) {
+            message("All md json valid.")
+        } else {
+            invalids = md_files[!valid]
+            stop("The following md files have invalid json:\n", paste(invalids, collapse = "\n"))
+        }
+    }
+    
     invisible()
 }

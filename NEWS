@@ -1,3 +1,9 @@
+## Version 1.2.1
+New functions:
+- rmd_to_md() for generating md config files from Rmd source
+- validate_config() for validating json in config files
+- remove_leading_blank_lines() deletes blank lines from top of a file
+
 ## Version 1.2
 Updated R scripts:
 - corrected data documentation formatting

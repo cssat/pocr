@@ -1,5 +1,5 @@
 Package: pocr
-Version: 1.2
+Version: 1.2.1
 Date: 2015-8-27
 Title: POC Data and Analysis Package
 Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),

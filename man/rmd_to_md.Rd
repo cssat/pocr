@@ -4,12 +4,15 @@
 \alias{rmd_to_md}
 \title{Creates md config files from Rmd source}
 \usage{
-rmd_to_md(base_path = getwd())
+rmd_to_md(base_path = getwd(), validate = TRUE)
 }
 \arguments{
 \item{base_path}{character path to directory.
 Defaults to the working directory.
 Must have a subdirectory called \code{RMarkdown}).}
+
+\item{validate}{boolean indicating whether or not to
+validate the json.}
 }
 \value{
 No value returned.
