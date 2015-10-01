@@ -17,8 +17,8 @@ cr_clean(df, select = NULL, date = TRUE, date.type = 1,
 
 \item{date.type}{1 is quarter and 2 is year}
 
-\item{qry.type}{should be converted to \code{Date} classes (default is
-\code{T}).}
+\item{qry.type}{argument to select either unique, all or first (default is
+\code{"all.unique"}).}
 }
 \description{
 Clean up colnames from Portal, allow option to select columns and to

@@ -4,14 +4,14 @@
 \alias{update_ofm}
 \title{Update the OFM tables in the POC SQL Server database.}
 \usage{
-update_ofm(poc_connection = NULL, start_year = 2000, end_year = 2014)
+update_ofm(poc_connection, start_year = 2000, end_year = 2014)
 }
 \arguments{
 \item{poc_connection}{Need to provide an active RODBC connection to the
 POC SQL server. NOTE: It is assumed that the object passed in is meaningful.}
 
 \item{start_year}{Optional parameter where the user can specify the start
-year.}
+year. NOTE: It is assumed that the start year given is meaningful.}
 
 \item{end_year}{Optional parameter where the user can specify the end
 year. NOTE: It is assumed that the end year given is meaningful.}
@@ -24,31 +24,33 @@ Imports, cleans, and organizes the data needed for the OFM tables in the POC
 SQL server database. It then drops and recreates the tables with the cleaned
 data.
 
+
 After downloading the data from the source, the data is imported as a list of
 dataframes, one for each xlsx file. The columns of each dataframe are given
-names. We then filter out irrelevant columns, such as area_id and any gender
-total counts. Each data frame needs to be filtered in a unique way.
+arbitrary names. We then filter out irrelevant columns, such as area_id.
 
- -The total population counts dataframe (total) must include all counts,
- except the actual totals. Race based totals are kept, for the construction
+Each data frame needs to be filtered in a unique way:
+
+-The total population counts dataframe (total) must include all counts,
+ except the actuall totals. Race based totals are kept for the construction
  of the dataframe for other ethnic backgrounds.
 
- -The hispanic population count dataframe (hispanic) must include only the
+-The hispanic population count dataframe (hispanic) must include only the
  totals.
 
- -The non-hispanic population count dataframe (non_hispanic) must
- include only black and white counts.
+-The non-hispanic population count dataframe (non_hispanic) must include only
+ black and white counts.
 
- - Construction of the other dataframe: The count for other ethnic background
- (others) is necessary. To construct the dataframe, all but the
- race-based totals from total are filtered. The counts are derived by
- observing that:
+-Construction of the other dataframe: The count for other ethnic background
+(others) is necessary. To construct the dataframe, all but the
+race based totals from total are filtered. The counts are derived by
+observing that
 
-     others count = total count - hispanic count - non_hispanic black
+     others count = total count - hispanic count - non_hipanic black
                     - non_hispanic white counts
 
 The dataframes are not tidy: column headers contain the variables race and
-gender. Hence, the dataframes are melted with colvars: county, age and
+gender. Hence, the dataframes are melted with the colvars: county, age and
 measurement_year (year). Then the new column is mutated into two seperate
 columns: race and gender. An additional column is added for source_census.
 
@@ -57,7 +59,7 @@ totals.
 
 Data is now tidy at this point, but data formatting begins. The counts are
 rounded and values are replaced by reference codes. Age groups are given in
-an inconsistent manner so the data is grouped to get the count for each
+an inconsistent manner, so the data is grouped to get the count for each
 age group.
 
 Once formatting is finished, rows corresponding to 2015 are created by using

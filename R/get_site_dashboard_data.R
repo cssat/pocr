@@ -5,7 +5,8 @@
 #' 
 #' @param annie_connection A character string for ODBC connection defaulted to \code{"annie"}
 #' 
-#' @return The function returns a json object. 
+#' @return The function returns a json object which is placed in a new folder when 
+#' \code(get_portal_app_data()) is run. 
 #' 
 #' @import RODBC
 #' @import stringr
@@ -13,7 +14,7 @@
 #' 
 #' @export
 
-get_site_dashboard_data <- function(annie_connection = annie_connection) { 
+get_site_dashboard_data <- function(annie_connection) { 
     con <- annie_connection
     name <- c('label', 'data')
     
@@ -316,8 +317,8 @@ get_site_dashboard_data <- function(annie_connection = annie_connection) {
     
     list_outcomes <- list(dash4 = c(list_hl_outcomes, list_dashboard))    
     
-    # close connection
-    odbcCloseAll()
+#     # close connection
+#     odbcCloseAll()
     
     # putting the data together
     
@@ -330,9 +331,13 @@ get_site_dashboard_data <- function(annie_connection = annie_connection) {
                       folder_check$details))
     }
     
+    # otherwise, we proceed to write a csv for each data object (vector or 
+    # dataframe) to the target folder
+    folder_name <- folder_check$full_path
+    
     dashboard_json <- toJSON(list(list_ia, list_ooh, list_los, list_outcomes), auto_unbox = TRUE, pretty = TRUE)
-    write(dashboard_json, 'site_dashboard.json')
+    write(dashboard_json, paste0(folder_name, '/', 'site_dashboard.json'))
     
 }
 
-
+library(RODBC)
