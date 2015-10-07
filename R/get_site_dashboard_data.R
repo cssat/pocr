@@ -1,22 +1,19 @@
-#' Update the data for website dashboards.
+#' Get dashboard data.
 #' 
 #' @description This is a function to update the data for the website dashboards that 
 #' should be run after each data load.
 #' 
-#' @param annie_connection A character string for ODBC connection defaulted to \code{"annie"}
+#' @param con A ODBC connection
 #' 
-#' @return The function returns a json object which is placed in a new folder when 
-#' \code(get_portal_app_data()) is run. 
+#' @return The function returns a json object. 
 #' 
-#' @import RODBC
 #' @import stringr
 #' @import jsonlite
 #' 
 #' @export
 
-get_site_dashboard_data <- function(annie_connection) { 
-    #     con <- annie_connection
-    con <- odbcConnect("annie")
+get_site_dashboard_data <- function(con) { 
+
     name <- c('label', 'raw_data', 'formatted_data')
     
     # function to shorten OOH labels
@@ -156,6 +153,8 @@ get_site_dashboard_data <- function(annie_connection) {
     
     ooh_age$label <- str_trim(str_replace_all(str_replace_all(ooh_age$label, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
     
+    ooh_age$label <- paste(ooh_age$label, 'Years Old')
+    
     # COUNTY HIGHLIGHTS
     
     # getting the 4 counties with the most kids in ooh
@@ -233,7 +232,7 @@ get_site_dashboard_data <- function(annie_connection) {
     # 6 MONTHS
     
     six_months <- filter(recent_data, months.since.entering.out.of.home.care == 6, cd.discharge.type == 0) %>%
-        mutate(label = '<6 Months',
+        mutate(label = 'Less Than 6 Months',
                raw_data = round(100-percent),
                formatted_data = paste0(round(100 - percent), '%')) %>%
         select(label, raw_data, formatted_data)
@@ -243,7 +242,7 @@ get_site_dashboard_data <- function(annie_connection) {
     # 1 YEAR
     
     one_year <- filter(recent_data, months.since.entering.out.of.home.care == 12, cd.discharge.type == 0) %>%
-        mutate(label = '<1 Year',
+        mutate(label = 'Less Than 1 Year',
                raw_data = round(100 - percent),
                formatted_data = paste0(round(100 - percent), '%')) %>%
         select(label, raw_data, formatted_data)
@@ -253,7 +252,7 @@ get_site_dashboard_data <- function(annie_connection) {
     # 2 YEARS
     
     two_years <- filter(recent_data, months.since.entering.out.of.home.care == 24, cd.discharge.type == 0) %>%
-        mutate(label = '<2 Years',
+        mutate(label = 'Less Than 2 Years',
                raw_data = round(100 - percent),
                formatted_data = paste0(round(100 - percent), '%')) %>%
         select(label, raw_data, formatted_data)
@@ -264,9 +263,9 @@ get_site_dashboard_data <- function(annie_connection) {
     
     list_hl_los <- list(title = 'How long do children stay in Care?', subtitle = outcomes_date[,1], meta = '', highlights = outcomes)
     
-    list_6_months <- list(title = '< 6 Months', type = 'stat', meta = '', data = six_months)
-    list_1_year <- list(title = '< 1 Year', type = 'stat', meta = '', data = one_year)
-    list_2_year <- list(title = '< 2 Years', type = 'stat', meta = '', data = two_years) 
+    list_6_months <- list(title = 'Less Than 6 Months', type = 'stat', meta = '', data = six_months)
+    list_1_year <- list(title = 'Less Than 1 Year', type = 'stat', meta = '', data = one_year)
+    list_2_year <- list(title = 'Less Than 2 Years', type = 'stat', meta = '', data = two_years) 
     
     list_dashboard <- list(dashboard = list('six-months' = list_6_months, 'one-year' = list_1_year, 'two-years' = list_2_year))
     
@@ -306,7 +305,7 @@ get_site_dashboard_data <- function(annie_connection) {
                                          ifelse(str_detect(clean_perm_hl$age.grouping, 'Infancy'), 'Less Than 1',
                                                 ifelse(str_detect(clean_perm_hl$age.grouping, 'Pre-School'), '3-4', '10-14')))                    
     
-    clean_perm_hl$age.grouping <- ifelse(str_detect(clean_perm_hl$age.grouping, '3-4|10-14'), paste(clean_perm_hl$age.grouping, 'years old'), clean_perm_hl$age.grouping)
+    clean_perm_hl$age.grouping <- ifelse(str_detect(clean_perm_hl$age.grouping, '3-4|10-14'), paste(clean_perm_hl$age.grouping, 'Years Old'), clean_perm_hl$age.grouping)
     
     clean_perm_hl$age.grouping <- str_trim(clean_perm_hl$age.grouping)    
     
@@ -348,29 +347,12 @@ get_site_dashboard_data <- function(annie_connection) {
     list_dashboard <- list(dashboard = list('still-in-ooh' = list_still_ooh, reunification = list_reunification, adoption = list_adoption))
     
     list_outcomes <- list(dash4 = c(list_hl_outcomes, list_dashboard))    
-    
-    # close connection
-    odbcCloseAll()
-    
-    #     putting the data together
-    
-    #     folder_check <- safe_folder(target_name = "site_dashboard")
-    #     
-    #     # if creating the folder failed, we flag the update as a failure and 
-    #     # end the function early
-    #     if(!folder_check$result) {
-    #         return(paste0("safe_folder() failed with the following: ",
-    #                       folder_check$details))
-    #     }
-    
-    # otherwise, we proceed to write a csv for each data object (vector or 
-    # dataframe) to the target folder
-    #     folder_name <- folder_check$full_path
+
+    # creating the json
     
     dashboard_json <- toJSON(list(list_ia, list_ooh, list_los, list_outcomes), auto_unbox = TRUE, pretty = TRUE)
-    write(dashboard_json, paste0(folder_name, '/', 'site_dashboard.json'))
-#     return(dashboard_json)
     
+    return(dashboard_json)
 }
 
 

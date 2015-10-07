@@ -58,7 +58,7 @@ get_portal_app_data <- function(target_apps = "all",
         ),
 		
 		"portal-browse" = list(
-		"call" = "get_site_dashboard_data(annie_connection)")
+		"call" = "get_site_dashboard_data_wrapper(annie_connection)")
     )
     
     # assess which apps the user wants updated data for
