@@ -1,3 +1,5 @@
+
+
 #' @title
 #' Update the OFM tables in the POC SQL Server database.
 #'
@@ -92,18 +94,17 @@ update_ofm <- function(poc_connection,
     # create a collection of files to acquire - this collection will be
     # continuously updated and will eventually contain the desired clean
     # data
-    ofm_file_names <- list("total" = 'sade_county10_t_5y_s1.xlsx',
-                           "hispanic" = 'sade_county10_h_5y_s1.xlsx',
+    ofm_file_names <- list("hispanic" = 'sade_county10_h_5y_s1.xlsx',
                            "non_hispanic" = 'sade_county10_n_5y_s1.xlsx')
     
     # download the most current versions of the the OFM files
-    lapply(ofm_file_names, 
-           function(x) {
-               download.file(paste0("http://www.ofm.wa.gov/pop/asr/sade/",
-                                    x),
-                             destfile = x,
-                             mode = "wb")
-           }
+    test <-   lapply(ofm_file_names, 
+                     function(x) {
+                         download.file(paste0("http://www.ofm.wa.gov/pop/asr/sade/",
+                                              x),
+                                       destfile = x,
+                                       mode = "wb")
+                     }
     )
     
     # get the raw data from the xlsx files - this requires reading
@@ -157,245 +158,75 @@ update_ofm <- function(poc_connection,
     # We need to manipulate the df's individually, since we need different 
     # things from each.
     
-    # No totals whatsoever in total df
-    # (we do need to preserve race based totals for the other df).
-    ofm_collection[[1]] <- select(ofm_collection[[1]], -ends_with("T"), -A_ID)
     
-    # Only race based totals in hispanic df.
-    ofm_collection[[2]] <- select(ofm_collection[[2]], county_desc, age_group, 
-                                  Year, T_M, T_F)
+    # The only thing neeced from the Hispanic or Latino Population is Total for Male and Female
+    # we also need to aggregate 15, 16 and 17 together
     
-    # Only white and black data from non hisp df.
-    ofm_collection[[3]] <- select(ofm_collection[[3]], county_desc, age_group,
-                                  Year, B_M, B_F, W_M, W_F)
+    ofm_collection[[1]] <- select(ofm_collection[[1]], Year, county_desc, age_group, T_M, T_F) %>%
+        filter(age_group %in% c('0-4', '5-9', '10-14', '15', '16', '17') & county_desc != 'Washington State') %>%
+        reshape2::melt(id = c("county_desc", "age_group", "Year"), 
+                       variable = "column",
+                       value.name = "pop_cnt") %>%
+        mutate(cd_gndr = ifelse(substring(column, 3) == 'F', 1, 2),
+               cd_race = 5,
+               year = Year) %>%
+        select(year, county_desc, cd_gndr, cd_race, age_group, pop_cnt)
     
-    # Melt all of the dfs because race/gender are values
-    ofm_collection <- lapply(ofm_collection, function(x){  
-        x <- melt(x, id = c("county_desc", "age_group", "Year"), 
-                  variable = "column",
-                  value.name = "Estimated_Pop")
-        return(x)
-    }
-    )
+    hisp_15_17 <- filter(ofm_collection[[1]], age_group %in% c(15, 16, 17)) %>%
+        group_by(year, county_desc, cd_gndr, cd_race) %>%
+        summarize(pop_cnt = sum(pop_cnt)) %>%
+        mutate(age_group = '15-17') %>%
+        select(year, county_desc, cd_gndr, cd_race, age_group, pop_cnt)
     
-    # Mutate to split columns since race and gender share only one column. We 
-    # also create a new column for source census.
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x <- mutate(x, cd_gndr = substring(column, 3),
-                    tx_race_census = substring(column, 1, 1),
-                    source_census = Year)
-        return(x)
-    }
-    ) 
+    ofm_collection[[1]] <-filter(ofm_collection[[1]], age_group %in% c('0-4', '5-9', '10-14'))
     
-    # Filter out rows that are irrelevant
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x <- filter(x, county_desc != "Washington State", 
-                    age_group %in% c("0-4", "5-9", "10-14", "15", "16", "17"))
-        return(x)
-    }
-    )
+    # Getting totals for other groups
+    # we also need to aggregate 15, 16 and 17 together 
     
-    # Begin creating the other df (the reason we needed totals previously). We 
-    # take only the rows that are race totals from the total df. Then change the
-    # name. Eventually we need to replace the counts with a calculated other
-    # count
-    ofm_collection[[4]] <- filter(ofm_collection[[1]],
-                                  tx_race_census == "T") %>%
-        mutate(tx_race_census = "Other Ethnicity") %>%
-        select(-column)
+    ofm_collection[[2]] <- select(ofm_collection[[2]], -starts_with('T'), -ends_with('T'), -A_ID) %>%
+        filter(age_group %in% c('0-4', '5-9', '10-14', '15', '16', '17') & county_desc != 'Washington State') %>%
+        reshape2::melt(id = c("county_desc", "age_group", "Year"), 
+                       variable = "column",
+                       value.name = "pop_cnt") %>%
+        mutate(cd_gndr = ifelse(substring(column, 3) == 'F', 1, 2),
+               cd_race = ifelse(substring(column, 1, 1) == "A", 2,
+                                ifelse(substring(column, 1, 1) == "B", 3,
+                                       ifelse(substring(column, 1, 1) == "W", 5,
+                                              ifelse(substring(column, 1, 1) == "N", 1,
+                                                     ifelse(substring(column, 1, 1) == "P", 4,
+                                                            ifelse(substring(column, 1, 1) == "M", 7, 8)))))),
+               year = Year) %>%
+        select(year, county_desc, cd_gndr, cd_race, age_group, pop_cnt)
     
-    # We need to refilter and format each table separately. 
+    non_hisp_15_17 <- filter(ofm_collection[[2]], age_group %in% c(15, 16, 17)) %>%
+        group_by(year, county_desc, cd_gndr, cd_race) %>%
+        summarize(pop_cnt = sum(pop_cnt)) %>%
+        mutate(age_group = '15-17') %>%
+        select(year, county_desc, cd_gndr, cd_race, age_group, pop_cnt)
     
-    # We No longer need totals and we need to formally name races.
-    ofm_collection[[1]] <- filter(ofm_collection[[1]], 
-                                  tx_race_census != "T") %>%
-        select(-column) %>%
-        # change names
-        mutate(tx_race_census = ifelse(tx_race_census == "A", 
-                                       "Asian",
-                                       ifelse(tx_race_census == "B", 
-                                              "Black/African American",
-                                              ifelse(tx_race_census == "W",
-                                                     "White/Caucasian",
-                                                     ifelse(tx_race_census == "N",
-                                                            "American Indian/Alaskan Native",
-                                                            ifelse(tx_race_census == "P",
-                                                                   "Native Hawaiian/Other Pacific Islander",
-                                                                   ifelse(tx_race_census == "M",
-                                                                          "Multiracial",
-                                                                          "Unknown")))))
-        )
-        )
+    ofm_collection[[2]] <-filter(ofm_collection[[2]], age_group %in% c('0-4', '5-9', '10-14'))
     
-    # Change the race value from total to hispanic
-    ofm_collection[[2]] <- mutate(ofm_collection[[2]],
-                                  tx_race_census = "Hispanic or Latino") %>%
-        select(-column)
+    # the 4 datasets now need to be put together
     
-    # We need to differentiate between non-hisp black/white and totals df 
-    # black/white
-    ofm_collection[[3]] <- 
-        filter(ofm_collection[[3]],
-               tx_race_census == "B" | tx_race_census == "W") %>%
-        mutate(tx_race_census =
-                   ifelse(tx_race_census == "B",
-                          "Non-Hispanic, Black Alone",
-                          "Non-Hispanic, White Alone")) %>%
-        select(-column)
+    raceeth <- rbind(ofm_collection[[1]], ofm_collection[[2]], hisp_15_17, non_hisp_15_17)
     
-    # round populations as is done in the the excel files
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x$Estimated_Pop <- as.integer( round( x$Estimated_Pop ) )
-        return(x)
-    }
-    )
+    # round date to whole numbers
     
-    # Join on the df below to find a common column with the age reference table
-    ref_replace_age <- data.frame(c( "All", "0-4", "5-9",
-                                     "10-14", "15", "16", "17"), 
-                                  c("All (0-17)",
-                                    "Early Childhood (0 through 4)",
-                                    "Elementary School Age (5 through 9)",
-                                    "Pre to Early Adolescence (10 through 14)",
-                                    "Late Adolescence (15 through 17)",
-                                    "Late Adolescence (15 through 17)",
-                                    "Late Adolescence (15 through 17)")
-    ) 
-    # Name the df colums                 
-    colnames(ref_replace_age) <- c("age_group", "age_grouping")
+    raceeth[[6]] <- round(raceeth[[6]])
     
-    # Access the sql server to get reference tables 
-    ref_lookup_county <- sqlQuery(poc_connection,
-                                  "select county_cd, county_desc
-                                  from dbo.ref_lookup_county")
-    
-    ref_lookup_race <- sqlQuery(poc_connection,
-                                "select *
-                                from dbo.ref_lookup_ethnicity_census")
-    
-    ref_lookup_age <- sqlQuery(poc_connection,
-                               "select  age_grouping_cd, age_grouping
-                               from dbo.ref_age_groupings_census")
-    
-    ref_lookup_gender <- sqlQuery(poc_connection,
-                                  "select pk_gndr, cd_gndr  
-                                  from dbo.ref_lookup_gender")
-    
-    # Converts factor vector to character in age ref table
-    ref_lookup_age$age_grouping <- levels(
-        ref_lookup_age$age_grouping)[ as.numeric(ref_lookup_age$age_grouping) ]
-    
-    # Trims the white space
-    ref_lookup_age$age_grouping <- trimws(ref_lookup_age$age_grouping)
-    
-    # Join on county, race, age, sex
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x <- left_join(x, ref_lookup_county, by = "county_desc")
-        x <- left_join(x, ref_lookup_race, by = "tx_race_census")
-        x <- left_join(x, ref_replace_age, by = "age_group")
-        x <- left_join(x, ref_lookup_age, by = "age_grouping")
-        x <- left_join(x, ref_lookup_gender, by = "cd_gndr")
-        x <- select(x, -county_desc, -tx_race_census, -tx_race_census,
-                    -age_group, -age_grouping, -cd_gndr)
-        return(x)
-    }
-    )
-    
-    # age groups are ready to be boiled down to 4, so we group, summarize and
-    # then ungroup
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x <- ungroup(group_by(x, county_cd, age_grouping_cd, Year,
-                              pk_gndr, cd_race_census, source_census) %>%
-                         summarize(Estimated_Pop = sum(Estimated_Pop))
-        )
-        return(x)
-    }
-    )
-    
-    # arrange dfs
-    ofm_collection <- lapply(ofm_collection, function(x){
-        x <- x[ c("source_census", "county_cd", "pk_gndr", "cd_race_census", 
-                  "age_grouping_cd", "Year", "Estimated_Pop") ]
-    }
-    )
-    
-    # We need these dfs to compute the calculated other count
-    # 12 is non-hispanic black and 11 is non-hispanic white
-    tempB <- filter(ofm_collection[[3]], cd_race_census == 12)
-    tempW <- filter(ofm_collection[[3]], cd_race_census == 11)
-    tempH <- ofm_collection[[2]]
-    
-    # We need to join the counts so we need distinct col names
-    colnames(tempB) <- c("source_census","county_cd", "pk_gndr", "cd_raceB", 
-                         "age_grouping_cd", "Year", "popB")
-    colnames(tempW) <- c("source_census","county_cd", "pk_gndr", "cd_raceW", 
-                         "age_grouping_cd", "Year", "popW")
-    colnames(tempH) <- c("source_census","county_cd", "pk_gndr", "cd_raceH", 
-                         "age_grouping_cd", "Year", "popH")
-    
-    # Join the columns so that we can compute the other pop count
-    ofm_collection[[4]] <- 
-        left_join(ofm_collection[[4]],
-                  tempB, 
-                  by = c("source_census", "county_cd", 
-                         "pk_gndr", "age_grouping_cd", 
-                         "Year")) %>%
-        left_join(tempW, 
-                  by = c("source_census", "county_cd",
-                         "pk_gndr", "age_grouping_cd",
-                         "Year")) %>%
-        left_join(tempH,
-                  by = c("source_census","county_cd", 
-                         "pk_gndr", "age_grouping_cd",
-                         "Year"))
-    
-    # Create a new column that has the calulated other pop count: 
-    # other pop count = total - black - white - hispanic
-    ofm_collection[[4]] <- mutate(ofm_collection[[4]], 
-                                  Pop = Estimated_Pop
-                                  -popH
-                                  -popB
-                                  -popW)
-    
-    # Set the computed values into the appropriate column, this is a better 
-    # choice since it prevserves column order
-    ofm_collection[[4]]$Estimated_Pop <- ofm_collection[[4]]$Pop
-    
-    # remove irrelevant columns
-    ofm_collection[[4]] <- select(ofm_collection[[4]],
-                                  source_census, county_cd,
-                                  pk_gndr, cd_race_census, 
-                                  age_grouping_cd, Year, Estimated_Pop)
-    
-    #Begin creating the df that gets sent to sql
-    ofm_collection[[5]] <- rbind(ofm_collection[[1]], ofm_collection[[2]],
-                                 ofm_collection[[3]], ofm_collection[[4]])
+    # change age grouping to correct poc codes
     
     
-    # create the 2015 counts
-    temp_2014 <- filter(ofm_collection[[5]], Year == 2014)
-    temp_2014$source_census <- 2015
-    temp_2014$Year <- 2015
-    ofm_collection[[5]] <- rbind(ofm_collection[[5]], temp_2014)
-    
-    # clear up space by removing temp files
-    rm(tempH, tempW, tempB, temp_2014)
-    
-    # ensure every column is an integer vector
-    ofm_collection[[5]] = as.data.frame(lapply(ofm_collection[[5]], as.integer))
-    
-    # give formal names
-    colnames(ofm_collection[[5]]) <- c("source_census", "county_cd",
-                                       "pk_gndr", "cd_race", "age_grouping_cd",
-                                       "measurement_year", "pop_cnt")
+    raceeth[[5]] <- ifelse(raceeth[[5]] == '0-4', 1,
+                           ifelse(raceeth[[5]] == '5-9', 2,
+                                  ifelse(raceeth[[5]] == '10-14', 3, 4)))
     
     # tries to drop the previous table if it exists
     try(sqlDrop(channel = poc_connection,
                 sqtable = "public_data.mb_census_population"))
     
     # sends the df to sql
-    sqlSave(channel = poc_connection, dat = ofm_collection[[5]],
+    sqlSave(channel = poc_connection, dat = raceeth,
             tablename = "public_data.mb_census_population",
             rownames = FALSE, colnames = FALSE)
     
