@@ -6,7 +6,7 @@
 #' @param annie_connection A character string for ODBC connection defaulted to \code{"annie"}
 #' 
 #' @return The function returns a json object which is placed in a new folder when 
-#' \code(get_portal_app_data()) is run. 
+#' \code{get_portal_app_data()} is run. 
 #' 
 #' @export
 

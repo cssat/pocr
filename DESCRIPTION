@@ -13,17 +13,16 @@ Authors@R: c(person("Gregor", "Thomas", role = c("aut", "cre"),
              person("Mark", "Bennett", role = "ctb",
                     email = "mbennett718@gmail.com")
 			)
-Description: 
-	This package collects a variety of functions and variables constructed
-	for use by POC staff work with POC data. It includes official POC and 
-	portal colors, POC themes, functions for efficiently querying POC 
-	databases, and more.
+Description: This package collects a variety of functions and variables
+    constructed for use by POC staff work with POC data. It includes official POC
+    and portal colors, POC themes, functions for efficiently querying POC databases,
+    and more.
 Depends:
     R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
-	dplyr
-Imports: 
-	RODBC,
+    dplyr
+Imports:
+    RODBC,
     stringr,
     scales,
     lubridate,
@@ -34,10 +33,11 @@ Imports:
     readxl,
     reshape2,
     tidyr,
-    jsonlite
+    jsonlite,
+    knitr
 LazyData: true
-License: GPL
+License: GPL-2
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
-Suggests: knitr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

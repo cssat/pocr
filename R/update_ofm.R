@@ -64,7 +64,6 @@
 #' @import stringr
 #' @import RODBC
 #' @import reshape2
-#' @import dplyr
 #' 
 #' @export
 update_ofm <- function(poc_connection, 
