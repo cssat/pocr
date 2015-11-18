@@ -60,7 +60,12 @@
 #' year. NOTE: It is assumed that the end year given is meaningful. 
 #' @return
 #' The function updates the POC SQL database and returns TRUE on success.
-#'
+#' 
+#' @import stringr
+#' @import RODBC
+#' @import reshape2
+#' @import dplyr
+#' 
 #' @export
 update_ofm <- function(poc_connection, 
                        start_year = 2000,

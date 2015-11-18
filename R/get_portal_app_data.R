@@ -55,7 +55,10 @@ get_portal_app_data <- function(target_apps = "all",
         "county_dashboard" = list(
             "call" = paste0("get_county_dashboard_data(",
                             "annie_connection, poc_connection)")
-        )
+        ),
+        
+        "portal-browse" = list(
+            "call" = "get_site_dashboard_data_wrapper(annie_connection)")
     )
     
     # assess which apps the user wants updated data for
