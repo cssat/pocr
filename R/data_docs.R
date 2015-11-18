@@ -12,26 +12,26 @@
 #' @description Vector of 4 hex colors from POC theme.
 #' @docType data
 #' @name poc_colors
-NULL
+"poc_colors"
 
 #' @title portal_colors
 #' @description Vector of 12 hex colors used in the portal
 #' @docType data
 #' @name portal_colors
-NULL
+"portal_colors"
 
 #' @title Key to \code{quickfacts}
 #' @description Verbose descriptions of \code{quickfacts} columns.
 #' @docType data
 #' @name qf_dict
-NULL
+"qf_dict"
 
 #' @title quickfacts (from US Census Bureau)
 #' @description Data frame characteristics of each county and of the state. 
 #' \code{qf_dict} has the column keys.
 #' @docType data
 #' @name quickfacts
-NULL
+"quickfacts"
 
 #' @title ref_lookup_county (from test_annie)
 #' @description Data frame with columns for the county_cd, the text county
@@ -40,7 +40,7 @@ NULL
 #' for the actual counties 1:39.
 #' @docType data
 #' @name ref_lookup_county
-NULL
+"ref_lookup_county"
 
 #' @title ref_lookup_county_region (from test_annie)
 #' @description Data frame with columns for the county_cd, the text county
@@ -50,7 +50,7 @@ NULL
 #' most useful of which are probably region_6_cd, region_6_tx, and small_fl.
 #' @docType data
 #' @name ref_lookup_county_region
-NULL
+"ref_lookup_county_region"
 
 #' @title ref_lookup_office (from test_annie)
 #' @description Data frame with columns cd_office, tx_office, 
@@ -58,4 +58,4 @@ NULL
 #' of the same name.
 #' @docType data
 #' @name ref_lookup_office
-NULL
+"ref_lookup_office"
