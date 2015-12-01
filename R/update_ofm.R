@@ -64,6 +64,8 @@
 #' @import stringr
 #' @import RODBC
 #' @import reshape2
+#' @import readxl
+#' @import dplyr
 #' 
 #' @export
 update_ofm <- function(poc_connection, 
@@ -195,7 +197,7 @@ update_ofm <- function(poc_connection,
         mutate(cd_gndr = ifelse(substring(column, 3) == 'F', 1, 2),
                cd_race = ifelse(substring(column, 1, 1) == "A", 2,
                                 ifelse(substring(column, 1, 1) == "B", 3,
-                                       ifelse(substring(column, 1, 1) == "W", 5,
+                                       ifelse(substring(column, 1, 1) == "W", 6,
                                               ifelse(substring(column, 1, 1) == "N", 1,
                                                      ifelse(substring(column, 1, 1) == "P", 4,
                                                             ifelse(substring(column, 1, 1) == "M", 7, 8)))))),
