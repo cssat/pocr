@@ -203,12 +203,15 @@ get_site_dashboard_data <- function(con) {
     
     outcomes_date <- filter(clean_outcomes, percent < 50, cd.discharge.type == 0) %>% 
         filter(cohort.period == max(cohort.period)) %>% 
-        select(cohort.period) 
+        select(cohort.period)
     
-    min_dat <- filter(clean_outcomes, cohort.period == as.numeric(outcomes_date), cd.discharge.type == 0, percent <= 50) %>%
+    min_dat <- filter(
+        clean_outcomes, cohort.period == as.numeric(outcomes_date[1, ]),
+        cd.discharge.type == 0, percent <= 50
+    ) %>%
         filter(percent == max(percent)) 
     
-    max_dat <- filter(clean_outcomes, cohort.period == as.numeric(outcomes_date), cd.discharge.type == 0, percent >= 50) %>%
+    max_dat <- filter(clean_outcomes, cohort.period == as.numeric(outcomes_date[1, ]), cd.discharge.type == 0, percent >= 50) %>%
         filter(percent == min(percent)) 
     
     outcomes_dat <- round(approx(x = c(min_dat$percent, max_dat$percent), y = c(min_dat$months.since.entering.out.of.home.care, max_dat$months.since.entering.out.of.home.care), xout = 50)$y)
