@@ -35,23 +35,32 @@ theme_clean <- function(base_size=12, ...) {
 #' 
 #' @param font Partial-matches to "Arial", "PT Sans" (for web) or "Frutiger LT Std 45 Light" (for print).
 #' @param slant boolean for whether x-axis labels should be slanted. (FALSE)
-#' @param gridlines boolean for whether there should be any gridlines (TRUE)
+#' @param gridlines What gridlines to include. Deafult is \code{"xy"}. Use \code{"x"} or \code{"y"}
+#' for x or y only, any of \code{""}, \code{NA}, or \code{"none"} will result in no lines.
 #' @param expand.margin boolean for whether the right margin needs padding. Useful if \code{slant}
 #' is \code{TRUE} and the labels on the right side are lengthy.
 #' @param ... additional arguments passed to theme_bw
 #' 
 #' @export
 theme_poc <- function(
-    font = c("Arial", "PT Sans", "Frutiger LT Std 45 Light"),
+    font = "Open Sans",
     slant = FALSE,
-    gridlines = TRUE,
+    gridlines = c("xy", "x", "y", "", "none", NA),
     expand.margin = FALSE,
     ...) {
-    font <- match.arg(font)
     if (font %nin% fonts()) {
         warning("Looks like you don't have ", font, " installed. Attempting to use Arial.")
         font <- "Arial"
     }
+
+    if (is.logical(gridlines)) { 
+        # for backwards compatibility
+        gridlines = ifelse(gridlines, "xy", "none")
+        warning("Use of a logical grid lines argument is no longer recommended.")
+    }
+    gridlines = match.arg(gridlines)
+    if (gridlines %in% c("", "none") | is.na(gridlines)) gridlines = "none"
+    
     poc.theme <- theme_bw(..., base_family = font) +
         theme(panel.border = element_rect(size = 1, colour = poc_colors[1]),
               axis.ticks = element_line(size = 1, colour = poc_colors[1]),
@@ -63,7 +72,12 @@ theme_poc <- function(
         poc.theme + theme(axis.text.x = element_text(angle = -25, hjust = 0))
     if (expand.margin) poc.theme <- 
         poc.theme + theme(plot.margin = unit(c(1, 1, 1, 1) * 5, "mm"))
-    if (!gridlines) poc.theme <- 
-        poc.theme + theme(panel.grid = element_blank())
+    poc.theme = poc.theme + switch(
+        gridlines,
+        xy = theme(),
+        x = theme(panel.grid.y = element_blank()),
+        y = theme(panel.grid.x = element_blank()),
+        none = theme(panel.grid = element_blank())
+    )                           
     return(poc.theme)
 }

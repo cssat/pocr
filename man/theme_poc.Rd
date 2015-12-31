@@ -4,15 +4,16 @@
 \alias{theme_poc}
 \title{POC theme for ggplot}
 \usage{
-theme_poc(font = c("Arial", "PT Sans", "Frutiger LT Std 45 Light"),
-  slant = FALSE, gridlines = TRUE, expand.margin = FALSE, ...)
+theme_poc(font = "Open Sans", slant = FALSE, gridlines = c("xy", "x", "y",
+  "", "none", NA), expand.margin = FALSE, ...)
 }
 \arguments{
 \item{font}{Partial-matches to "Arial", "PT Sans" (for web) or "Frutiger LT Std 45 Light" (for print).}
 
 \item{slant}{boolean for whether x-axis labels should be slanted. (FALSE)}
 
-\item{gridlines}{boolean for whether there should be any gridlines (TRUE)}
+\item{gridlines}{What gridlines to include. Deafult is \code{"xy"}. Use \code{"x"} or \code{"y"}
+for x or y only, any of \code{""}, \code{NA}, or \code{"none"} will result in no lines.}
 
 \item{expand.margin}{boolean for whether the right margin needs padding. Useful if \code{slant}
 is \code{TRUE} and the labels on the right side are lengthy.}

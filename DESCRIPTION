@@ -40,4 +40,4 @@ License: GPL-2
 URL: https://github.com/pocdata/pocr
 BugReports: https://github.com/pocdata/pocr/issues
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.0
