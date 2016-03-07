@@ -30,7 +30,6 @@ get_site_dashboard_data <- function(con) {
     clean_investigations <- cr_clean(query_investigations, date.type = 2)
 
     investigations <- filter(clean_investigations, date == max(date)) %>%
-        select(-closed.investigations.and.assessments) %>%
         mutate(formatted = opened.investigations.and.assessments)
 
     names(investigations) <- name
@@ -151,7 +150,7 @@ get_site_dashboard_data <- function(con) {
 
     names(ooh_age) <- name
 
-    ooh_age$label <- str_trim(str_replace_all(str_replace_all(ooh_age$label, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
+    ooh_age$label <- stringr::str_trim(str_replace_all(str_replace_all(ooh_age$label, ' through ', '-'), '[a-z(.*)]|[A-Z(.*)]|\\(|\\)', ''))
 
     ooh_age$label <- paste(ooh_age$label, 'Years Old')
 
@@ -310,7 +309,7 @@ get_site_dashboard_data <- function(con) {
 
     clean_perm_hl$age.grouping <- ifelse(str_detect(clean_perm_hl$age.grouping, '3-4|10-14'), paste(clean_perm_hl$age.grouping, 'Years Old'), clean_perm_hl$age.grouping)
 
-    clean_perm_hl$age.grouping <- str_trim(clean_perm_hl$age.grouping)
+    clean_perm_hl$age.grouping <- stringr::str_trim(clean_perm_hl$age.grouping)
 
     # data by topic and age group
 
