@@ -72,7 +72,7 @@ get_fast_facts <- function(poc_connection) {
              select
                 county,
                 rate / 100 unemp_rate
-             from [dbCoreAdministrativeTables].[public_data].[unemployment]
+             from [public_data].[unemployment]
              where date_type = 2
                 and year(time) = 2012) t3
              on rlcr.county = t3.county
