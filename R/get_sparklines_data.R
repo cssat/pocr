@@ -209,7 +209,8 @@ get_sparklines_data <- function(annie_connection,
                agg.ent.rate, agg.ent.04, agg.ent.dep, agg.kin, agg.sibs) %>%
         mutate(agg.ent.dep = ifelse(year < 2003, 
                                     NA, 
-                                    agg.ent.dep))
+                                    agg.ent.dep)) %>%
+                             ungroup()
     
     names(trends_region) <- c("id", "date", paste0("trend_", 0:4))
     
