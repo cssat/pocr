@@ -75,10 +75,10 @@ stored_procedure <- function(sp = c("ia_trends_counts", "ia_trends_rates",
     if (db == "poc") db <- "sqlserver"
     if (db == "test_annie") db <- "mysql"
     
-    # if (is.character(county)) {
-    #    county <- ref_lookup_county[tolower(ref_lookup_county[, 2]) %in% 
-    #                                    tolower(county), 1]
-    #}
+    if (is.character(county)) {
+        county <- ref_lookup_county[tolower(ref_lookup_county[, 2]) %in% 
+                                        tolower(county), 1]
+    }
     
     CALL <- mget(names(formals()), sys.frame(sys.nframe()))
     callArgs <- unlist(lapply(CALL, FUN= paste0, collapse = ","))
