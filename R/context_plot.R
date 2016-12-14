@@ -15,7 +15,7 @@
 #' @export
 context_plot <-
     function (context_data, focus = "none", xlab, title = "", state_label = "Washington", 
-              colors = portal_colors[c(8, 4, 2)], title_size = 1.2, font = "Frutiger LT Std 45 Light") {
+              colors = portal_colors[c(8, 4, 2)], title_size = 1.2, font = "Open Sans") {
         names(context_data)[1:2] <- c("focus_group", "x_data")
         context_data$focus_indicator <- ifelse(context_data[, 1] %in% 
                                                    focus, 1, ifelse(context_data[, 1] %in% state_label, 
