@@ -6,7 +6,7 @@
 \usage{
 context_plot(context_data, focus = "none", xlab, title = "",
   state_label = "Washington", colors = portal_colors[c(8, 4, 2)],
-  title_size = 1.2, font = "Frutiger LT Std 45 Light")
+  title_size = 1.2, font = "Open Sans")
 }
 \arguments{
 \item{context_data}{data.frame where first columns is a factor for

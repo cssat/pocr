@@ -13,7 +13,7 @@
 #' @export
 trend_plot <-
     function (trend_data, type = c("ooh", "ia", "ihs"), title = NA, 
-              title_size = 1.2, font = "Frutiger LT Std 45 Light") {
+              title_size = 1.2, font = "Open Sans") {
         type <- match.arg(type)
         names(trend_data) <- c("date", "count", "geo")
         switch(type, ooh = {
