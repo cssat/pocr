@@ -5,7 +5,7 @@
 \title{Plots trend charts}
 \usage{
 trend_plot(trend_data, type = c("ooh", "ia", "ihs"), title = NA,
-  title_size = 1.2, font = "Frutiger LT Std 45 Light")
+  title_size = 1.2, font = "Open Sans")
 }
 \arguments{
 \item{trend_data}{data frame with **3 columns, in order,**
