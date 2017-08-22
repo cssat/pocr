@@ -166,7 +166,7 @@ get_site_dashboard_data <- function(con) {
         slice(1:4) %>%
         select(county.cd)
 
-    sp_ooh_county <- stored_procedure('ooh_pit_rates', county = high_cnt_county[, 1])
+    sp_ooh_county <- stored_procedure('ooh_pit_rates', county = high_cnt_county[[1]])
     query_ooh_county <- sqlQuery(con, sp_ooh_county)
     clean_ooh_county <- cr_clean(query_ooh_county, select = 'county_cd', date.type = 2)
 
