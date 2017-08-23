@@ -42,8 +42,7 @@ trend_plot <-
                           color = gtzero), 
                       size = 2.5, family = font) + 
             scale_colour_manual(values = c("white", "black")) + 
-            theme_bw() +
-            scale_y_continuous(labels = scales::comma_format()) + 
+            theme_bw() + 
             labs(x = "", y = stock_ylab, title = title) + 
             theme(text = element_text(family = font), 
                   axis.title.y = element_text(vjust = .5), 
@@ -55,8 +54,12 @@ trend_plot <-
                   legend.position = "none")
         if (length(levels(trend_data$geo)) == 1) {
             tp <- tp + 
-                scale_y_continuous(limits = c(0, 1.1 * max(trend_data$count)),
+                scale_y_continuous(expand = c(0, 0),
+                                   limits = c(0, 1.1 * max(trend_data$count)),
                                    labels = scales::comma_format())
+        } else {
+            tp <- tp + 
+                scale_y_continuous(labels = scales::comma_format()) 
         }
         print(tp)
     }
