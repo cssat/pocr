@@ -25,4 +25,3 @@ may fail under the very unlikely circumstance that folders named "temp1"
 to "temp15" exist in the test directory. The user will be notified should
 this occur.
 }
-

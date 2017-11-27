@@ -12,4 +12,3 @@ sp_names
 sp_names returns the names of all stored procedures.
 }
 \keyword{datasets}
-

@@ -39,4 +39,3 @@ existing directory.
 If a directory of the given name exists, it will instead attempt to create
 a variant of the given name.
 }
-

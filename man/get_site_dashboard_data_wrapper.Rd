@@ -17,4 +17,3 @@ The function returns a json object which is placed in a new folder when
 This is a function to update the data for the website dashboards that 
 should be run after each data load.
 }
-

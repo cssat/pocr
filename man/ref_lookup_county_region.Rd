@@ -16,4 +16,3 @@ for the actual counties 1:39. Additionally, has columns for region, the
 most useful of which are probably region_6_cd, region_6_tx, and small_fl.
 }
 \keyword{datasets}
-

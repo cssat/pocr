@@ -12,4 +12,3 @@ read.sql(...)
 \description{
 Deprecated. Use \code{read_sql}.
 }
-

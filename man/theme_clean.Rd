@@ -14,4 +14,3 @@ theme_clean(base_size = 12, ...)
 \description{
 A blank ggplot theme, borrowed from somebody on github
 }
-

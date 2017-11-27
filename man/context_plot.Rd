@@ -29,4 +29,3 @@ y-axis and second is numeric for x-axis}
 \description{
 Input context_data needs to have column 1 groups and column 2 data.
 }
-

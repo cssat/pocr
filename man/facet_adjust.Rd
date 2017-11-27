@@ -21,4 +21,3 @@ facet_adjust(x, pos = c("up", "down"), newpage = is.null(vp), vp = NULL)
 Use in place of \code{print.ggplot} with a jagged \code{facet_wrap}
 to label all the horizontal axes.
 }
-

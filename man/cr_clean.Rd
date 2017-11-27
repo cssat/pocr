@@ -24,4 +24,3 @@ cr_clean(df, select = NULL, date = TRUE, date.type = 1,
 Clean up colnames from Portal, allow option to select columns and to 
 convert to \code{Date} class.
 }
-

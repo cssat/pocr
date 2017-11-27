@@ -23,4 +23,3 @@ gathered by \code{get_sparklines_data()} - is handed off to
 \code{finalize_dashboard_data()} to put it in the final format needed
 for app consumption.
 }
-

@@ -18,4 +18,3 @@ element}
 \description{
 Takes a vector and returns a comma-space separated string for printing.
 }
-

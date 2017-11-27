@@ -21,4 +21,3 @@ select columns and to convert to \code{Date} class.
 \details{
 You probably actually want \code{cr_clean}.
 }
-

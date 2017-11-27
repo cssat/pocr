@@ -42,4 +42,3 @@ The final data structure is divided as follows:
  - "context"
  - "data"
 }
-

@@ -18,4 +18,3 @@ This is based on the type of JSON file that the original nutrient Parallel Coord
 was built off of. It seems to be sort of "row oriented", whereas \code{rjson::toJSON}
 is "column oriented".
 }
-

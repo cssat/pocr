@@ -31,4 +31,3 @@ Here 'valid' means either an object of class RODBC or a character string
 that - when passed to \code{RODBC::odbcConnect()} - creates such an RODBC
 object.
 }
-

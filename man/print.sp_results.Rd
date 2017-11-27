@@ -15,4 +15,3 @@
 Simple method to insure that the result turned by sp_test only prints out
 the concise summary by default. Not exported.
 }
-

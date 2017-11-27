@@ -14,4 +14,3 @@ a \%coalesce\% b
 \description{
 Fills in NAs in the first argument from the second
 }
-

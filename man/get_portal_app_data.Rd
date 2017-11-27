@@ -54,4 +54,3 @@ On successful completion, the user should manually inspect the generated
 data. If it appears correct, the data should then be manually integrated
 into each application's repo.
 }
-

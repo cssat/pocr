@@ -65,4 +65,3 @@ More specifically, the function will let you determine if:
 printing the results of \code{sp_test} will only return the summary object
 ($sp_summary).
 }
-

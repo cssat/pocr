@@ -14,4 +14,3 @@ county_to_office(county)
 Takes a county (string or numeric) and gives the corresponding rows of 
 ref_lookup_office
 }
-

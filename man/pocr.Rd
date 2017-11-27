@@ -13,4 +13,3 @@ and more.
 
 See especially \code{\link{stored_procedure}}.
 }
-

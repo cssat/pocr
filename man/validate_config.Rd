@@ -25,4 +25,3 @@ We assume that config files
     \item the first non-json line following the json begins with a \code{#}
 }
 }
-

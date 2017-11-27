@@ -63,4 +63,3 @@ Data sources used in the above process:
 \item{POC: public_data.free_lunch_county}
 }
 }
-

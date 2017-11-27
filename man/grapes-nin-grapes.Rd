@@ -16,4 +16,3 @@ x \%nin\% table
 left hand side indicating TRUE for the LHS elements that are *not* in the 
 RHS (and FALSE otherwise). Alternative to the ugly '! vec1 %in% vec2'.
 }
-

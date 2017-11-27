@@ -12,4 +12,3 @@ qf_dict
 Verbose descriptions of \code{quickfacts} columns.
 }
 \keyword{datasets}
-

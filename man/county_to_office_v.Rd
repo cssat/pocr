@@ -13,4 +13,3 @@ county_to_office_v(county)
 Takes a vector of counties (string or numeric) and gives a list of
 the corresponding rows of ref_lookup_office
 }
-

@@ -22,4 +22,3 @@ fill_in(dat, value_name = NULL, value_index = NULL, fill_value = 0)
 Expands a data.frame to include all unique combinations of variables
 and fills in 0's (or other) for missing values
 }
-

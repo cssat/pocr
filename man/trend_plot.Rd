@@ -23,4 +23,3 @@ that are date, count, geography.}
 \description{
 Nice barchart of counts, facets on geography.
 }
-

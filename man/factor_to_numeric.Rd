@@ -12,4 +12,3 @@ factor_to_numeric(x)
 \description{
 Factor to numeric via character
 }
-

@@ -25,4 +25,3 @@ Reading SHP files
 \code{dsn} points to directory, layer is name of particular shape file 
 (sans file extension).
 }
-

@@ -25,4 +25,3 @@ Looks in a subdirectory called \code{Rmarkdown/} for
 files, knits them to \code{.md} and removes any
 blank lines from the top.
 }
-

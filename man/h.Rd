@@ -14,4 +14,3 @@ h(x, ...)
 \description{
 Shorthand for \code{head()}
 }
-

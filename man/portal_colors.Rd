@@ -12,4 +12,3 @@ portal_colors
 Vector of 12 hex colors used in the portal
 }
 \keyword{datasets}
-

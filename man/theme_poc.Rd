@@ -25,4 +25,3 @@ Based off of \code{theme_bw}, this frames the plot in POC blue,
 eliminated minor grid lines, and will try to match to a POC font.
 There are also some other options.
 }
-

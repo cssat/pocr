@@ -14,4 +14,3 @@ read_sql(filename, silent = TRUE)
 \description{
 This probably still needs some work.
 }
-

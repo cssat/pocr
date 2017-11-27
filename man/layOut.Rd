@@ -12,4 +12,3 @@ layOut(...)
 \description{
 Deprecated. Use \code{lay_out}.
 }
-

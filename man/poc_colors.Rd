@@ -12,4 +12,3 @@ poc_colors
 Vector of 4 hex colors from POC theme.
 }
 \keyword{datasets}
-

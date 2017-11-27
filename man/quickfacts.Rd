@@ -13,4 +13,3 @@ Data frame characteristics of each county and of the state.
 \code{qf_dict} has the column keys.
 }
 \keyword{datasets}
-

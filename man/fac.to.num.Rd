@@ -12,4 +12,3 @@ fac.to.num(...)
 \description{
 Deprecated. Use \code{factor_to_number}.
 }
-

@@ -3,8 +3,8 @@
 \name{samp}
 \alias{samp}
 \alias{samp.data.frame}
-\alias{samp.default}
 \alias{samp.matrix}
+\alias{samp.default}
 \title{Sample of an object.}
 \usage{
 samp(x, n)
@@ -26,4 +26,3 @@ n random rows of x
 \description{
 Shortcut for checking on data.
 }
-

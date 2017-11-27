@@ -29,4 +29,3 @@ layOut(list(gg, 1:2, 1:3),
 Alan D. Jassby and James E. Cloern (originally from the \code{wq} 
 package).
 }
-

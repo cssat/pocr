@@ -12,4 +12,3 @@ sp_cr(...)
 \description{
 Deprecated. Use \code{stored_procedure}.
 }
-

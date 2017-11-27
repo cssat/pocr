@@ -20,4 +20,3 @@ Reads in text (usually from a file), removes any blank lines (or lines containin
 only whitespace) from the top of the file, (optionally) writes the modified
 file, invisibly returns the modified text.
 }
-

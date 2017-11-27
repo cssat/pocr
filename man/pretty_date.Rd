@@ -18,4 +18,3 @@ pretty_date(x, format = c("mdy", "dmy", "ymd"), abbreviate = FALSE, ...)
 \description{
 Outputs a nice date for inline inclusion (wrapper for strftime)
 }
-

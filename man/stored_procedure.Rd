@@ -76,4 +76,3 @@ will be converted to numerics, so specifying \code{county = "Kitsap"} or
 \dontrun{stored_procedure("poc1ab", date = seq(as.Date("2006-01-01"),
     as.Date("2009-01-01"), by = "year"), age = 1:3)}
 }
-

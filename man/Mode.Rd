@@ -12,4 +12,3 @@ Mode(x)
 \description{
 Mode of a vector. Found on Stackoverflow.
 }
-

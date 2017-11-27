@@ -28,4 +28,3 @@ geom_point() +
      scale_y_log10(breaks = break_setter(10))
      
 }
-

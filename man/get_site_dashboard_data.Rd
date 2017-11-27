@@ -13,7 +13,6 @@ get_site_dashboard_data(con)
 The function returns a json object.
 }
 \description{
-This is a function to update the data for the website dashboards that 
+This is a function to update the data for the website dashboards that
 should be run after each data load.
 }
-

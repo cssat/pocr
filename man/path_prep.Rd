@@ -14,4 +14,3 @@ Keep input in the clipboard (or paste it in).
 Returns a valid R filepath string.
 Found on StackOverflow, original author Tyler Rinker.
 }
-
