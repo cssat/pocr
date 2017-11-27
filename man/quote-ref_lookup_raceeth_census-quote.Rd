@@ -5,7 +5,7 @@
 \alias{"ref_lookup_raceeth_census"}
 \alias{ref_lookup_raceeth_census}
 \title{"ref_lookup_raceeth_census" (from test_annie)}
-\format{An object of class \code{NULL} of length 0.}
+\format{An object of class \code{data.frame} with 13 rows and 2 columns.}
 \usage{
 ref_lookup_raceeth_census
 }
