@@ -4,7 +4,7 @@
 \name{ref_lookup_gender}
 \alias{ref_lookup_gender}
 \title{ref_lookup_gender(from test_annie)}
-\format{An object of class \code{character} of length 2.}
+\format{An object of class \code{data.frame} with 4 rows and 3 columns.}
 \usage{
 ref_lookup_gender
 }
