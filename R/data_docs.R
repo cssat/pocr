@@ -53,6 +53,14 @@
 #' @name ref_lookup_county_region
 "ref_lookup_county_region"
 
+#' @title ref_lookup_office (from test_annie)
+#' @description Data frame with columns cd_office, tx_office, 
+#' cd_office_county_grp, and tx_office_county_grp. Taken from SQL Server table 
+#' of the same name.
+#' @docType data
+#' @name ref_lookup_office
+"ref_lookup_office"
+
 #' @title ref_lookup_ethnicity_census (from test_annie)
 #' @description Data frame with columns for cd_race_census and tx_race_census.
 #' @docType data
@@ -64,11 +72,3 @@
 #' @docType data
 #' @name ref_lookup_raceeth_census
 "ref_lookup_raceeth_census"
-
-#' @title ref_lookup_office (from test_annie)
-#' @description Data frame with columns cd_office, tx_office, 
-#' cd_office_county_grp, and tx_office_county_grp. Taken from SQL Server table 
-#' of the same name.
-#' @docType data
-#' @name ref_lookup_office
-"ref_lookup_office"
