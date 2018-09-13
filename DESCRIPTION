@@ -20,10 +20,10 @@ Description: This package collects a variety of functions and variables
 Depends:
     R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
+    stringr,
     dplyr
 Imports:
     RODBC,
-    stringr,
     scales,
     lubridate,
     RColorBrewer,
