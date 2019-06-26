@@ -45,7 +45,7 @@ get_fast_facts <- function(poc_connection) {
                 rlcp1.county_cd,
                 sum(rlcp1.pop_cnt) pop_under_18
              from ref_lookup_census_population rlcp1
-             where source_census = 2013 
+             where source_census = 2018 
                 and cd_race < 9
              group by county_cd) t1
              left join
@@ -54,7 +54,7 @@ get_fast_facts <- function(poc_connection) {
                 county_cd,
                 sum(pop_cnt) pop_under_5
              from ref_lookup_census_population
-             where source_census = 2013 
+             where source_census = 2018
                 and cd_race < 9
                 and age_grouping_cd = 1
              group by county_cd) t2
