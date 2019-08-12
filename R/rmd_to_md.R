@@ -51,7 +51,7 @@ rmd_to_md = function(base_path = getwd(), validate = TRUE) {
     }
     
     # Remove blank lines from the top
-    sapply(md_files, remove_leading_blank_lines)
+    sapply(paste(base_path, md_files, sep = "/"), remove_leading_blank_lines)
     
     # validate markdown files 
     if (validate) {

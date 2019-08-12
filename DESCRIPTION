@@ -20,10 +20,11 @@ Description: This package collects a variety of functions and variables
 Depends:
     R (>= 3.2.0),
     ggplot2 (>= 1.0.0),
+    stringr,
+    knitr,
     dplyr
 Imports:
     RODBC,
-    stringr,
     scales,
     lubridate,
     RColorBrewer,
@@ -33,8 +34,7 @@ Imports:
     readxl,
     reshape2,
     tidyr,
-    jsonlite,
-    knitr
+    jsonlite
 LazyData: true
 License: GPL-2
 URL: https://github.com/pocdata/pocr
