@@ -13,7 +13,7 @@ You can install `pocr` as follows, though you may need to install
 # install.packages("devtools", depends = TRUE)
 
 # install pocr
-devtools::install_github("pocdata/pocr")
+devtools::install_github("cssat/pocr")
 ```
 
 The primary package owner is Gregor Thomas (gregorp@uw.edu).
