@@ -16,4 +16,4 @@ You can install `pocr` as follows, though you may need to install
 devtools::install_github("cssat/pocr")
 ```
 
-The primary package owner is Gregor Thomas (gregorp@uw.edu).
+The primary package owner is Gregor Thomas (gregort@uw.edu).
